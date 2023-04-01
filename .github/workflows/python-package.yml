@@ -27,13 +27,14 @@ jobs:
           pip install -r requirements/base.txt
           pip install -r requirements/dev.txt
           pip install -r requirements/test.txt
-      
+
       - name: code check
         run: | 
               flake8 . --count --show-source --statistics
               black . --check
-      
+              isort . --check
+
       - name: flake8 Lint
         uses: py-actions/flake8@v2
         with:
-          plugins: "flake8-import-order==0.18.2 pep8-naming==0.13.3 flake8-quotes==3.3.2"
+          plugins: "pep8-naming==0.13.3 flake8-quotes==3.3.2"
