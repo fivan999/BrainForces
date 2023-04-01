@@ -91,11 +91,14 @@ DATABASES = {
     }
 }
 
-if 'test' in sys.argv:
+if 'test' in sys.argv or not os.getenv(
+    'USE_POSTGRES', default='False'
+).lower() in ('true', 'y', '1', 'yes'):
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase'
+        'NAME': 'db.sqlite3'
     }
+print(DATABASES)
 
 
 # Password validation
