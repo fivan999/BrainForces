@@ -1,6 +1,8 @@
-from django.apps import AppConfig
+import django.apps
 
 
-class CoreConfig(AppConfig):
+class CoreConfig(django.apps.AppConfig):
+    """базовый класс для приложения core"""
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'core'
+    verbose_name = 'кор'
