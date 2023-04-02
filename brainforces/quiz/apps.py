@@ -1,7 +1,7 @@
-from django.apps import AppConfig
+import django.apps
 
 
-class QuizConfig(AppConfig):
+class QuizConfig(django.apps.AppConfig):
     """базовый класс для приложения Quiz"""
 
     default_auto_field = 'django.db.models.BigAutoField'

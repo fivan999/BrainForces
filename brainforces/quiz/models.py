@@ -1,10 +1,10 @@
-from django.db import models
+import django.db.models
 
 
-class Quiz(models.Model):
+class Quiz(django.db.models.Model):
     """модель викторины"""
 
-    class Statuses(models.IntegerChoices):
+    class Statuses(django.db.models.IntegerChoices):
         NOT_STARTED = 1, 'Не начата'
         GOES_ON = 2, 'Идет'
         FINISHED = 3, 'Закончена'
@@ -17,36 +17,36 @@ class Quiz(models.Model):
     #     help_text='пользователь, который создал викторину'
     # )
 
-    name = models.CharField(
-        'название викторины',
+    name = django.db.models.CharField(
         max_length=50,
-        help_text='Напишите название викторины'
+        help_text='Напишите название викторины',
+        verbose_name='название викторины'
     )
 
-    status = models.IntegerField(
-        'статус',
+    status = django.db.models.IntegerField(
         choices=Statuses.choices,
         help_text='Поставьте статус викторины',
-        default=1
+        default=1,
+        verbose_name='статус'
     )
 
-    description = models.TextField(
-        'описание',
-        help_text='Создайте описание для Вашей викторины'
+    description = django.db.models.TextField(
+        help_text='Создайте описание для Вашей викторины',
+        verbose_name='описание'
     )
 
-    start_time = models.DateTimeField(
-        'стартовое время',
+    start_time = django.db.models.DateTimeField(
         help_text='Назначьте стартовое время для Вашей викторины',
         null=True,
-        blank=True
+        blank=True,
+        verbose_name='стартовое время'
     )
 
-    duration = models.IntegerField(
-        'продолжительность',
+    duration = django.db.models.IntegerField(
         help_text='Укажите продолжительность викторины в минутах',
         null=True,
-        blank=True
+        blank=True,
+        verbose_name='продолжительность'
     )
 
     class Meta:
@@ -58,24 +58,24 @@ class Quiz(models.Model):
         return self.name[:20]
 
 
-class Question(models.Model):
+class Question(django.db.models.Model):
     """модель вопроса"""
 
-    name = models.CharField(
-        'название вопроса',
+    name = django.db.models.CharField(
         max_length=100,
-        help_text='Напишите название вопроса'
+        help_text='Напишите название вопроса',
+        verbose_name='название вопроса'
     )
 
-    text = models.TextField(
-        'текст',
-        help_text='Напишите вопрос'
+    text = django.db.models.TextField(
+        help_text='Напишите вопрос',
+        verbose_name='текст'
     )
 
-    quiz = models.ForeignKey(
+    quiz = django.db.models.ForeignKey(
         Quiz,
         verbose_name='викторина',
-        on_delete=models.CASCADE,
+        on_delete=django.db.models.CASCADE,
         related_name='quiz_question',
         help_text='викторина, к которой относится вопрос'
     )
@@ -89,19 +89,19 @@ class Question(models.Model):
         return self.name[:20]
 
 
-class Answer(models.Model):
+class Variant(django.db.models.Model):
     """модель варианта ответа"""
 
-    text = models.CharField(
-        'ответ',
+    text = django.db.models.CharField(
         max_length=150,
-        help_text='Напишите вариант ответа'
+        help_text='Напишите вариант ответа',
+        verbose_name='ответ'
     )
 
-    question = models.ForeignKey(
+    question = django.db.models.ForeignKey(
         Question,
         verbose_name='вопрос',
-        on_delete=models.CASCADE,
+        on_delete=django.db.models.CASCADE,
         related_name='question_answer',
         help_text='вопрос, к которому относится вариант ответа'
     )

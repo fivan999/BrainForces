@@ -11,7 +11,6 @@ class QuizAdmin(django.contrib.admin.ModelAdmin):
         'id',
         'name',
         'status',
-        'description',
         'start_time',
         'duration',
     )
@@ -31,9 +30,9 @@ class QuestionAdmin(django.contrib.admin.ModelAdmin):
     list_display_links = ('id',)
 
 
-@django.contrib.admin.register(quiz.models.Answer)
-class AnswerAdmin(django.contrib.admin.ModelAdmin):
-    """отображение модели Answer в админке"""
+@django.contrib.admin.register(quiz.models.Variant)
+class VariantrAdmin(django.contrib.admin.ModelAdmin):
+    """отображение модели Variant в админке"""
 
     list_display = (
         'id',
