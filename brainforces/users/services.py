@@ -16,6 +16,7 @@ def activation_email(
     where_to: str,
     user: django.contrib.auth.models.AbstractBaseUser,
 ) -> None:
+    """создаем токен для активации аккаунта"""
     if where_to == 'users:reset_login_attempts':
         token = users.tokens.token_7_days.make_token(user)
     elif where_to == 'users:activate_user':
