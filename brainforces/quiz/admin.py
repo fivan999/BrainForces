@@ -31,7 +31,7 @@ class QuestionAdmin(django.contrib.admin.ModelAdmin):
 
 
 @django.contrib.admin.register(quiz.models.Variant)
-class VariantrAdmin(django.contrib.admin.ModelAdmin):
+class VariantAdmin(django.contrib.admin.ModelAdmin):
     """отображение модели Variant в админке"""
 
     list_display = (
