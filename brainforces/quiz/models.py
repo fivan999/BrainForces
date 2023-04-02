@@ -38,14 +38,14 @@ class Quiz(models.Model):
     start_time = models.DateTimeField(
         'стартовое время',
         help_text='Назначьте стартовое время для Вашей викторины',
-        null=True, 
+        null=True,
         blank=True
     )
 
     duration = models.IntegerField(
         'продолжительность',
         help_text='Укажите продолжительность викторины в минутах',
-        null=True, 
+        null=True,
         blank=True
     )
 
@@ -71,7 +71,7 @@ class Question(models.Model):
         'текст',
         help_text='Напишите вопрос'
     )
-    
+
     quiz = models.ForeignKey(
         Quiz,
         verbose_name='викторина',
@@ -87,7 +87,7 @@ class Question(models.Model):
     def __str__(self) -> str:
         """строковое представление"""
         return self.name[:20]
-    
+
 
 class Answer(models.Model):
     """модель варианта ответа"""
@@ -97,7 +97,7 @@ class Answer(models.Model):
         max_length=150,
         help_text='Напишите вариант ответа'
     )
-    
+
     question = models.ForeignKey(
         Question,
         verbose_name='вопрос',
