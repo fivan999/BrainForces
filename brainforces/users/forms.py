@@ -88,7 +88,7 @@ class CustomUserChangeForm(django.contrib.auth.forms.UserChangeForm):
     password = None
 
     class Meta:
-        model = users.models.ShopUser
+        model = users.models.User
         fields = ('username', 'email', 'first_name', 'last_name')
         labels = {
             'username': 'Имя пользователя',

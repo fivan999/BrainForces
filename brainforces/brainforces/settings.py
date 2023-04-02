@@ -6,6 +6,7 @@ import dotenv
 
 import django.contrib.messages
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
@@ -30,6 +31,7 @@ else:
 
 INSTALLED_APPS = [
     'quiz.apps.QuizConfig',
+    'homepage.apps.HomepageConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'core.apps.CoreConfig',
