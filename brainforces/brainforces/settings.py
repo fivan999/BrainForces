@@ -1,5 +1,6 @@
 import os
 import pathlib
+import sys
 
 import dotenv
 
@@ -87,9 +88,18 @@ DATABASES = {
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'PORT': os.getenv('DB_PORT')
     }
 }
+
+if 'test' in sys.argv or not os.getenv(
+    'USE_POSTGRES', default='False'
+).lower() in ('true', 'y', '1', 'yes'):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3'
+    }
+print(DATABASES)
 
 
 # Password validation
@@ -118,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 

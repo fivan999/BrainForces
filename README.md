@@ -1,4 +1,61 @@
 # BrainForces
+[![Django CI](https://github.com/fivan999/BrainForces/actions/workflows/django.yml/badge.svg)](https://github.com/fivan999/BrainForces/actions/workflows/django.yml)
+[![Python package](https://github.com/fivan999/BrainForces/actions/workflows/python-package.yml/badge.svg)](https://github.com/fivan999/BrainForces/actions/workflows/python-package.yml)
+## Суть проекта
+
+## Установка и запуск
+### Клонировать репозиторий
+```
+git clone https://github.com/fivan999/django_intensive_lessons
+```
+### Установка зависимостей
+Создайте виртуальное окружение и активируйте его
+```
+python -m venv venv
+venv\Scripts\activate
+```
+
+Установите нужные зависимости
+
+Для запуска
+```
+pip install -r requirements/base.txt
+```
+Для разработки
+```
+pip install -r requirements/dev.txt
+```
+Для тестов
+```
+pip install -r requirements/test.txt
+```
+### Запуск
+Создайте .env файл в папке brainforces.<br>
+
+В нем нужно указать значения:<br>
+- SECRET_KEY (ваш секретный ключ, по умолчанию - default)<br>
+- DEBUG (включать ли режим дебага, по умолчанию - True)<br>
+- ALLOWED_HOSTS (если включен DEBUG, он ['*'], иначе по умолчанию - 127.0.0.1)<br>
+- INTERNAL_IPS (для debug_toolbar, по умолчанию - 127.0.0.1) <br>
+- USE_POSTGRES (использовать ли базу данных PostgreSQL, по умолчанию - False)
+Также нужно настроить базу данных PostgreSQL, если вы ее используете
+- DB_NAME (имя базы данных)
+- DB_HOST (хост базы данных)
+- DB_PORT (порт базы данных)
+- DB_USER (имя пользователя на сервере)
+- DB_PASSWORD (пароль от пользователя)
+Пример .env файла - .env.example
+
+Сделать миграции:
+```
+python shop/manage.py migrate
+```
+
+Запустите проект:
+```
+python shop/manage.py runserver
+```
+
 ## Техническое задание
 В общем: cоздаем сайт для проведения онлайн соревновательных викторин
 ### Первый этап:
@@ -38,50 +95,25 @@
 ### Детали
 - База данных - PostgreSQL
 
-## Установка и запуск
-
-### Клонировать репозиторий
-```
-git clone https://github.com/fivan999/django_intensive_lessons
-```
-### Установка зависимостей
-Создайте виртуальное окружение и активируйте его
-```
-python -m venv venv
-venv\Scripts\activate
-```
-
-Установите нужные зависимости
-
-Для запуска
-```
-pip install -r requirements/base.txt
-```
-Для разработки
-```
-pip install -r requirements/dev.txt
-```
-Для тестов
-```
-pip install -r requirements/test.txt
-```
-### Запуск
-Создайте .env файл в папке brainforces.<br>
-
-В нем нужно указать значения:<br>
-- SECRET_KEY (ваш секретный ключ, по умолчанию - default)<br>
-- DEBUG (включать ли режим дебага, по умолчанию - True)<br>
-- ALLOWED_HOSTS (если включен DEBUG, он ['*'], иначе по умолчанию - 127.0.0.1)<br>
-- INTERNAL_IPS (для debug_toolbar, по умолчанию - 127.0.0.1) <br>
-Также нужно настроить базу данных PostgreSQL
-- DB_NAME (имя базы данных)
-- DB_HOST (хост базы данных)
-- DB_PORT (порт базы данных)
-- DB_USER (имя пользователя на сервере)
-- DB_PASSWORD (пароль от пользователя)
-Пример .env файла - .env.example
-
-Запустите проект:
-```
-python shop/manage.py runserver
-```
+## Правила для разработчиков
+- Тайпинг
+- Одинарные кавычки (дефолт по флейку)
+- У функций и классов докстринги, не обязательно документировать каждый аргумент, 
+достаточно краткого описания функции
+- Комментарии тоже нужны, но все подряд не комментировать, только там, где нужно)
+- Нормальные и более-менее осмысленные названия классов, функций, переменных
+- Отступы в шаблонах - 2 пробела. было бы славно поставить плагин djlint, чтобы
+он проверял шаблоны за вас, постарайтесь максимально исправлять его исью
+также полезный плагин для шаблонов - django(6,2 м. скачиваний)
+- Модель ветвления такая же (ветка main, от нее ветки-фичи)
+- Давать краткие и понятные комментарии к коммитам
+- У полей моделей и форм обязательно писать verbose_name. help_text - очень желательно
+- Для изменения виджетов формы не прописываем их в форме. Используем модуль django-widget-tweaks в шаблоне
+- Все вьюхи с помощью CBV
+- На функционал стараемся писать тесты
+- Все тесты делаем с помощью джанговских юниттестов
+- Перед коммитом проверяем, всё ли у нас хорошо
+  - Проверяем линтинг с помощью flake8 и black
+  - Порядок импортов с помощью isort
+  - Тайпинг с помощью mypy
+  - Запускаем тесты
