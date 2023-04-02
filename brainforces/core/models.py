@@ -11,7 +11,8 @@ def generate_image_path(obj: django.db.models.Model, filename: str) -> str:
     """делаем путь к картинке"""
     filename = transliterate.translit(filename, 'ru', reversed=True)
     filename = (
-        filename[: filename.rfind('.')] + secrets.token_hex(6)
+        filename[: filename.rfind('.')]
+        + secrets.token_hex(6)
         + filename[filename.rfind('.') :]
     )
     return f'images/{filename}'
