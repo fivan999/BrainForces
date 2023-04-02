@@ -3,6 +3,7 @@ import users.models
 import django.contrib.auth.models
 import django.core.exceptions
 import django.db.models
+import typing
 
 
 class UserManager(django.contrib.auth.models.UserManager):
@@ -32,7 +33,7 @@ class UserManager(django.contrib.auth.models.UserManager):
         """костомная нормализация email"""
         if not email:
             return ''
-        username, domain = email.lower().strip().slit('@')
+        username, domain = email.lower().strip().split('@')
 
         if '+' in username:
             username = username[: username.find('+')]
@@ -47,7 +48,7 @@ class UserManager(django.contrib.auth.models.UserManager):
 
     def create_superuser(
         self, username: str, email: str, password: str, **extra_fields
-    ):
+    ) -> typing.Any:
         """переопределяем создание суперпользователя"""
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
