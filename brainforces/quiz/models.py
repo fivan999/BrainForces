@@ -20,33 +20,33 @@ class Quiz(django.db.models.Model):
     name = django.db.models.CharField(
         max_length=50,
         help_text='Напишите название викторины',
-        verbose_name='название викторины'
+        verbose_name='название викторины',
     )
 
     status = django.db.models.IntegerField(
         choices=Statuses.choices,
         help_text='Поставьте статус викторины',
         default=1,
-        verbose_name='статус'
+        verbose_name='статус',
     )
 
     description = django.db.models.TextField(
         help_text='Создайте описание для Вашей викторины',
-        verbose_name='описание'
+        verbose_name='описание',
     )
 
     start_time = django.db.models.DateTimeField(
         help_text='Назначьте стартовое время для Вашей викторины',
         null=True,
         blank=True,
-        verbose_name='стартовое время'
+        verbose_name='стартовое время',
     )
 
     duration = django.db.models.IntegerField(
         help_text='Укажите продолжительность викторины в минутах',
         null=True,
         blank=True,
-        verbose_name='продолжительность'
+        verbose_name='продолжительность',
     )
 
     class Meta:
@@ -64,12 +64,11 @@ class Question(django.db.models.Model):
     name = django.db.models.CharField(
         max_length=100,
         help_text='Напишите название вопроса',
-        verbose_name='название вопроса'
+        verbose_name='название вопроса',
     )
 
     text = django.db.models.TextField(
-        help_text='Напишите вопрос',
-        verbose_name='текст'
+        help_text='Напишите вопрос', verbose_name='текст'
     )
 
     quiz = django.db.models.ForeignKey(
@@ -77,7 +76,7 @@ class Question(django.db.models.Model):
         verbose_name='викторина',
         on_delete=django.db.models.CASCADE,
         related_name='quiz_question',
-        help_text='викторина, к которой относится вопрос'
+        help_text='викторина, к которой относится вопрос',
     )
 
     class Meta:
@@ -95,7 +94,7 @@ class Variant(django.db.models.Model):
     text = django.db.models.CharField(
         max_length=150,
         help_text='Напишите вариант ответа',
-        verbose_name='ответ'
+        verbose_name='ответ',
     )
 
     question = django.db.models.ForeignKey(
@@ -103,7 +102,7 @@ class Variant(django.db.models.Model):
         verbose_name='вопрос',
         on_delete=django.db.models.CASCADE,
         related_name='question_answer',
-        help_text='вопрос, к которому относится вариант ответа'
+        help_text='вопрос, к которому относится вариант ответа',
     )
 
     class Meta:

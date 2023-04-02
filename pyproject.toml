@@ -1,7 +1,14 @@
 [tool.black]
 line-length=79
 skip-string-normalization=1
-exclude=["*/migrations/", "venv/", "env/"]
+extend-exclude='''
+(
+    \.git
+  | \.mypy_cache
+  | \.venv
+  | migrations
+)
+'''
 [tool.isort] 
 default_section = "THIRDPARTY" 
 known_django = "django" 
