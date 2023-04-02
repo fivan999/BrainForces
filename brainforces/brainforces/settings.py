@@ -17,9 +17,7 @@ dotenv.load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY', default='default')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', default='True').lower() in (
-    'true', 'y', '1', 'yes'
-)
+DEBUG = os.getenv('DEBUG', default='True').lower() in ('true', 'y', '1', 'yes')
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
@@ -30,6 +28,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    'homepage.apps.HomepageConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -88,7 +87,7 @@ DATABASES = {
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT')
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -97,7 +96,7 @@ if 'test' in sys.argv or not os.getenv(
 ).lower() in ('true', 'y', '1', 'yes'):
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3'
+        'NAME': 'db.sqlite3',
     }
 print(DATABASES)
 
@@ -108,19 +107,19 @@ print(DATABASES)
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation'
-                '.UserAttributeSimilarityValidator',
+        '.UserAttributeSimilarityValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation'
-                '.MinimumLengthValidator',
+        '.MinimumLengthValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation'
-                '.CommonPasswordValidator',
+        '.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation'
-                '.NumericPasswordValidator',
+        '.NumericPasswordValidator',
     },
 ]
 
