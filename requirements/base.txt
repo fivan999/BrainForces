@@ -1,0 +1,14 @@
+asgiref==3.6.0
+Django==3.2.16
+django-ckeditor==6.5.1
+django-cleanup==7.0.0
+django-js-asset==2.0.0
+Pillow==9.4.0
+python-dotenv==1.0.0
+pytz==2023.3
+six==1.16.0
+sorl-thumbnail==12.9.0
+sqlparse==0.4.3
+transliterate==1.10.2
+psycopg2==2.9.5
+django-widget-tweaks==1.4.12
