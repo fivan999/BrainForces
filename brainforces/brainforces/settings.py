@@ -29,6 +29,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    'quiz.apps.QuizConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
