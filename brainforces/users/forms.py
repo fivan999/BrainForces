@@ -8,9 +8,7 @@ class SignUpForm(django.contrib.auth.forms.UserCreationForm):
     """форма регистрации"""
 
     class Meta(django.contrib.auth.forms.UserCreationForm.Meta):
-        fields = (
-            'username', 'email', 'password1', 'password2'
-        )
+        fields = ('username', 'email', 'password1', 'password2')
         model = users.models.User
 
     def __init__(self, *args, **kwargs) -> None:
@@ -111,6 +109,6 @@ class ProfileChangeForm(django.forms.ModelForm):
 
     class Meta:
         model = users.models.Profile
-        fields = ('image', )
+        fields = ('image',)
         labels = {'image': 'Аватарка'}
         help_texts = {'image': 'Загрузите аватарку'}

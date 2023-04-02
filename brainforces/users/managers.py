@@ -19,8 +19,12 @@ class UserManager(django.contrib.auth.models.UserManager):
     def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
         """только нужные поля для одного пользователя"""
         return self.get_active_users().only(
-            'username', 'email', 'profile__image',
-            'first_name', 'last_name', 'profile__rating'
+            'username',
+            'email',
+            'profile__image',
+            'first_name',
+            'last_name',
+            'profile__rating',
         )
 
     @classmethod
@@ -31,7 +35,7 @@ class UserManager(django.contrib.auth.models.UserManager):
         username, domain = email.lower().strip().slit('@')
 
         if '+' in username:
-            username = username[:username.find('+')]
+            username = username[: username.find('+')]
 
         if domain in ('ya.ru', 'yandex.ru'):
             username = username.replace('.', '-')

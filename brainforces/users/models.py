@@ -46,17 +46,15 @@ class Profile(core.models.AbstractImageModel):
         help_text='Профиль пользователя',
         on_delete=django.db.models.CASCADE,
         blank=True,
-        null=True
+        null=True,
     )
     image = django.db.models.ImageField(
         blank=True,
         verbose_name='аватарка',
         height_field='Аватарка пользователя',
         upload_to=generate_image_path,
-        null=True
+        null=True,
     )
     rating = django.db.models.PositiveIntegerField(
-        verbose_name='рейтинг',
-        help_text='Рейтинг пользователя',
-        default=0
+        verbose_name='рейтинг', help_text='Рейтинг пользователя', default=0
     )
