@@ -1,4 +1,3 @@
-
 import django.contrib.admin
 import django.urls
 

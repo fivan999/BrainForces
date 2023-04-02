@@ -1,10 +1,10 @@
 import secrets
+import typing
 
 import sorl.thumbnail
 import transliterate
 
 import django.db.models
-import typing
 
 
 def generate_image_path(obj: django.db.models.Model, filename: str) -> str:

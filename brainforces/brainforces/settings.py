@@ -6,6 +6,7 @@ import dotenv
 
 import django.contrib.messages
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
