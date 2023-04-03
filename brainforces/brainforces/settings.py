@@ -4,6 +4,8 @@ import sys
 
 import dotenv
 
+import django.contrib.messages
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
@@ -28,9 +30,12 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    'quiz.apps.QuizConfig',
     'homepage.apps.HomepageConfig',
     'django.contrib.admin',
     'django.contrib.auth',
+    'core.apps.CoreConfig',
+    'users.apps.UsersConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -98,7 +103,6 @@ if 'test' in sys.argv or not os.getenv(
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',
     }
-print(DATABASES)
 
 
 # Password validation
@@ -123,6 +127,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/auth/login/'
+
+AUTHENTICATION_BACKENDS = ['users.backends.EmailBackend']
+LOGIN_ATTEMPTS = int(os.environ.get('LOGIN_ATTEMPTS', default=3))
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -156,3 +166,19 @@ MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
+
+AUTH_USER_MODEL = 'users.User'
+
+EMAIL = os.getenv('EMAIL')
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+
+PASSWORD_RESET_TIMEOUT = 43200
+
+MESSAGE_TAGS = {
+    django.contrib.messages.constants.DEBUG: 'alert-secondary',
+    django.contrib.messages.constants.INFO: 'alert-info',
+    django.contrib.messages.constants.SUCCESS: 'alert-success',
+    django.contrib.messages.constants.WARNING: 'alert-warning',
+    django.contrib.messages.constants.ERROR: 'alert-danger',
+}

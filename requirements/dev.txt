@@ -6,3 +6,4 @@ pep8-naming==0.13.3
 django_debug_toolbar==3.8.1
 django-dump-load-utf8==0.0.4
 mypy==1.1.1
+djlint==1.19.16
