@@ -1,0 +1,20 @@
+{% load widget_tweaks %}
+
+{% csrf_token %}
+{% for error in form.non_field_errors %}
+  <div class="alert alert-danger" role="alert">
+    {{ error|safe }}
+  </div>
+{% endfor %}
+{% for field in form %}
+  <p>
+    {{ field.label }}
+    {{ field|add_class:"form-control" }}
+    <small><span class="text-muted">{{ field.help_text }}</span></small>
+    {% for error in field.errors %}
+    <div class="alert alert-danger" role="alert">
+      {{ error|safe }}
+    </div>
+    {% endfor %}
+  </p>
+{% endfor %}

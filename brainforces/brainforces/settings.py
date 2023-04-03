@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'ckeditor',
     'ckeditor_uploader',
+    'widget_tweaks'
 ]
 
 if DEBUG:
@@ -60,6 +61,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+INTERNAL_IPS = os.environ.get('INTERNAL_IPS', default='127.0.0.1').split()
 
 ROOT_URLCONF = 'brainforces.urls'
 
