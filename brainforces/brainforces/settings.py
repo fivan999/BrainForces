@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'ckeditor',
     'ckeditor_uploader',
-    'widget_tweaks'
+    'widget_tweaks',
 ]
 
 if DEBUG:

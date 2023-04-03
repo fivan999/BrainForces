@@ -1,8 +1,8 @@
 import django.conf
 import django.conf.urls.static
 import django.contrib.admin
-import django.urls
 import django.contrib.staticfiles.urls
+import django.urls
 
 
 urlpatterns = [
@@ -22,7 +22,7 @@ if django.conf.settings.DEBUG:
     if django.conf.settings.MEDIA_ROOT:
         urlpatterns += django.conf.urls.static.static(
             django.conf.settings.MEDIA_URL,
-            document_root=django.conf.settings.MEDIA_ROOT
+            document_root=django.conf.settings.MEDIA_ROOT,
         )
     else:
         urlpatterns += (

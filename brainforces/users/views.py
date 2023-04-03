@@ -20,12 +20,15 @@ import django.views.generic.edit
 
 class SignupView(django.views.generic.edit.FormView):
     """регистрация пользователя"""
+
     form_class = users.forms.SignUpForm
     template_name = 'users/signup.html'
 
     def get_success_url(self) -> str:
         """получаем адрес для редиректа в случае валидной формы"""
-        return django.urls.reverse('homepage:homepage',)
+        return django.urls.reverse(
+            'homepage:homepage',
+        )
 
     def form_valid(
         self, form: users.forms.SignUpForm
@@ -56,6 +59,7 @@ class SignupView(django.views.generic.edit.FormView):
 
 class ActivateUserView(django.views.generic.View):
     """Активирует аккаунт пользователя"""
+
     def get(
         self, request: django.http.HttpRequest, uidb64: str, token: str
     ) -> django.http.HttpResponse:
@@ -86,8 +90,9 @@ class ActivateUserView(django.views.generic.View):
 
 
 class ResetLoginAttempts(django.views.generic.View):
-    def get(self, request: django.http.HttpRequest, uidb64: str, token: str
-            ) -> django.http.HttpResponsePermanentRedirect:
+    def get(
+        self, request: django.http.HttpRequest, uidb64: str, token: str
+    ) -> django.http.HttpResponsePermanentRedirect:
         """активация аккаунта после превышения попыток"""
         try:
             user = users.models.User.objects.get(
@@ -100,8 +105,8 @@ class ResetLoginAttempts(django.views.generic.View):
         if user and users.tokens.token_7_days.check_token(user, token):
             user.is_active = True
             django.contrib.messages.success(
-                request, 'Спасибо за активацию аккаунта,'
-                'теперь вы можете войти'
+                request,
+                'Спасибо за активацию аккаунта,' 'теперь вы можете войти',
             )
             user.login_attempts = django.conf.settings.LOGIN_ATTEMPTS - 1
             user.save()
@@ -112,9 +117,10 @@ class ResetLoginAttempts(django.views.generic.View):
 
 class UserDetailView(
     django.contrib.auth.mixins.PermissionRequiredMixin,
-    django.views.generic.DetailView
+    django.views.generic.DetailView,
 ):
     """детальная информация о пользователе"""
+
     permission_required = 'is_staff'
     template_name = 'users/user_detail.html'
     context_object_name = 'user'
@@ -122,10 +128,10 @@ class UserDetailView(
 
 
 class UserProfileView(
-    django.contrib.auth.mixins.LoginRequiredMixin,
-    django.views.generic.View
+    django.contrib.auth.mixins.LoginRequiredMixin, django.views.generic.View
 ):
     """Профиль пользоватея"""
+
     template_name = 'users/signup.html'
 
     def get(

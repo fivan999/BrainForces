@@ -69,9 +69,7 @@ urlpatterns = [
         name='password_reset_complete',
     ),
     django.urls.path(
-        'signup/',
-        users.views.SignupView.as_view(),
-        name='signup'
+        'signup/', users.views.SignupView.as_view(), name='signup'
     ),
     django.urls.path(
         'activate/<uidb64>/<token>/',
@@ -81,12 +79,10 @@ urlpatterns = [
     django.urls.path(
         'users/<int:pk>/',
         users.views.UserDetailView.as_view(),
-        name='user_detail'
+        name='user_detail',
     ),
     django.urls.path(
-        'profile/',
-        users.views.UserProfileView.as_view(),
-        name='user_profile'
+        'profile/', users.views.UserProfileView.as_view(), name='user_profile'
     ),
     django.urls.path(
         'reset_login_attempts/<uidb64>/<token>/',
