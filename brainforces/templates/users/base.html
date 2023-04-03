@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="container col-xxl-8">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+      <div class="col-10 col-sm-8 col-lg-6">
+        <img src="{% static 'img/login_img.jpeg' %}" class="img-fluid border rounded-3 shadow-lg " width="100%" height="auto" alt="главная картинка" />
+      </div>
+      <div class="col-lg-6">
+        {% block user_action %}{% endblock user_action %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

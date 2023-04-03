@@ -18,7 +18,7 @@ class UserManager(django.contrib.auth.models.UserManager):
             .select_related('profile')
         )
 
-    def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
+    def get_only_useful_detail_fields(self) -> django.db.models.QuerySet:
         """только нужные поля для одного пользователя"""
         return self.get_active_users().only(
             'username',
@@ -32,7 +32,7 @@ class UserManager(django.contrib.auth.models.UserManager):
     @classmethod
     def normalize_email(cls, email: str) -> str:
         """костомная нормализация email"""
-        if not email:
+        if not email or '@' not in email:
             return ''
         username, domain = email.lower().strip().split('@')
 

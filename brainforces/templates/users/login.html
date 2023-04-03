@@ -1,0 +1,14 @@
+{% extends "users/base.html" %}
+
+{% load static %}
+
+{% block user_action %}
+  <div class="text-center">
+    <img src="{% static 'img/brain_icon.svg' %}" class="mb-3" width="72" height="57" alt="иконка" />
+    <h1 class="h3 mb-3 fw-normal">Добро пожаловать!</h1>
+  </div>
+  <form method="post" enctype="multipart/form-data">
+    {% include "includes/make_form.html" %}
+    <button type="submit" class="btn btn-primary">Войти</button>
+  </form>
+{% endblock user_action %}
