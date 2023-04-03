@@ -54,7 +54,7 @@ class TokenGeneratorWithTimestamp(
                     now - datetime.combine(now.date(), datetime.time.min)
                 ).total_seconds()
             )
-        if (self._num_seconds(now) - ts) > self.token_validity_period:
+        if (self._num_seconds(now) - ts) > self.timestamp:
             return False
 
         return True
