@@ -1,8 +1,3 @@
-import users.forms
-import users.models
-import users.services
-import users.tokens
-
 import django.conf
 import django.contrib
 import django.contrib.auth
@@ -16,6 +11,11 @@ import django.utils.http
 import django.views
 import django.views.generic
 import django.views.generic.edit
+
+import users.forms
+import users.models
+import users.services
+import users.tokens
 
 
 class SignupView(django.views.generic.edit.FormView):

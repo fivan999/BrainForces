@@ -1,13 +1,14 @@
 import freezegun
 import parameterized
 import pytz
-import users.models
 
 import django.conf
 import django.core
 import django.test
 import django.urls
 import django.utils
+
+import users.models
 
 
 START_DATETIME = pytz.UTC.localize(

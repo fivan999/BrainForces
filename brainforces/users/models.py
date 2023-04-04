@@ -1,11 +1,12 @@
-import core.models
 import transliterate
-import users.managers
 
 import django.contrib.auth.models
 import django.db.models
 import django.urls
 from django.utils.translation import gettext_lazy as _
+
+import core.models
+import users.managers
 
 
 def generate_image_path(obj: django.db.models.Model, filename: str) -> str:
@@ -58,3 +59,11 @@ class Profile(core.models.AbstractImageModel):
     rating = django.db.models.PositiveIntegerField(
         verbose_name='рейтинг', help_text='Рейтинг пользователя', default=0
     )
+
+    class Meta:
+        verbose_name = 'профиль'
+        verbose_name_plural = 'профили'
+
+    def __str__(self) -> str:
+        """строковое представление"""
+        return f'Профиль пользователя {self.user.pk}'

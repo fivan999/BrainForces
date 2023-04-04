@@ -1,5 +1,3 @@
-import users.tokens
-
 import django.conf
 import django.contrib.auth.models
 import django.contrib.auth.tokens
@@ -9,6 +7,8 @@ import django.http
 import django.template.loader
 import django.utils.encoding
 import django.utils.http
+
+import users.tokens
 
 
 def activation_email(

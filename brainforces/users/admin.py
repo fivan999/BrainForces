@@ -1,8 +1,8 @@
-import users.models
-
 import django.contrib.admin
 import django.contrib.auth.admin
 import django.contrib.auth.models
+
+import users.models
 
 
 class ProfileAdmin(django.contrib.admin.TabularInline):

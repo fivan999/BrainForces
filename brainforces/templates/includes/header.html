@@ -7,7 +7,7 @@
       </a>
       <div class="dropdown text-end">
         <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{% if request.user.profile.image %}{{ request.user.profile.get_image_50x50.url }}{% else %}{% static 'img/default_user.svg' %}{% endif %}" width="50" height="50" class="rounded-circle" />
+          <img alt="аватарка" src="{% if request.user.profile.image %}{{ request.user.profile.get_image_50x50.url }}{% else %}{% static 'img/default_user.svg' %}{% endif %}" width="50" height="50" class="rounded-circle" />
         </a>
         <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser">
           {% if request.user.is_authenticated %}

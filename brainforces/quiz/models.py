@@ -1,4 +1,30 @@
+import ckeditor.fields
+
 import django.db.models
+
+import users.models
+
+
+class Tag(django.db.models.Model):
+    """модель тега для викторины"""
+
+    is_published = django.db.models.BooleanField(
+        verbose_name='опубликован',
+        help_text='Опубликован тег или нет',
+        default=True,
+    )
+    name = django.db.models.CharField(
+        verbose_name='имя тега', help_text='Введите имя тега', max_length=150
+    )
+
+    class Meta:
+        verbose_name = 'тег'
+        verbose_name_plural = 'теги'
+
+    def __str__(self) -> str:
+        """строковое представление"""
+
+        return self.name[:20]
 
 
 class Quiz(django.db.models.Model):
@@ -9,13 +35,14 @@ class Quiz(django.db.models.Model):
         GOES_ON = 2, 'Идет'
         FINISHED = 3, 'Закончена'
 
-    # creator = models.ForeignKey(
-    #     users.models.User,
-    #     verbose_name='пользователь',
-    #     on_delete=models.CASCADE,
-    #     related_name='user_creator',
-    #     help_text='пользователь, который создал викторину'
-    # )
+    creator = django.db.models.ForeignKey(
+        users.models.User,
+        verbose_name='пользователь',
+        on_delete=django.db.models.CASCADE,
+        related_name='user_creator',
+        help_text='пользователь, который создал викторину',
+        null=True,
+    )
 
     name = django.db.models.CharField(
         max_length=50,
@@ -30,7 +57,7 @@ class Quiz(django.db.models.Model):
         verbose_name='статус',
     )
 
-    description = django.db.models.TextField(
+    description = ckeditor.fields.RichTextField(
         help_text='Создайте описание для Вашей викторины',
         verbose_name='описание',
     )
@@ -47,6 +74,14 @@ class Quiz(django.db.models.Model):
         null=True,
         blank=True,
         verbose_name='продолжительность',
+    )
+
+    users = django.db.models.ManyToManyField(
+        users.models.User,
+        verbose_name='пользователи зарегистрированные на викторину',
+        help_text='Укажите пользователей,'
+        'которые зарегистрировались на викторину',
+        related_name='quiz_users',
     )
 
     class Meta:
@@ -67,7 +102,7 @@ class Question(django.db.models.Model):
         verbose_name='название вопроса',
     )
 
-    text = django.db.models.TextField(
+    text = ckeditor.fields.RichTextField(
         help_text='Напишите вопрос', verbose_name='текст'
     )
 
@@ -77,6 +112,19 @@ class Question(django.db.models.Model):
         on_delete=django.db.models.CASCADE,
         related_name='quiz_question',
         help_text='викторина, к которой относится вопрос',
+    )
+
+    difficulty = django.db.models.PositiveSmallIntegerField(
+        verbose_name='сложность',
+        help_text='сложность вопроса',
+        default=1,
+    )
+
+    tags = django.db.models.ManyToManyField(
+        Tag,
+        related_name='question_tags',
+        verbose_name='теги вопроса',
+        help_text='выберите теги вопроса',
     )
 
     class Meta:
@@ -112,3 +160,32 @@ class Variant(django.db.models.Model):
     def __str__(self) -> str:
         """строковое представление"""
         return self.text[:20]
+
+
+class UserAnswer(django.db.models.Model):
+    """модель ответа пользователя"""
+
+    user = django.db.models.ForeignKey(
+        users.models.User,
+        verbose_name='пользователь',
+        on_delete=django.db.models.CASCADE,
+        related_name='useranswer_user',
+        help_text='пользователь, который дал ответ',
+    )
+
+    question = django.db.models.ForeignKey(
+        Question,
+        verbose_name='вопрос',
+        help_text='вопрос на который пользователь дал ответ',
+        related_name='useranswer_question',
+        on_delete=django.db.models.CASCADE,
+    )
+
+    is_correct = django.db.models.BooleanField(
+        verbose_name='правильность ответа',
+        help_text='правильный ответ или нет',
+    )
+
+    class Meta:
+        verbose_name = 'ответ пользователя'
+        verbose_name_plural = 'ответы пользователей'
