@@ -1,3 +1,5 @@
+import ckeditor.fields
+
 import django.db.models
 
 import users.models
@@ -12,9 +14,7 @@ class Tag(django.db.models.Model):
         default=True,
     )
     name = django.db.models.CharField(
-        verbose_name='имя тега',
-        help_text='Введите имя тега',
-        max_length=150
+        verbose_name='имя тега', help_text='Введите имя тега', max_length=150
     )
 
     slug = django.db.models.SlugField(
@@ -64,7 +64,7 @@ class Quiz(django.db.models.Model):
         verbose_name='статус',
     )
 
-    description = django.db.models.TextField(
+    description = ckeditor.fields.RichTextField(
         help_text='Создайте описание для Вашей викторины',
         verbose_name='описание',
     )
@@ -109,7 +109,7 @@ class Question(django.db.models.Model):
         verbose_name='название вопроса',
     )
 
-    text = django.db.models.TextField(
+    text = ckeditor.fields.RichTextField(
         help_text='Напишите вопрос', verbose_name='текст'
     )
 
@@ -177,7 +177,7 @@ class UserAnswer(django.db.models.Model):
         verbose_name='пользователь',
         on_delete=django.db.models.CASCADE,
         related_name='useranswer_user',
-        help_text='пользователь, который дал ответ'
+        help_text='пользователь, который дал ответ',
     )
 
     question = django.db.models.ForeignKey(
@@ -185,7 +185,7 @@ class UserAnswer(django.db.models.Model):
         verbose_name='вопрос',
         help_text='вопрос на который пользователь дал ответ',
         related_name='useranswer_question',
-        on_delete=django.db.models.CASCADE
+        on_delete=django.db.models.CASCADE,
     )
 
     is_correct = django.db.models.BooleanField(

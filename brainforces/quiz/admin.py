@@ -1,6 +1,6 @@
-import quiz.models
-
 import django.contrib
+
+import quiz.models
 
 
 @django.contrib.admin.register(quiz.models.Quiz)
@@ -28,7 +28,9 @@ class VariantInline(django.contrib.admin.TabularInline):
 class QuestionAdmin(django.contrib.admin.ModelAdmin):
     """отображение модели Question в админке"""
 
-    inlines = [VariantInline, ]
+    inlines = [
+        VariantInline,
+    ]
 
     list_display = (
         'id',

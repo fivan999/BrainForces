@@ -1,11 +1,12 @@
-import core.models
 import transliterate
-import users.managers
 
 import django.contrib.auth.models
 import django.db.models
 import django.urls
 from django.utils.translation import gettext_lazy as _
+
+import core.models
+import users.managers
 
 
 def generate_image_path(obj: django.db.models.Model, filename: str) -> str:

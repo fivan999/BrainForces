@@ -1,7 +1,7 @@
-import users.models
-
 import django.contrib.auth.forms
 import django.forms
+
+import users.models
 
 
 class SignUpForm(django.contrib.auth.forms.UserCreationForm):
