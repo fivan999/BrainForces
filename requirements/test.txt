@@ -1,2 +1,2 @@
 parameterized==0.9.0
-freezegun             1.2.2
+freezegun==1.2.2
