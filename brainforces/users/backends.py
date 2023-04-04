@@ -1,10 +1,10 @@
+import users.models
+import users.services
+
 import django.conf
 import django.contrib
 import django.contrib.auth.backends
 import django.db.models
-
-import users.models
-import users.services
 
 
 class EmailBackend(django.contrib.auth.backends.ModelBackend):

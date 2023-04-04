@@ -1,8 +1,7 @@
 import ckeditor.fields
+import users.models
 
 import django.db.models
-
-import users.models
 
 
 class Tag(django.db.models.Model):
