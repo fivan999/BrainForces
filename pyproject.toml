@@ -12,7 +12,6 @@ extend-exclude='''
 [tool.isort] 
 default_section = "THIRDPARTY" 
 known_django = "django"
-known_local_folder = ["brainforces", "quiz", "core", "users", "homepage"] 
 sections = ["FUTURE","STDLIB","THIRDPARTY","DJANGO","FIRSTPARTY","LOCALFOLDER"] 
 skip = [".gitignore", "venv", "env"] 
 skip_glob = ["*/migrations/*"] 
