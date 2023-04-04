@@ -16,6 +16,13 @@
   <body class="d-flex flex-column min-vh-100">
     {% include "includes/header.html" %}
     <main>
+      {% for message in messages %}
+        <div class="container xxl-8">
+          <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+            {{ message }}
+          </div>
+        </div>
+      {% endfor %}
       {% block content %}{% endblock content %}
     </main>
     {% include "includes/footer.html" %}

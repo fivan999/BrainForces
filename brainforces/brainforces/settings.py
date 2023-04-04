@@ -62,7 +62,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-INTERNAL_IPS = os.environ.get('INTERNAL_IPS', default='127.0.0.1').split()
+INTERNAL_IPS = os.getenv('INTERNAL_IPS', default='127.0.0.1').split()
 
 ROOT_URLCONF = 'brainforces.urls'
 
@@ -133,6 +133,13 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/auth/login/'
+
+USER_IS_ACTIVE = os.getenv('USER_IS_ACTIVE', default='False').lower() in (
+    'true',
+    'y',
+    '1',
+    'yes',
+)
 
 AUTHENTICATION_BACKENDS = ['users.backends.EmailBackend']
 LOGIN_ATTEMPTS = int(os.environ.get('LOGIN_ATTEMPTS', default=3))
