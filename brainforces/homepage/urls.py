@@ -10,6 +10,6 @@ urlpatterns = [
         django.views.generic.TemplateView.as_view(
             template_name='homepage/homepage.html'
         ),
-        name='homepage'
+        name='homepage',
     )
 ]

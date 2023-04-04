@@ -135,7 +135,10 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/auth/login/'
 
 USER_IS_ACTIVE = os.getenv('USER_IS_ACTIVE', default='False').lower() in (
-    'true', 'y', '1', 'yes'
+    'true',
+    'y',
+    '1',
+    'yes',
 )
 
 AUTHENTICATION_BACKENDS = ['users.backends.EmailBackend']
