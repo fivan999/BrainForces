@@ -23,24 +23,35 @@
             <a href="" class="nav-link {% if app_name == 'about' %}active text-white{% else %}text-dark{% endif %}">Помощь</a>
           </li>
         </ul>
-        <ul class="nav nav-pills col-12 col-md-auto mb-2 justify-content-right mb-md-0">
+      {% endwith %}
+      <div class="dropdown text-end">
+        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="{% if request.user.profile.image %}{{ request.user.profile.get_image_50x50.url }}{% else %}{% static 'img/default_user.svg' %}{% endif %}" width="50" height="50" class="rounded-circle" />
+        </a>
+        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser">
           {% if request.user.is_authenticated %}
-            <li>
-              <a href="" class="nav-link text-dark">{{ request.user.username }}</a>
-            </li>
-            <li>
-              <a href="" class="nav-link text-dark">Выйти</a>
-            </li>
+            <a class="dropdown-item" href="">{{ request.user.username }}</a>
+            {% if request.user.is_staff %}
+              <a href="/admin/" class="dropdown-item">В админку</a>
+            {% endif %}
+            <li><hr class="dropdown-divider" /></li>
+            {% if request.user.is_staff %}
+              <a href="" class="dropdown-item">Список пользователей</a>
+            {% endif %}
+            <a class="dropdown-item" href="">Статистика</a>
+            <li><hr class="dropdown-divider" /></li>
+            <a class="dropdown-item" href="">Сменить пароль</a>
+            <li><hr class="dropdown-divider" /></li>
+            <a class="dropdown-item" href="">Выйти</a>
           {% else %}
-            <li>
-              <a href="" class="nav-link text-dark">Войти</a>
-            </li>
-            <li>
-              <a href="" class="nav-link text-dark">Зарегистрироваться</a>
-            </li>
+            <a class="dropdown-item" href="">Войти</a>
+            <a class="dropdown-item" href="">Зарегистрироваться</a>
+            <li><hr class="dropdown-divider" /></li>
+            <a class="dropdown-item" href="">Восстановить пароль</a>
           {% endif %}
         </ul>
-      {% endwith %}
+
+      </div>
     </div>
   </div>
 </header>
