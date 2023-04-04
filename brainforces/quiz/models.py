@@ -16,13 +16,6 @@ class Tag(django.db.models.Model):
         verbose_name='имя тега', help_text='Введите имя тега', max_length=150
     )
 
-    slug = django.db.models.SlugField(
-        verbose_name='уникальное поле',
-        help_text='Уникальное для каждого тега поле',
-        unique=True,
-        max_length=200,
-    )
-
     class Meta:
         verbose_name = 'тег'
         verbose_name_plural = 'теги'
