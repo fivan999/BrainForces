@@ -1,0 +1,7 @@
+{% extends "users/user_detail.html" %}
+
+{% block user_page %}
+  {% for quiz in quizzes %}
+    {{ quiz.name }}
+  {% endfor %}
+{% endblock user_page %}

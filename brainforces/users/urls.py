@@ -77,16 +77,28 @@ urlpatterns = [
         name='activate_user',
     ),
     django.urls.path(
-        'users/<int:pk>/',
-        users.views.UserDetailView.as_view(),
-        name='user_detail',
+        'profile/<int:pk>/',
+        users.views.UserProfileView.as_view(),
+        name='user_profile',
     ),
     django.urls.path(
-        'profile/', users.views.UserProfileView.as_view(), name='user_profile'
+        'profile/<int:pk>/change/',
+        users.views.UserProfileChangeView.as_view(),
+        name='user_profile_change',
     ),
     django.urls.path(
         'reset_login_attempts/<uidb64>/<token>/',
-        users.views.ResetLoginAttempts.as_view(),
+        users.views.ResetLoginAttemptsView.as_view(),
         name='reset_login_attempts',
+    ),
+    django.urls.path(
+        'profile/<int:pk>/quizzes/',
+        users.views.UserParticipatedQuizView.as_view(),
+        name='user_quizzes',
+    ),
+    django.urls.path(
+        'profile/<int:pk>/answers/',
+        users.views.UserAnswersView.as_view(),
+        name='user_answers',
     ),
 ]
