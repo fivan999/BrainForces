@@ -172,7 +172,7 @@ class UserParticipatedQuizView(django.views.generic.ListView):
     context_object_name = 'quizzes'
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return quiz.models.Quiz.objects.filter(users__pk=self.request.user.pk)
+        return quiz.models.Quiz.objects.filter(users__id=self.kwargs['pk'])
 
 
 class UserAnswersView(django.views.generic.ListView):
