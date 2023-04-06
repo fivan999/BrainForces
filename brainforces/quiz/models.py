@@ -186,6 +186,14 @@ class UserAnswer(django.db.models.Model):
         help_text='правильный ответ или нет',
     )
 
+    time_answered = django.db.models.DateTimeField(
+        verbose_name='время',
+        help_text='Время, когда пользователь ответил на вопрос',
+        auto_now_add=True,
+        blank=True,
+        null=True
+    )
+
     class Meta:
         verbose_name = 'ответ пользователя'
         verbose_name_plural = 'ответы пользователей'
