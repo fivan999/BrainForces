@@ -52,7 +52,7 @@ class Profile(core.models.AbstractImageModel):
     image = django.db.models.ImageField(
         blank=True,
         verbose_name='аватарка',
-        height_field='Аватарка пользователя',
+        help_text='Аватарка пользователя',
         upload_to=generate_image_path,
         null=True,
     )

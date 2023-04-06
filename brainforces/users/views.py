@@ -115,6 +115,14 @@ class ResetLoginAttempts(django.views.generic.View):
         return django.shortcuts.redirect('homepage:homepage')
 
 
+class UserListView(django.views.generic.ListView):
+    """список пользователей"""
+
+    template_name = 'users/user_list.html'
+    context_object_name = 'users'
+    queryset = users.models.User.objects.get_only_useful_list_fields()
+
+
 class UserDetailView(
     django.contrib.auth.mixins.PermissionRequiredMixin,
     django.views.generic.DetailView,

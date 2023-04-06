@@ -1,15 +1,10 @@
 import django.urls
-import django.views.generic
+
+import homepage.views
 
 
 app_name = 'homepage'
 
 urlpatterns = [
-    django.urls.path(
-        '',
-        django.views.generic.TemplateView.as_view(
-            template_name='homepage/homepage.html'
-        ),
-        name='homepage',
-    )
+    django.urls.path('', homepage.views.HomeView.as_view(), name='homepage'),
 ]
