@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="container col-xxl-8">
+    {% if users %}
+      <h1 class="display-5 fw-bold lh-1">
+        Рейтинг пользователей
+      </h1>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Username</th>
+            <th scope="col">Почта</th>
+            <th scope="col">Рейтинг</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td><a class="nav-link" href="{{ user.get_absolute_url }}">{{ user.username }}</a></td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.profile.rating }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+        {% include "includes/empty.html" %}
+    {% endif %}
+  </div>
+{% endblock content %}
