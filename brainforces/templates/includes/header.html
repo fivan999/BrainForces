@@ -1,6 +1,6 @@
 {% load static %}
-<header class="p-3 text-dark">
-  <div class="container col-xxl-8 p-2">
+<header class="text-dark pt-3">
+  <div class="container col-xxl-8">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between mb-2">
       <a href="" class="d-flex align-items-left mb-2 mb-lg-0 text-white text-decoration-none">
         <img src="{% static 'img/brainforces.svg' %}" width="300" alt="иконка" />
@@ -31,21 +31,21 @@
     </div>
     <div>
       {% with request.resolver_match.app_name as app_name %}
-        <ul class="nav nav-pills d-flex flex-wrap align-items-center justify-content-center justify-content-md-between mb-2 border rounded-4">
+        <ul class="nav nav-pills d-flex flex-wrap align-items-center justify-content-center justify-content-md-between mb-2 border rounded-4 p-2">
           <li>
-            <a href="/" class="nav-link {% if app_name == 'homepage' %}active text-white{% else %}text-dark{% endif %}">Главная</a>
+            <a href="{% url 'homepage:homepage' %}" class="nav-link {% if app_name == 'homepage' %}active text-white{% else %}text-dark{% endif %}">Главная</a>
           </li>
           <li>
-            <a href="/" class="nav-link {% if app_name == 'quiz' %}active text-white{% else %}text-dark{% endif %}">Соревнования</a>
+            <a href="" class="nav-link {% if app_name == 'quiz' %}active text-white{% else %}text-dark{% endif %}">Соревнования</a>
           </li>
           <li>
-            <a href="/" class="nav-link {% if app_name == 'about' %}active text-white{% else %}text-dark{% endif %}">Архив</a>
+            <a href="" class="nav-link {% if app_name == 'about' %}active text-white{% else %}text-dark{% endif %}">Архив</a>
           </li>
           <li>
             <a href="{% url 'users:user_list' %}" class="nav-link {% if app_name == 'users' %}active text-white{% else %}text-dark{% endif %}">Рейтинг</a>
           </li>
           <li>
-            <a href="/" class="nav-link {% if app_name == 'about' %}active text-white{% else %}text-dark{% endif %}">Помощь</a>
+            <a href="" class="nav-link {% if app_name == 'about' %}active text-white{% else %}text-dark{% endif %}">Помощь</a>
           </li>
         </ul>
       {% endwith %}

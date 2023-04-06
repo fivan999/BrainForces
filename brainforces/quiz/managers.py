@@ -8,11 +8,11 @@ class QuizManager(django.db.models.Manager):
 
     def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
         """только нужные поля для списка викторин"""
-        return self.get_queryset().only(
+        return self.get_queryset().select_related('creator').only(
             'name',
             'description',
-            'creator',
+            'creator__username',
             'duration',
             'status',
             'start_time',
-        )
+        ).order_by('-id')

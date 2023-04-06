@@ -8,5 +8,5 @@ class HomeView(django.views.generic.ListView):
     """список викторин на главной странице"""
 
     template_name = 'homepage/homepage.html'
-    context_object_name = 'quizes'
+    context_object_name = 'quizzes'
     queryset = quiz.models.Quiz.objects.get_only_useful_list_fields()

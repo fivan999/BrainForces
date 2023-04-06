@@ -4,13 +4,13 @@
 
 {% block content %}
   <div class="container col-xxl-8">
-    {% if quizes %}
-      <h1 class="display-5 fw-bold lh-1">
+    {% if quizzes %}
+      <h1 class="display-6 fw-bold lh-1">
         Викторины
       </h1>
-      {% for quiz in quizes %}
+      {% for quiz in quizzes %}
         <div class="col">
-          <div class="card shadow-sm m-3">
+          <div class="card shadow-sm">
             <div class="card-body">
               {% include "homepage/quiz_detail.html" %}
               <a href="{{ quiz.get_absolute_url }}" class="btn btn-primary">Принять участие</a>
