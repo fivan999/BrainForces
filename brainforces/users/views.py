@@ -124,6 +124,14 @@ class UserProfileView(django.views.generic.DetailView):
     queryset = users.models.User.objects.get_only_useful_detail_fields()
 
 
+class UserListView(django.views.generic.ListView):
+    """список пользователей"""
+
+    template_name = 'users/user_list.html'
+    context_object_name = 'users'
+    queryset = users.models.User.objects.get_only_useful_list_fields()
+
+
 class UserProfileChangeView(
     django.contrib.auth.mixins.LoginRequiredMixin, django.views.generic.View
 ):

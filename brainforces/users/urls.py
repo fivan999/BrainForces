@@ -87,6 +87,14 @@ urlpatterns = [
         name='user_profile_change',
     ),
     django.urls.path(
+        'users/',
+        users.views.UserListView.as_view(),
+        name='user_list',
+    ),
+    django.urls.path(
+        'profile/', users.views.UserProfileView.as_view(), name='user_profile'
+    ),
+    django.urls.path(
         'reset_login_attempts/<uidb64>/<token>/',
         users.views.ResetLoginAttemptsView.as_view(),
         name='reset_login_attempts',

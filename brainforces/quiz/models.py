@@ -2,6 +2,7 @@ import ckeditor.fields
 
 import django.db.models
 
+import quiz.managers
 import users.models
 
 
@@ -29,6 +30,8 @@ class Tag(django.db.models.Model):
 
 class Quiz(django.db.models.Model):
     """модель викторины"""
+
+    objects = quiz.managers.QuizManager()
 
     class Statuses(django.db.models.IntegerChoices):
         NOT_STARTED = 1, 'Не начата'
