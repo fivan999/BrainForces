@@ -92,17 +92,9 @@ urlpatterns = [
         name='user_list',
     ),
     django.urls.path(
-        'profile/', users.views.UserProfileView.as_view(), name='user_profile'
-    ),
-    django.urls.path(
         'reset_login_attempts/<uidb64>/<token>/',
         users.views.ResetLoginAttemptsView.as_view(),
         name='reset_login_attempts',
-    ),
-    django.urls.path(
-        'profile/<int:pk>/quizzes/',
-        users.views.UserParticipatedQuizView.as_view(),
-        name='user_quizzes',
     ),
     django.urls.path(
         'profile/<int:pk>/answers/',

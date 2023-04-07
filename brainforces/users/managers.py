@@ -20,13 +20,9 @@ class UserManager(django.contrib.auth.models.UserManager):
 
     def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
         """только нужные поля для списка пользователей"""
-        return (
-            self.get_active_users()
-            .only(
-                'username',
-                'profile__rating',
-            )
-            .order_by('-profile__rating')
+        return self.get_active_users().only(
+            'username',
+            'profile__rating',
         )
 
     def get_only_useful_detail_fields(self) -> django.db.models.QuerySet:

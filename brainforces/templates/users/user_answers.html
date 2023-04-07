@@ -1,7 +1,5 @@
 {% extends "users/user_detail.html" %}
 
 {% block user_page %}
-  {% for answer in answers %}
-    {{ answer.question.name }}
-  {% endfor %}
+  {% include "includes/answer_list.html" %}
 {% endblock user_page %}

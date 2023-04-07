@@ -99,9 +99,12 @@ DATABASES = {
     }
 }
 
-if 'test' in sys.argv or not os.getenv(
-    'USE_POSTGRES', default='False'
-).lower() in ('true', 'y', '1', 'yes'):
+if (
+    'test' in sys.argv
+    or not os.getenv('USE_POSTGRES', default='False').lower()
+    in ('true', 'y', '1', 'yes')
+    or True
+):
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',

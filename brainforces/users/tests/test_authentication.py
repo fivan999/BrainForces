@@ -9,7 +9,6 @@ import django.urls
 import django.utils
 
 import users.models
-import quiz.models
 
 
 START_DATETIME = pytz.UTC.localize(
@@ -233,47 +232,5 @@ class UserTests(django.test.TestCase):
 
     def tearDown(self) -> None:
         """чистим бд после тестов"""
-        users.models.User.objects.all().delete()
-        super().tearDown()
-
-
-class UserProfileTests(django.test.TestCase):
-    """тестируем профиль пользователя"""
-
-    def setUp(self) -> None:
-        """подготовка к тестированию, создание тестовых данных"""
-        self.test_user1 = users.models.User.objects.create(
-            username='testuser1',
-            is_staff=True,
-            is_superuser=True,
-            email='testuser1@gmail.com'
-        )
-        self.test_user1.set_password('password')
-        self.test_user1.save()
-        super().setUp()
-
-    def test_user_profile_information_status_code(self) -> None:
-        """тестируем главную страницу с информацией о пользователе"""
-        response = django.test.Client().get(
-            django.urls.reverse('users:user_profile', kwargs={'pk': 1})
-        )
-        self.assertEqual(response.status_code, 200)
-
-    def test_user_profile_quizzes_status_code(self) -> None:
-        """тестируем страницу с квизами пользователя"""
-        response = django.test.Client().get(
-            django.urls.reverse('users:user_quizzes', kwargs={'pk': 1})
-        )
-        self.assertEqual(response.status_code, 200)
-
-    def test_user_profile_quizzes_context(self) -> None:
-        """тетсируем страницу с контекстом квизов пользователя"""
-        response = django.test.Client().get(
-            django.urls.reverse('users:user_quizzes', kwargs={'pk': 1})
-        )
-        self.assertIn('quizzes', response.context)
-
-    def tearDown(self) -> None:
-        """удаление тестовых данных"""
         users.models.User.objects.all().delete()
         super().tearDown()

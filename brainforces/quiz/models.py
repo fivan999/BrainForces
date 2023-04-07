@@ -128,6 +128,7 @@ class Question(django.db.models.Model):
         related_name='question_tags',
         verbose_name='теги вопроса',
         help_text='выберите теги вопроса',
+        blank=True,
     )
 
     class Meta:
@@ -168,6 +169,8 @@ class Variant(django.db.models.Model):
 class UserAnswer(django.db.models.Model):
     """модель ответа пользователя"""
 
+    objects = quiz.managers.UserAnswerManager()
+
     user = django.db.models.ForeignKey(
         users.models.User,
         verbose_name='пользователь',
@@ -194,9 +197,13 @@ class UserAnswer(django.db.models.Model):
         help_text='Время, когда пользователь ответил на вопрос',
         auto_now_add=True,
         blank=True,
-        null=True
+        null=True,
     )
 
     class Meta:
         verbose_name = 'ответ пользователя'
         verbose_name_plural = 'ответы пользователей'
+
+    def __str__(self) -> str:
+        """строковое представление"""
+        return f'Ответ {self.pk}'

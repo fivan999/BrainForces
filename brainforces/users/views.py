@@ -125,11 +125,16 @@ class UserProfileView(django.views.generic.DetailView):
 
 
 class UserListView(django.views.generic.ListView):
-    """список пользователей"""
+    """список пользователей по рейтингу"""
 
     template_name = 'users/user_list.html'
     context_object_name = 'users'
-    queryset = users.models.User.objects.get_only_useful_list_fields()
+    queryset = (
+        users.models.User.objects.get_only_useful_list_fields().order_by(
+            '-profile__rating'
+        )
+    )
+    paginate_by = 100
 
 
 class UserProfileChangeView(
@@ -140,7 +145,8 @@ class UserProfileChangeView(
     def get(
         self, request: django.http.HttpRequest, pk: int
     ) -> django.http.HttpResponse:
-        if request.user.is_staff or request.user.id == pk:
+        """отдаем форму"""
+        if request.user.id == pk:
             user_form = users.forms.CustomUserChangeForm(instance=request.user)
             profile_form = users.forms.ProfileChangeForm(
                 instance=request.user.profile
@@ -151,12 +157,13 @@ class UserProfileChangeView(
             return django.shortcuts.render(
                 request, 'users/user_change.html', context=context
             )
-        return django.http.Http404()
+        raise django.http.Http404()
 
     def post(
         self, request: django.http.HttpRequest, pk: int
     ) -> django.http.HttpResponsePermanentRedirect:
-        if request.user.is_staff or request.user.id == pk:
+        """обрабатываем пост запрос"""
+        if request.user.id == pk:
             user_form = users.forms.CustomUserChangeForm(
                 request.POST, instance=request.user
             )
@@ -170,17 +177,7 @@ class UserProfileChangeView(
                     request, 'Профиль успешно изменен!'
                 )
             return django.shortcuts.redirect('users:user_profile', pk=pk)
-        return django.http.Http404()
-
-
-class UserParticipatedQuizView(django.views.generic.ListView):
-    """соревнования, в которых участвовал пользователь"""
-
-    template_name = 'users/user_quizzes.html'
-    context_object_name = 'quizzes'
-
-    def get_queryset(self) -> django.db.models.QuerySet:
-        return quiz.models.Quiz.objects.filter(users__id=self.kwargs['pk'])
+        raise django.http.Http404()
 
 
 class UserAnswersView(django.views.generic.ListView):
@@ -188,8 +185,12 @@ class UserAnswersView(django.views.generic.ListView):
 
     template_name = 'users/user_answers.html'
     context_object_name = 'answers'
+    paginate_by = 40
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return quiz.models.UserAnswer.objects.filter(
-            user__pk=self.request.user.pk
+        if not users.models.User.objects.filter(id=self.kwargs['pk']).exists():
+            raise django.http.Http404()
+
+        return quiz.models.UserAnswer.objects.get_only_useful_answer_fields().filter(
+            user__id=self.kwargs['pk']
         )

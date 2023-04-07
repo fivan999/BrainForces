@@ -7,7 +7,7 @@ class QuizManager(django.db.models.Manager):
     """менеджер модели Quiz"""
 
     def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
-        """только нужные поля для списка викторин"""
+        """только нужные поля для списка викторин на главной"""
         return (
             self.get_queryset()
             .select_related('creator')
@@ -19,5 +19,23 @@ class QuizManager(django.db.models.Manager):
                 'status',
                 'start_time',
             )
-            .order_by('-id')
+            .order_by('-start_time')
+        )
+
+
+class UserAnswerManager(django.db.models.Manager):
+    """менеджер модели UserAnswer"""
+
+    def get_only_useful_answer_fields(self) -> django.db.models.QuerySet:
+        """поля для отображения в профиле пользователя"""
+        return (
+            self.get_queryset()
+            .select_related('user', 'question')
+            .only(
+                'user__username',
+                'question__id',
+                'question__name',
+                'is_correct',
+                'time_answered',
+            )
         )
