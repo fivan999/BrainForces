@@ -3,6 +3,7 @@ import django.contrib
 import django.contrib.auth
 import django.contrib.auth.mixins
 import django.contrib.auth.tokens
+import django.db.models
 import django.http
 import django.shortcuts
 import django.urls
@@ -12,6 +13,7 @@ import django.views
 import django.views.generic
 import django.views.generic.edit
 
+import quiz.models
 import users.forms
 import users.models
 import users.services
@@ -89,7 +91,7 @@ class ActivateUserView(django.views.generic.View):
         return django.shortcuts.redirect('homepage:homepage')
 
 
-class ResetLoginAttempts(django.views.generic.View):
+class ResetLoginAttemptsView(django.views.generic.View):
     def get(
         self, request: django.http.HttpRequest, uidb64: str, token: str
     ) -> django.http.HttpResponsePermanentRedirect:
@@ -115,64 +117,101 @@ class ResetLoginAttempts(django.views.generic.View):
         return django.shortcuts.redirect('homepage:homepage')
 
 
-class UserListView(django.views.generic.ListView):
-    """список пользователей"""
+class UserProfileView(django.views.generic.DetailView):
+    """информация о пользователе"""
 
-    template_name = 'users/user_list.html'
-    context_object_name = 'users'
-    queryset = users.models.User.objects.get_only_useful_list_fields()
-
-
-class UserDetailView(
-    django.contrib.auth.mixins.PermissionRequiredMixin,
-    django.views.generic.DetailView,
-):
-    """детальная информация о пользователе"""
-
-    permission_required = 'is_staff'
-    template_name = 'users/user_detail.html'
-    context_object_name = 'user'
+    template_name = 'users/user_profile.html'
     queryset = users.models.User.objects.get_only_useful_detail_fields()
 
 
-class UserProfileView(
+class UserListView(django.views.generic.ListView):
+    """список пользователей по рейтингу"""
+
+    template_name = 'users/user_list.html'
+    context_object_name = 'users'
+    queryset = (
+        users.models.User.objects.get_only_useful_list_fields().order_by(
+            '-profile__rating'
+        )
+    )
+    paginate_by = 100
+
+
+class UserProfileChangeView(
     django.contrib.auth.mixins.LoginRequiredMixin, django.views.generic.View
 ):
-    """Профиль пользоватея"""
-
-    template_name = 'users/signup.html'
+    """Профиль пользователя"""
 
     def get(
-        self, request: django.http.HttpRequest
+        self, request: django.http.HttpRequest, pk: int
     ) -> django.http.HttpResponse:
-        user_form = users.forms.CustomUserChangeForm(instance=request.user)
-        profile_form = users.forms.ProfileChangeForm(
-            instance=request.user.profile
-        )
-        context = {
-            'user': django.shortcuts.get_object_or_404(
-                users.models.User.objects.get_only_useful_detail_fields(),
-                pk=request.user.pk,
-            ),
-            'forms': [user_form, profile_form],
-        }
-        return django.shortcuts.render(
-            request, 'users/profile.html', context=context
-        )
+        """отдаем форму"""
+        if request.user.id == pk:
+            user_form = users.forms.CustomUserChangeForm(instance=request.user)
+            profile_form = users.forms.ProfileChangeForm(
+                instance=request.user.profile
+            )
+            context = {
+                'forms': [user_form, profile_form],
+            }
+            return django.shortcuts.render(
+                request, 'users/user_change.html', context=context
+            )
+        raise django.http.Http404()
 
     def post(
-        self, request: django.http.HttpRequest
+        self, request: django.http.HttpRequest, pk: int
     ) -> django.http.HttpResponsePermanentRedirect:
-        user_form = users.forms.CustomUserChangeForm(
-            request.POST, instance=request.user
-        )
-        profile_form = users.forms.ProfileChangeForm(
-            request.POST, request.FILES, instance=request.user.profile
-        )
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            django.contrib.messages.success(
-                request, 'Профиль успешно изменен!'
+        """обрабатываем пост запрос"""
+        if request.user.id == pk:
+            user_form = users.forms.CustomUserChangeForm(
+                request.POST, instance=request.user
             )
-        return django.shortcuts.redirect('users:user_profile')
+            profile_form = users.forms.ProfileChangeForm(
+                request.POST, request.FILES, instance=request.user.profile
+            )
+            if user_form.is_valid() and profile_form.is_valid():
+                user_form.save()
+                profile_form.save()
+                django.contrib.messages.success(
+                    request, 'Профиль успешно изменен!'
+                )
+            return django.shortcuts.redirect('users:user_profile', pk=pk)
+        raise django.http.Http404()
+
+
+class UserAnswersView(django.views.generic.ListView):
+    """ответы пользователя на вопросы"""
+
+    template_name = 'users/user_answers.html'
+    context_object_name = 'answers'
+    paginate_by = 40
+
+    def get_queryset(self) -> django.db.models.QuerySet:
+        if not users.models.User.objects.filter(id=self.kwargs['pk']).exists():
+            raise django.http.Http404()
+
+        useful_answer_fields = (
+            quiz.models.UserAnswer.objects.get_only_useful_list_fields()
+        )
+        return useful_answer_fields.filter(
+            user__id=self.kwargs['pk']
+        ).order_by('-time_answered')
+
+
+class UserQuizzesView(django.views.generic.ListView):
+    """виторины, в которых участвовал пользователь"""
+
+    template_name = 'users/user_quiz_results.html'
+    context_object_name = 'results'
+    paginate_by = 15
+
+    def get_queryset(self) -> django.db.models.QuerySet:
+        if not users.models.User.objects.filter(id=self.kwargs['pk']).exists():
+            raise django.http.Http404()
+        useful_quiz_results_fields = (
+            quiz.models.QuizResults.objects.get_only_useful_list_fields()
+        )
+        return useful_quiz_results_fields.filter(
+            user__pk=self.kwargs['pk']
+        ).order_by('-quiz__start_time')

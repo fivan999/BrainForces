@@ -11,7 +11,7 @@
         </a>
         <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser">
           {% if request.user.is_authenticated %}
-            <a class="dropdown-item" href="">{{ request.user.username }}</a>
+            <a class="dropdown-item" href="{% url 'users:user_profile' pk=request.user.id %}">{{ request.user.username }}</a>
             {% if request.user.is_staff %}
               <a href="/admin/" class="dropdown-item">В админку</a>
             {% endif %}

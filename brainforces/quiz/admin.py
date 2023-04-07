@@ -13,9 +13,10 @@ class QuizAdmin(django.contrib.admin.ModelAdmin):
         'status',
         'start_time',
         'duration',
+        'is_rated',
     )
     list_display_links = ('id',)
-    list_editable = ('status',)
+    list_editable = ('status', 'is_rated')
 
 
 class VariantInline(django.contrib.admin.TabularInline):
@@ -62,4 +63,12 @@ class UserAnswerAdmin(django.contrib.admin.ModelAdmin):
         'question',
         'is_correct',
     )
+    list_display_links = ('id',)
+
+
+@django.contrib.admin.register(quiz.models.QuizResults)
+class QuizResultsAdmin(django.contrib.admin.ModelAdmin):
+    """отображение результатов в админке"""
+
+    list_display = ('id', 'user', 'quiz', 'place')
     list_display_links = ('id',)

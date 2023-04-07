@@ -1,10 +1,10 @@
 {% extends "users/user_detail.html" %}
 
-{% block profile_form %}
+{% block user_page %}
   <form method="post" enctype="multipart/form-data">
     {% for form in forms %}
       {% include "includes/make_form.html" %}
     {% endfor %}
     <button type="submit" class="btn btn-primary">Сохранить</button>
   </form>
-{% endblock profile_form %}
+{% endblock user_page %}

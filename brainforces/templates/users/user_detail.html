@@ -4,18 +4,28 @@
 
 {% block content %}
   <div class="container col-xxl-8">
-    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-      <div class="col-10 col-sm-8 col-lg-6">
-        <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'img/default_user.svg' %}{% endif %}" class="img-fluid border rounded-3 shadow-lg " width="100%" height="auto" alt="главная картинка" />
-      </div>
-      <div class="col-lg-6">
-        <h3 class="display-5 fw-bold lh-1 mb-3">{{ user.username }}</h3>
-        <p class="lead">Почта: {{ user.email }}</p>
-        <p class="lead">Имя: {% if user.first_name %}{{ user.first_name }}{% else %}<strong>не указано</strong>{% endif %}</p>
-        <p class="lead">Фамилия: {% if user.last_name %}{{ user.last_name }}{% else %}<strong>не указано</strong>{% endif %}</p>
-        <p class="lead">Рейтинг: {{ user.profile.rating }}</p>
-      </div>
-      {% block profile_form %}{% endblock profile_form %}
+    <div class="container col-xxl-11">
+      {% with request.resolver_match.view_name as view_name %}
+        <ul class="nav nav-tabs mb-4">
+          <li class="nav-item">
+            <a class="nav-link {% if view_name == 'users:user_profile' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_profile' %}aria-current="page"{% endif %} href="{% url 'users:user_profile' pk=request.resolver_match.kwargs.pk %}">Профиль</a>
+          </li>
+          {% if request.user.id == request.resolver_match.kwargs.pk %}
+            <li class="nav-item">
+              <a class="nav-link {% if view_name == 'users:user_profile_change' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_profile_change' %}aria-current="page"{% endif %} href="{% url 'users:user_profile_change' pk=request.resolver_match.kwargs.pk %}">Изменить профиль</a>
+            </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link {% if view_name == 'users:user_quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_quizzes' %}aria-current="page"{% endif %} href="{% url 'users:user_quizzes' pk=request.resolver_match.kwargs.pk %}">Соревнования</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if view_name == 'users:user_answers' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_answers' %}aria-current="page"{% endif %} href="{% url 'users:user_answers' pk=request.resolver_match.kwargs.pk %}">Полылки</a>
+          </li>
+        </ul>
+      {% endwith %}
+    </div>
+    <div class="row flex-lg-row-reverse align-items-center g-5 pb-5 pt-1">
+      {% block user_page %}{% endblock user_page %}
     </div>
   </div>
 {% endblock content %}

@@ -1,0 +1,36 @@
+{% extends "users/user_detail.html" %}
+
+{% block user_page %}
+  {% if answers %}
+    <div class="p-3">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">№</th>
+            <th scope="col">Когда</th>
+            <th scope="col">Кто</th>
+            <th scope="col">Вопрос</th>
+            <th scope="col">Вердикт</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for answer in answers %}
+            <tr>
+              <td>{{ forloop.revcounter }}</td>
+              <td>{{ answer.time_answered|date:'Y.m.d H:m:s' }} UTC</td>
+              <td>{{ answer.user.username }}</td>
+              <td>{{ answer.question.id }} - {{ answer.question.name }}</td>
+              <td>
+                <span class="text-{% if answer.is_correct %}success{% else %}danger{% endif %}">
+                  {% if answer.is_correct %}Верно{% else %}Неверно{% endif %}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    <div>
+  {% else %}
+    {% include "includes/empty.html" %}
+  {% endif %}
+{% endblock user_page %}
