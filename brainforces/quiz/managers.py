@@ -59,5 +59,6 @@ class QuizResultsManager(django.db.models.Manager):
                 'quiz__name',
                 'quiz__start_time',
                 'solved',
+                'place',
             )
         )

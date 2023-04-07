@@ -194,7 +194,9 @@ class UserAnswersView(django.views.generic.ListView):
         useful_answer_fields = (
             quiz.models.UserAnswer.objects.get_only_useful_list_fields()
         )
-        return useful_answer_fields.filter(user__id=self.kwargs['pk'])
+        return useful_answer_fields.filter(
+            user__id=self.kwargs['pk']
+        ).order_by('-time_answered')
 
 
 class UserQuizzesView(django.views.generic.ListView):
@@ -210,4 +212,6 @@ class UserQuizzesView(django.views.generic.ListView):
         useful_quiz_results_fields = (
             quiz.models.QuizResults.objects.get_only_useful_list_fields()
         )
-        return useful_quiz_results_fields.filter(user__pk=self.kwargs['pk'])
+        return useful_quiz_results_fields.filter(
+            user__pk=self.kwargs['pk']
+        ).order_by('-quiz__start_time')
