@@ -41,7 +41,7 @@ class UserProfileTests(django.test.TestCase):
     def test_user_profile_information_status_code(
         self, pk: int, expected: int
     ) -> None:
-        """тестируем главную страницу с информацией о пользователе"""
+        """тестируем статус код страницы с информацией о пользователе"""
         response = django.test.Client().get(
             django.urls.reverse('users:user_profile', kwargs={'pk': pk})
         )
@@ -51,14 +51,14 @@ class UserProfileTests(django.test.TestCase):
     def test_user_profile_answers_status_code(
         self, pk: int, expected: int
     ) -> None:
-        """тестируем страницу с ответами пользователя"""
+        """тестируем статус код страницы с ответами пользователя"""
         response = django.test.Client().get(
             django.urls.reverse('users:user_answers', kwargs={'pk': pk})
         )
         self.assertEqual(response.status_code, expected)
 
     def test_user_profile_answers_context(self) -> None:
-        """тетсируем страницу с контекстом ответов пользователя"""
+        """теcтируем контекст страницы с ответами пользователя"""
         response = django.test.Client().get(
             django.urls.reverse('users:user_answers', kwargs={'pk': 1})
         )
@@ -101,6 +101,37 @@ class UserProfileTests(django.test.TestCase):
             django.urls.reverse('users:user_profile_change', kwargs={'pk': 1})
         )
         self.assertEqual(response.status_code, 404)
+
+    @parameterized.parameterized.expand([[1, 200], [2, 200], [3, 404]])
+    def test_user_profile_quizzes_status_code(
+        self, pk: int, expected: int
+    ) -> None:
+        """тестируем статус код страницы с викторинами пользователя"""
+        response = django.test.Client().get(
+            django.urls.reverse('users:user_quizzes', kwargs={'pk': pk})
+        )
+        self.assertEqual(response.status_code, expected)
+
+    def test_user_profile_quizzes_context(self) -> None:
+        """теcтируем контекст страницы с викторинами пользователя"""
+        response = django.test.Client().get(
+            django.urls.reverse('users:user_quizzes', kwargs={'pk': 1})
+        )
+        self.assertIn('results', response.context)
+
+    def test_user_profile_quizzes_correct_model(self) -> None:
+        """тестируем правильный объект модели на странице с викторинами"""
+        response = django.test.Client().get(
+            django.urls.reverse('users:user_quizzes', kwargs={'pk': 1})
+        )
+        self.assertTrue(
+            all(
+                map(
+                    lambda x: isinstance(x, quiz.models.QuizResults),
+                    response.context['results'],
+                )
+            )
+        )
 
     def tearDown(self) -> None:
         """удаление тестовых данных"""
