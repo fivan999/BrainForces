@@ -191,6 +191,23 @@ class UserAnswersView(django.views.generic.ListView):
         if not users.models.User.objects.filter(id=self.kwargs['pk']).exists():
             raise django.http.Http404()
 
-        return quiz.models.UserAnswer.objects.get_only_useful_answer_fields().filter(
-            user__id=self.kwargs['pk']
+        useful_answer_fields = (
+            quiz.models.UserAnswer.objects.get_only_useful_list_fields()
         )
+        return useful_answer_fields.filter(user__id=self.kwargs['pk'])
+
+
+class UserQuizzesView(django.views.generic.ListView):
+    """виторины, в которых участвовал пользователь"""
+
+    template_name = 'users/user_quiz_results.html'
+    context_object_name = 'results'
+    paginate_by = 15
+
+    def get_queryset(self) -> django.db.models.QuerySet:
+        if not users.models.User.objects.filter(id=self.kwargs['pk']).exists():
+            raise django.http.Http404()
+        useful_quiz_results_fields = (
+            quiz.models.QuizResults.objects.get_only_useful_list_fields()
+        )
+        return useful_quiz_results_fields.filter(user__pk=self.kwargs['pk'])

@@ -79,12 +79,10 @@ class Quiz(django.db.models.Model):
         verbose_name='продолжительность',
     )
 
-    users = django.db.models.ManyToManyField(
-        users.models.User,
-        verbose_name='пользователи зарегистрированные на викторину',
-        help_text='Укажите пользователей,'
-        'которые зарегистрировались на викторину',
-        related_name='quiz_users',
+    is_rated = django.db.models.BooleanField(
+        verbose_name='рейтинговая',
+        help_text='Изменяется ли рейтинг пользователя после данной викторины',
+        default=True,
     )
 
     class Meta:
@@ -94,6 +92,58 @@ class Quiz(django.db.models.Model):
     def __str__(self) -> str:
         """строковое представление"""
         return self.name[:20]
+
+
+class QuizResults(django.db.models.Model):
+    """модель результатов викторины"""
+
+    objects = quiz.managers.QuizResultsManager()
+
+    user = django.db.models.ForeignKey(
+        users.models.User,
+        verbose_name='пользователь',
+        help_text='Пользователь, участвующий в викторине',
+        related_name='results',
+        on_delete=django.db.models.CASCADE,
+    )
+
+    quiz = django.db.models.ForeignKey(
+        Quiz,
+        verbose_name='викторина',
+        help_text='Викторина, к которой относится результат',
+        on_delete=django.db.models.CASCADE,
+        related_name='results',
+    )
+
+    rating_before = django.db.models.PositiveIntegerField(
+        verbose_name='рейтинг до',
+        help_text='Рейтинг пользователя до участия в викторине',
+        default=0,
+    )
+
+    rating_after = django.db.models.PositiveIntegerField(
+        verbose_name='рейтинг после',
+        help_text='Рейтинг пользователя после участия в викторине',
+        default=0,
+    )
+
+    solved = django.db.models.PositiveIntegerField(
+        verbose_name='задачи', help_text='Верно решенные задачи', default=0
+    )
+
+    place = django.db.models.PositiveIntegerField(
+        verbose_name='место',
+        help_text='Место пользователя в викторине',
+        default=0,
+    )
+
+    class Meta:
+        verbose_name = 'результат'
+        verbose_name_plural = 'результаты'
+
+    def __str__(self) -> str:
+        """строковое представление"""
+        return f'Результат {self.pk}'
 
 
 class Question(django.db.models.Model):
@@ -125,7 +175,7 @@ class Question(django.db.models.Model):
 
     tags = django.db.models.ManyToManyField(
         Tag,
-        related_name='question_tags',
+        related_name='questions',
         verbose_name='теги вопроса',
         help_text='выберите теги вопроса',
         blank=True,
@@ -153,7 +203,7 @@ class Variant(django.db.models.Model):
         Question,
         verbose_name='вопрос',
         on_delete=django.db.models.CASCADE,
-        related_name='question_answer',
+        related_name='variants',
         help_text='вопрос, к которому относится вариант ответа',
     )
 

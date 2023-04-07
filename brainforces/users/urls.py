@@ -101,4 +101,9 @@ urlpatterns = [
         users.views.UserAnswersView.as_view(),
         name='user_answers',
     ),
+    django.urls.path(
+        'profile/<int:pk>/quizzes/',
+        users.views.UserQuizzesView.as_view(),
+        name='user_quizzes',
+    ),
 ]

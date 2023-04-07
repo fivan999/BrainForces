@@ -26,8 +26,8 @@ class QuizManager(django.db.models.Manager):
 class UserAnswerManager(django.db.models.Manager):
     """менеджер модели UserAnswer"""
 
-    def get_only_useful_answer_fields(self) -> django.db.models.QuerySet:
-        """поля для отображения в профиле пользователя"""
+    def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
+        """поля для отображения посылок пользователя"""
         return (
             self.get_queryset()
             .select_related('user', 'question')
@@ -37,5 +37,27 @@ class UserAnswerManager(django.db.models.Manager):
                 'question__name',
                 'is_correct',
                 'time_answered',
+            )
+        )
+
+
+class QuizResultsManager(django.db.models.Manager):
+    """менеджер модели QuizResults"""
+
+    def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
+        """
+        поля для вывода списка соревнований,
+        в которых участвовал пользователь
+        """
+        return (
+            self.get_queryset()
+            .select_related('user', 'quiz')
+            .only(
+                'rating_before',
+                'rating_after',
+                'user__username',
+                'quiz__name',
+                'quiz__start_time',
+                'solved',
             )
         )

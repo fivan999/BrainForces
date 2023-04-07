@@ -16,7 +16,7 @@
             </li>
           {% endif %}
           <li class="nav-item">
-            <a class="nav-link {% if view_name == 'users:user_quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_quizzes' %}aria-current="page"{% endif %} href="">Соревнования</a>
+            <a class="nav-link {% if view_name == 'users:user_quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_quizzes' %}aria-current="page"{% endif %} href="{% url 'users:user_quizzes' pk=request.resolver_match.kwargs.pk %}">Соревнования</a>
           </li>
           <li class="nav-item">
             <a class="nav-link {% if view_name == 'users:user_answers' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_answers' %}aria-current="page"{% endif %} href="{% url 'users:user_answers' pk=request.resolver_match.kwargs.pk %}">Полылки</a>
