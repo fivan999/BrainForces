@@ -1,4 +1,5 @@
-import ckeditor.fields
+import ckeditor_uploader.fields
+import organization.models
 
 import django.db.models
 
@@ -40,10 +41,10 @@ class Quiz(django.db.models.Model):
 
     creator = django.db.models.ForeignKey(
         users.models.User,
-        verbose_name='пользователь',
+        verbose_name='создатель',
         on_delete=django.db.models.CASCADE,
         related_name='user_creator',
-        help_text='пользователь, который создал викторину',
+        help_text='Пользователь, который создал викторину',
         null=True,
     )
 
@@ -60,7 +61,7 @@ class Quiz(django.db.models.Model):
         verbose_name='статус',
     )
 
-    description = ckeditor.fields.RichTextField(
+    description = ckeditor_uploader.fields.RichTextUploadingField(
         help_text='Создайте описание для Вашей викторины',
         verbose_name='описание',
     )
@@ -83,6 +84,16 @@ class Quiz(django.db.models.Model):
         verbose_name='рейтинговая',
         help_text='Изменяется ли рейтинг пользователя после данной викторины',
         default=True,
+    )
+
+    organizated_by = django.db.models.ForeignKey(
+        organization.models.Organization,
+        verbose_name='организация',
+        help_text='Организация, подготовившая викторину',
+        on_delete=django.db.models.DO_NOTHING,
+        blank=True,
+        null=True,
+        related_name='quizzes'
     )
 
     class Meta:
@@ -155,7 +166,7 @@ class Question(django.db.models.Model):
         verbose_name='название вопроса',
     )
 
-    text = ckeditor.fields.RichTextField(
+    text = ckeditor_uploader.fields.RichTextUploadingField(
         help_text='Напишите вопрос', verbose_name='текст'
     )
 

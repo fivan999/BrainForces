@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
+    'organization.apps.OrganizationConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -101,7 +102,7 @@ DATABASES = {
 
 if 'test' in sys.argv or not os.getenv(
     'USE_POSTGRES', default='False'
-).lower() in ('true', 'y', '1', 'yes'):
+).lower() in ('true', 'y', '1', 'yes') or True:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',
