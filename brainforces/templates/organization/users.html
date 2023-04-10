@@ -1,0 +1,28 @@
+{% extends "organization/detail.html" %}
+
+{% block organization_page %}
+  {% if users %}
+    <div class="p-3">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">№</th>
+            <th scope="col">Пользователь</th>
+            <th scope="col">Роль</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td><a class="nav-link" href="{{ user.user.get_absolute_url }}">{{ user.user.username }}</a></td>
+              <td>{{ user.get_role_display }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    <div>
+  {% else %}
+    {% include "includes/empty.html" %}
+  {% endif %}
+{% endblock organization_page %}

@@ -1,4 +1,5 @@
 import ckeditor_uploader.fields
+import organization.managers
 
 import django.db.models
 
@@ -8,15 +9,16 @@ import users.models
 class Organization(django.db.models.Model):
     """модель организации"""
 
+    objects = organization.managers.OrganizationManager()
+
     name = django.db.models.CharField(
         verbose_name='название',
         help_text='Название организации',
-        max_length=100
+        max_length=100,
     )
 
     description = ckeditor_uploader.fields.RichTextUploadingField(
-        verbose_name='описание',
-        help_text='Описание организации'
+        verbose_name='описание', help_text='Описание организации'
     )
 
     class Meta:
@@ -43,7 +45,7 @@ class OrganizationToUser(django.db.models.Model):
         verbose_name='организация',
         help_text='Организация, в которой состоит пользователь',
         on_delete=django.db.models.CASCADE,
-        related_name='users'
+        related_name='users',
     )
 
     user = django.db.models.ForeignKey(
@@ -51,14 +53,14 @@ class OrganizationToUser(django.db.models.Model):
         verbose_name='пользователь',
         help_text='Пользователь, состоящий в организации',
         on_delete=django.db.models.CASCADE,
-        related_name='organizations'
+        related_name='organizations',
     )
 
-    status = django.db.models.IntegerField(
+    role = django.db.models.IntegerField(
         choices=UserRoles.choices,
         verbose_name='роль',
         help_text='Роль пользователя в организации',
-        default=1
+        default=1,
     )
 
     class Meta:

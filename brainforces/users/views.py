@@ -117,17 +117,30 @@ class ResetLoginAttemptsView(django.views.generic.View):
         return django.shortcuts.redirect('homepage:homepage')
 
 
+class UsernameMixinView(django.views.generic.View):
+    """дополняем контекст страниц именем пользователя"""
+
+    def get_context_data(self, *args, **kwargs) -> dict:
+        context = super().get_context_data(*args, **kwargs)
+        user = django.shortcuts.get_object_or_404(
+            users.models.User.objects.all().only('username'),
+            pk=self.kwargs['pk'],
+        )
+        context['username'] = user.username
+        return context
+
+
 class UserProfileView(django.views.generic.DetailView):
     """информация о пользователе"""
 
-    template_name = 'users/user_profile.html'
+    template_name = 'users/profile.html'
     queryset = users.models.User.objects.get_only_useful_detail_fields()
 
 
 class UserListView(django.views.generic.ListView):
     """список пользователей по рейтингу"""
 
-    template_name = 'users/user_list.html'
+    template_name = 'users/list.html'
     context_object_name = 'users'
     queryset = (
         users.models.User.objects.get_only_useful_list_fields().order_by(
@@ -138,7 +151,9 @@ class UserListView(django.views.generic.ListView):
 
 
 class UserProfileChangeView(
-    django.contrib.auth.mixins.LoginRequiredMixin, django.views.generic.View
+    UsernameMixinView,
+    django.contrib.auth.mixins.LoginRequiredMixin,
+    django.views.generic.View,
 ):
     """Профиль пользователя"""
 
@@ -155,7 +170,7 @@ class UserProfileChangeView(
                 'forms': [user_form, profile_form],
             }
             return django.shortcuts.render(
-                request, 'users/user_change.html', context=context
+                request, 'users/change.html', context=context
             )
         raise django.http.Http404()
 
@@ -180,17 +195,14 @@ class UserProfileChangeView(
         raise django.http.Http404()
 
 
-class UserAnswersView(django.views.generic.ListView):
+class UserAnswersView(UsernameMixinView, django.views.generic.ListView):
     """ответы пользователя на вопросы"""
 
-    template_name = 'users/user_answers.html'
+    template_name = 'users/question_answers.html'
     context_object_name = 'answers'
     paginate_by = 40
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        if not users.models.User.objects.filter(id=self.kwargs['pk']).exists():
-            raise django.http.Http404()
-
         useful_answer_fields = (
             quiz.models.UserAnswer.objects.get_only_useful_list_fields()
         )
@@ -199,16 +211,14 @@ class UserAnswersView(django.views.generic.ListView):
         ).order_by('-time_answered')
 
 
-class UserQuizzesView(django.views.generic.ListView):
+class UserQuizzesView(UsernameMixinView, django.views.generic.ListView):
     """виторины, в которых участвовал пользователь"""
 
-    template_name = 'users/user_quiz_results.html'
+    template_name = 'users/quiz_results.html'
     context_object_name = 'results'
     paginate_by = 15
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        if not users.models.User.objects.filter(id=self.kwargs['pk']).exists():
-            raise django.http.Http404()
         useful_quiz_results_fields = (
             quiz.models.QuizResults.objects.get_only_useful_list_fields()
         )

@@ -25,7 +25,6 @@ class Tag(django.db.models.Model):
 
     def __str__(self) -> str:
         """строковое представление"""
-
         return self.name[:20]
 
 
@@ -93,7 +92,7 @@ class Quiz(django.db.models.Model):
         on_delete=django.db.models.DO_NOTHING,
         blank=True,
         null=True,
-        related_name='quizzes'
+        related_name='quizzes',
     )
 
     class Meta:

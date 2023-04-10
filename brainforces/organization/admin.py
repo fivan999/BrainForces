@@ -15,6 +15,6 @@ class OrganizationAdmin(django.contrib.admin.ModelAdmin):
 class OrganizationToUserAdmin(django.contrib.admin.ModelAdmin):
     """отображение модели OrganizationToUser"""
 
-    list_display = ('id', 'user', 'organization', 'status')
-    list_editable = ('status',)
+    list_display = ('id', 'user', 'organization', 'role')
+    list_editable = ('role',)
     list_display_links = ('id',)
