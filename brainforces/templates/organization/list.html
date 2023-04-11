@@ -4,16 +4,17 @@
 
 {% block content %}
   <div class="container col-xxl-9">
-    {% if quizzes %}
+    {% if organizations %}
       <h1 class="display-6 fw-bold lh-1">
-        Викторины
+        Организации
       </h1>
-      {% for quiz in quizzes %}
+      {% for organization in organizations %}
         <div class="col">
           <div class="card shadow-sm mb-2">
             <div class="card-body">
-              {% include "homepage/quiz_detail.html" %}
-              <a href="{{ quiz.get_absolute_url }}" class="btn btn-primary">Принять участие</a>
+              <h2 class="display-6 fw-bold">{{ organization.name }}</h2>
+              {{ organization.description|safe }}
+              <a href="{{ organization.get_absolute_url }}" class="btn btn-primary">Смотреть</a>
             </div>
           </div>
         </div>

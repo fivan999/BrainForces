@@ -19,6 +19,9 @@
         <li class="nav-item">
           <a class="nav-link {% if view_name == 'organization:organization_users' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:organization_users' %}aria-current="page"{% endif %} href="{% url 'organization:organization_users' pk=request.resolver_match.kwargs.pk %}">Участники</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'organization:organization_quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:organization_quizzes' %}aria-current="page"{% endif %} href="{% url 'organization:organization_quizzes' pk=request.resolver_match.kwargs.pk %}">Викторины</a>
+        </li>
       </ul>
     {% endwith %}
     <div class="row flex-lg-row-reverse align-items-center">

@@ -17,7 +17,7 @@
           {% for answer in answers %}
             <tr>
               <td>{{ forloop.revcounter }}</td>
-              <td>{{ answer.time_answered|date:'Y.m.d H:m:s' }} UTC</td>
+              <td>{{ answer.time_answered|date:'Y.m.d H:m:s' }}</td>
               <td>{{ answer.user.username }}</td>
               <td>{{ answer.question.id }} - {{ answer.question.name }}</td>
               <td>

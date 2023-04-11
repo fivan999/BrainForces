@@ -1,8 +1,9 @@
 import ckeditor_uploader.fields
-import organization.managers
 
 import django.db.models
+import django.urls
 
+import organization.managers
 import users.models
 
 
@@ -29,6 +30,12 @@ class Organization(django.db.models.Model):
         """строковое представление"""
         return self.name[:20]
 
+    def get_absolute_url(self):
+        """путь к organization detail"""
+        return django.urls.reverse_lazy(
+            'organization:organization_profile', kwargs={'pk': self.pk}
+        )
+
 
 class OrganizationToUser(django.db.models.Model):
     """связь организации с пользователем"""
@@ -39,6 +46,7 @@ class OrganizationToUser(django.db.models.Model):
         PARTICIPANT = 1, 'Участник'
         ADMIN = 2, 'Админ'
         CREATOR = 3, 'Создатель'
+        INVITED = 4, 'Приглашен'
 
     organization = django.db.models.ForeignKey(
         Organization,

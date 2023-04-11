@@ -1,8 +1,8 @@
 import ckeditor_uploader.fields
-import organization.models
 
 import django.db.models
 
+import organization.models
 import quiz.managers
 import users.models
 
@@ -85,7 +85,7 @@ class Quiz(django.db.models.Model):
         default=True,
     )
 
-    organizated_by = django.db.models.ForeignKey(
+    organized_by = django.db.models.ForeignKey(
         organization.models.Organization,
         verbose_name='организация',
         help_text='Организация, подготовившая викторину',

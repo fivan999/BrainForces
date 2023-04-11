@@ -68,6 +68,11 @@ class CustomPasswordResetForm(django.contrib.auth.forms.PasswordResetForm):
             'email'
         ].help_text = 'Введите электронную почту, к которой привязан аккаунт'
 
+    def clean_email(self) -> str:
+        """нормализуем почту"""
+        email = self.cleaned_data['email']
+        return users.models.User.objects.normalize_email(email)
+
 
 class CustomSetPasswordForm(django.contrib.auth.forms.SetPasswordForm):
     """форма для нового пароля"""

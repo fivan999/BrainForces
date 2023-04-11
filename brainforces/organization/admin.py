@@ -1,6 +1,6 @@
-import organization.models
-
 import django.contrib.admin
+
+import organization.models
 
 
 @django.contrib.admin.register(organization.models.Organization)

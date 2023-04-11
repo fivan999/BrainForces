@@ -47,6 +47,9 @@
           <li>
             <a href="" class="nav-link {% if app_name == 'about' %}active text-white{% else %}text-dark{% endif %}">Помощь</a>
           </li>
+          <li>
+            <a href="{% url 'organization:list' %}" class="nav-link {% if app_name == 'organization' %}active text-white{% else %}text-dark{% endif %}">Организации</a>
+          </li>
         </ul>
       {% endwith %}
     </div>
