@@ -6,7 +6,7 @@
   {% if user_is_admin %}
     <form method="post">
       {% csrf_token %}
-      {% for error in form.non_field_errors %}
+      {% for error in form.errors %}
         <div class="alert alert-danger" role="alert">
           {{ error|safe }}
         </div>
@@ -55,7 +55,7 @@
                       <a href="{% url 'organization:update_user_role' org_pk=request.resolver_match.kwargs.pk user_pk=user.user.pk new_role=2 %}" class="nav-link">Повысить</a>
                     {% endif %}
                   {% else %}
-                  <a href="{% url 'organization:delete_user' org_pk=request.resolver_match.kwargs.pk user_pk=request.user.pk %}" class="nav-link">Покинуть организацию</a>
+                    <a href="{% url 'organization:delete_user' org_pk=request.resolver_match.kwargs.pk user_pk=request.user.pk %}" class="nav-link">Покинуть организацию</a>
                   {% endif %}
                 </td>
               {% endif %}

@@ -1,0 +1,36 @@
+{% extends "users/detail.html" %}
+
+{% block user_page %}
+  {% if organizations %}
+    <div class="p-3">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">№</th>
+            <th scope="col">Организация</th>
+            <th scope="col">Роль</th>
+            <th scope="col">Действие</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for organization in organizations %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ organization.organization.name }}</td>
+              <td>{{ organization.get_role_display }}</td>
+              <td>
+                {% if organization.role == 4 %}
+                  <a href="{% url 'organization:update_user_role' org_pk=organization.organization.pk user_pk=request.user.pk new_role=1 %}" class="nav-link">Принять</a>
+                {% else %}
+                  <a href="{% url 'organization:profile' pk=organization.organization.pk %}" class="nav-link">Смотреть</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    {% include "includes/empty.html" %}
+  {% endif %}
+{% endblock user_page %}

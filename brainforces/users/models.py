@@ -35,7 +35,7 @@ class User(django.contrib.auth.models.AbstractUser):
     def get_absolute_url(self) -> str:
         """путь к user_detail"""
         return django.urls.reverse_lazy(
-            'users:user_profile', kwargs={'pk': self.pk}
+            'users:profile', kwargs={'pk': self.pk}
         )
 
 

@@ -14,13 +14,13 @@
     {% with request.resolver_match.view_name as view_name %}
       <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
-          <a class="nav-link {% if view_name == 'organization:organization_profile' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:organization_profile' %}aria-current="page"{% endif %} href="{% url 'organization:organization_profile' pk=request.resolver_match.kwargs.pk %}">Профиль</a>
+          <a class="nav-link {% if view_name == 'organization:profile' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:profile' %}aria-current="page"{% endif %} href="{% url 'organization:profile' pk=request.resolver_match.kwargs.pk %}">Профиль</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if view_name == 'organization:organization_users' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:organization_users' %}aria-current="page"{% endif %} href="{% url 'organization:organization_users' pk=request.resolver_match.kwargs.pk %}">Участники</a>
+          <a class="nav-link {% if view_name == 'organization:users' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:users' %}aria-current="page"{% endif %} href="{% url 'organization:users' pk=request.resolver_match.kwargs.pk %}">Участники</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if view_name == 'organization:organization_quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:organization_quizzes' %}aria-current="page"{% endif %} href="{% url 'organization:organization_quizzes' pk=request.resolver_match.kwargs.pk %}">Викторины</a>
+          <a class="nav-link {% if view_name == 'organization:quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:quizzes' %}aria-current="page"{% endif %} href="{% url 'organization:quizzes' pk=request.resolver_match.kwargs.pk %}">Викторины</a>
         </li>
       </ul>
     {% endwith %}

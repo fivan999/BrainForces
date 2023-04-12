@@ -9,17 +9,17 @@ urlpatterns = [
     django.urls.path(
         '<int:pk>/',
         organization.views.OrganizationMainView.as_view(),
-        name='organization_profile',
+        name='profile',
     ),
     django.urls.path(
         '<int:pk>/users/',
         organization.views.OrganizationUsersView.as_view(),
-        name='organization_users',
+        name='users',
     ),
     django.urls.path(
         '<int:pk>/quizzes/',
         organization.views.OrganizationQuizzesView.as_view(),
-        name='organization_quizzes',
+        name='quizzes',
     ),
     django.urls.path(
         '<int:org_pk>/users/<int:user_pk>/delete/',

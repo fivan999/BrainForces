@@ -33,7 +33,7 @@ class Organization(django.db.models.Model):
     def get_absolute_url(self):
         """путь к organization detail"""
         return django.urls.reverse_lazy(
-            'organization:organization_profile', kwargs={'pk': self.pk}
+            'organization:profile', kwargs={'pk': self.pk}
         )
 
 
@@ -72,6 +72,7 @@ class OrganizationToUser(django.db.models.Model):
     )
 
     class Meta:
+        unique_together = ('user', 'organization')
         verbose_name = 'участник'
         verbose_name_plural = 'участники'
 

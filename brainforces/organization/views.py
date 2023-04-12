@@ -38,7 +38,9 @@ class OrganizationMainView(django.views.generic.DetailView):
         context[
             'is_group_member'
         ] = organization.models.OrganizationToUser.objects.filter(
-            organization__pk=self.kwargs['pk'], user__pk=self.request.user.pk
+            organization__pk=self.kwargs['pk'],
+            user__pk=self.request.user.pk,
+            role__in=(1, 2, 3),
         ).exists()
         return context
 
@@ -98,48 +100,33 @@ class OrganizationUsersView(
         )
         if form.is_valid():
             org_obj = django.shortcuts.get_object_or_404(
-                organization.models.Organization.objects.prefetch_related(
-                    django.db.models.Prefetch(
-                        'users',
-                        queryset=(
-                            organization.models.OrganizationToUser.objects
-                            .select_related(
-                                'user'
-                            )
-                        ),
-                    )
-                ),
+                organization.models.Organization,
                 pk=pk,
             )
             invited_user = form.cleaned_data['user_obj']
 
-            # нужно проверить, если пользователь отправивший запрос
-            # является администратором группы
-            # и приглашаемого пользователя нет в группе
-            invitation_allowed, user_in_org = False, False
-            for user in org_obj.users.all():
-                if user.user.id == self.request.user.pk and user.role in (
-                    2,
-                    3,
-                ):
-                    invitation_allowed = True
-                if user.user.id == invited_user.pk:
-                    user_in_org = True
-                    break
+            invitation_allowed = (
+                organization.models.OrganizationToUser.objects.filter(
+                    user__pk=request.user.pk,
+                    organization__pk=org_obj.pk,
+                    role__in=(2, 3),
+                )
+            ).exists()
 
-            if not user_in_org and invitation_allowed:
-                organization.models.OrganizationToUser.objects.create(
-                    user=invited_user, role=4, organization=org_obj
-                )
-                django.contrib.messages.success(
-                    request, 'Приглашение отправлено'
-                )
+            if invitation_allowed:
+                try:
+                    organization.models.OrganizationToUser.objects.create(
+                        user=invited_user, role=4, organization=org_obj
+                    )
+                    django.contrib.messages.success(
+                        request, 'Приглашение отправлено'
+                    )
+                except Exception:
+                    django.contrib.messages.error(request, 'Ошибка')
             else:
-                django.contrib.messages.error(request, 'Недостаточно прав')
+                django.contrib.messages.error(request, 'Ошибка')
         return django.shortcuts.redirect(
-            django.urls.reverse(
-                'organization:organization_users', kwargs={'pk': pk}
-            )
+            django.urls.reverse('organization:users', kwargs={'pk': pk})
         )
 
 
@@ -177,11 +164,9 @@ class DeleteUserFromOrganizationView(django.views.generic.View):
             ).delete()
             django.contrib.messages.success(request, 'Успешно')
         else:
-            django.contrib.messages.error(request, 'Недостаточно прав')
+            django.contrib.messages.error(request, 'Ошибка')
         return django.shortcuts.redirect(
-            django.urls.reverse(
-                'organization:organization_users', kwargs={'pk': org_pk}
-            )
+            django.urls.reverse('organization:users', kwargs={'pk': org_pk})
         )
 
 
@@ -195,17 +180,21 @@ class UpdateUserOrganizationRoleView(django.views.generic.View):
         user_pk: int,
         new_role: int,
     ) -> django.http.HttpResponsePermanentRedirect:
-        if organization.models.OrganizationToUser.objects.filter(
-            organization__pk=org_pk, user__pk=request.user.pk, role__in=(2, 3)
-        ).exists():
+        if (
+            organization.models.OrganizationToUser.objects.filter(
+                organization__pk=org_pk,
+                user__pk=request.user.pk,
+                role__in=(2, 3),
+            ).exists()
+            or request.user.pk == user_pk
+            and new_role == 1
+        ):
             organization.models.OrganizationToUser.objects.filter(
                 user__pk=user_pk, organization__pk=org_pk
             ).update(role=new_role)
             django.contrib.messages.success(request, 'Успешно')
         else:
-            django.contrib.messages.error(request, 'Недостаточно прав')
+            django.contrib.messages.error(request, 'Ошибка')
         return django.shortcuts.redirect(
-            django.urls.reverse(
-                'organization:organization_users', kwargs={'pk': org_pk}
-            )
+            django.urls.reverse('organization:users', kwargs={'pk': org_pk})
         )

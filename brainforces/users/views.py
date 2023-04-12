@@ -13,6 +13,7 @@ import django.views
 import django.views.generic
 import django.views.generic.edit
 
+import organization.models
 import quiz.models
 import users.forms
 import users.models
@@ -191,7 +192,7 @@ class UserProfileChangeView(
                 django.contrib.messages.success(
                     request, 'Профиль успешно изменен!'
                 )
-            return django.shortcuts.redirect('users:user_profile', pk=pk)
+            return django.shortcuts.redirect('users:profile', pk=pk)
         raise django.http.Http404()
 
 
@@ -225,3 +226,20 @@ class UserQuizzesView(UsernameMixinView, django.views.generic.ListView):
         return useful_quiz_results_fields.filter(
             user__pk=self.kwargs['pk']
         ).order_by('-quiz__start_time')
+
+
+class UserOrganizationsView(UsernameMixinView, django.views.generic.ListView):
+    """список организаций пользователя"""
+
+    template_name = 'users/organizations.html'
+    context_object_name = 'organizations'
+    paginate_by = 15
+
+    def get_queryset(self) -> django.db.models.QuerySet:
+        return (
+            organization.models.OrganizationToUser.objects.filter(
+                user__pk=self.request.user.pk
+            )
+            .select_related('organization')
+            .only('organization__name', 'role')
+        )

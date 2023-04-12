@@ -14,18 +14,21 @@
     {% with request.resolver_match.view_name as view_name %}
       <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
-          <a class="nav-link {% if view_name == 'users:user_profile' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_profile' %}aria-current="page"{% endif %} href="{% url 'users:user_profile' pk=request.resolver_match.kwargs.pk %}">Профиль</a>
+          <a class="nav-link {% if view_name == 'users:profile' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:profile' %}aria-current="page"{% endif %} href="{% url 'users:profile' pk=request.resolver_match.kwargs.pk %}">Профиль</a>
         </li>
         {% if request.user.id == request.resolver_match.kwargs.pk %}
           <li class="nav-item">
-            <a class="nav-link {% if view_name == 'users:user_profile_change' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_profile_change' %}aria-current="page"{% endif %} href="{% url 'users:user_profile_change' pk=request.resolver_match.kwargs.pk %}">Изменить профиль</a>
+            <a class="nav-link {% if view_name == 'users:profile_change' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:profile_change' %}aria-current="page"{% endif %} href="{% url 'users:profile_change' pk=request.resolver_match.kwargs.pk %}">Изменить профиль</a>
           </li>
         {% endif %}
         <li class="nav-item">
-          <a class="nav-link {% if view_name == 'users:user_quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_quizzes' %}aria-current="page"{% endif %} href="{% url 'users:user_quizzes' pk=request.resolver_match.kwargs.pk %}">Соревнования</a>
+          <a class="nav-link {% if view_name == 'users:quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:quizzes' %}aria-current="page"{% endif %} href="{% url 'users:quizzes' pk=request.resolver_match.kwargs.pk %}">Соревнования</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if view_name == 'users:user_answers' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:user_answers' %}aria-current="page"{% endif %} href="{% url 'users:user_answers' pk=request.resolver_match.kwargs.pk %}">Полылки</a>
+          <a class="nav-link {% if view_name == 'users:answers' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:answers' %}aria-current="page"{% endif %} href="{% url 'users:answers' pk=request.resolver_match.kwargs.pk %}">Полылки</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'users:organizations' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:organizations' %}aria-current="page"{% endif %} href="{% url 'users:organizations' pk=request.resolver_match.kwargs.pk %}">Организации</a>
         </li>
       </ul>
     {% endwith %}

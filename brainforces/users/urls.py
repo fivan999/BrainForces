@@ -79,17 +79,17 @@ urlpatterns = [
     django.urls.path(
         'profile/<int:pk>/',
         users.views.UserProfileView.as_view(),
-        name='user_profile',
+        name='profile',
     ),
     django.urls.path(
         'profile/<int:pk>/change/',
         users.views.UserProfileChangeView.as_view(),
-        name='user_profile_change',
+        name='profile_change',
     ),
     django.urls.path(
         'users/',
         users.views.UserListView.as_view(),
-        name='user_list',
+        name='list',
     ),
     django.urls.path(
         'reset_login_attempts/<uidb64>/<token>/',
@@ -99,11 +99,16 @@ urlpatterns = [
     django.urls.path(
         'profile/<int:pk>/answers/',
         users.views.UserAnswersView.as_view(),
-        name='user_answers',
+        name='answers',
     ),
     django.urls.path(
         'profile/<int:pk>/quizzes/',
         users.views.UserQuizzesView.as_view(),
-        name='user_quizzes',
+        name='quizzes',
+    ),
+    django.urls.path(
+        'profile/<int:pk>/organizations/',
+        users.views.UserOrganizationsView.as_view(),
+        name='organizations',
     ),
 ]
