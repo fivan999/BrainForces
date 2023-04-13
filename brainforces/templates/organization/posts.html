@@ -1,13 +1,14 @@
 {% extends "organization/detail.html" %}
 
 {% block organization_page %}
-  {% if quizzes %}
-    {% for quiz in quizzes %}
+  {% if posts %}
+    {% for post in posts %}
       <div class="col">
         <div class="card shadow-sm mb-2">
           <div class="card-body">
-            {% include "homepage/quiz_detail.html" %}
-            <a href="{{ quiz.get_absolute_url }}" class="btn btn-primary">Принять участие</a>
+            <h2 class="display-6 fw-bold">{{ post.name }}</h2>
+            {{ post.text|safe }}
+            <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary">Смотреть</a>
           </div>
         </div>
       </div>

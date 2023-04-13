@@ -36,4 +36,14 @@ urlpatterns = [
         organization.views.OrganizationListView.as_view(),
         name='list',
     ),
+    django.urls.path(
+        '<int:pk>/posts/',
+        organization.views.OrganizationPostsView.as_view(),
+        name='posts',
+    ),
+    django.urls.path(
+        '<int:pk>/posts/<int:post_pk>/',
+        organization.views.PostCommentsView.as_view(),
+        name='post_detail',
+    ),
 ]

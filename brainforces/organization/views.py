@@ -16,8 +16,10 @@ class OrganizationNameMixinView(django.views.generic.View):
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
         organization_name = django.shortcuts.get_object_or_404(
-            organization.models.Organization.objects.all().only('name'),
-            pk=self.kwargs['pk'],
+            organization.models.Organization.objects.filter_user_access(
+                user_pk=self.request.user.pk
+            ).only('name'),
+            pk=self.kwargs.get('pk'),
         ).name
         context['organization_name'] = organization_name
         return context
@@ -35,13 +37,19 @@ class OrganizationMainView(django.views.generic.DetailView):
     def get_context_data(self, *args, **kwargs) -> dict:
         """дополняем контекст"""
         context = super().get_context_data(*args, **kwargs)
-        context[
+        user = (
+            organization.models.OrganizationToUser.objects.filter(
+                organization__pk=self.kwargs['pk'],
+                user__pk=self.request.user.pk,
+                role__in=(1, 2, 3),
+            )
+            .only('role')
+            .first()
+        )
+        context['is_group_member'] = user is not None
+        context['user_is_admin'] = context[
             'is_group_member'
-        ] = organization.models.OrganizationToUser.objects.filter(
-            organization__pk=self.kwargs['pk'],
-            user__pk=self.request.user.pk,
-            role__in=(1, 2, 3),
-        ).exists()
+        ] and user.role in (2, 3)
         return context
 
 
@@ -54,7 +62,10 @@ class OrganizationListView(django.views.generic.ListView):
 
     def get_queryset(self) -> django.db.models.QuerySet:
         return (
-            organization.models.Organization.objects.get_only_useful_fields()
+            organization.models.Organization.objects.filter_user_access(
+                user_pk=self.request.user.pk
+            )
+            .only('name', 'description')
             .annotate(count_users=django.db.models.Count('users__id'))
             .order_by('-count_users')
         )
@@ -197,4 +208,50 @@ class UpdateUserOrganizationRoleView(django.views.generic.View):
             django.contrib.messages.error(request, 'Ошибка')
         return django.shortcuts.redirect(
             django.urls.reverse('organization:users', kwargs={'pk': org_pk})
+        )
+
+
+class OrganizationPostsView(
+    OrganizationNameMixinView, django.views.generic.ListView
+):
+    """объявления организации"""
+
+    template_name = 'organization/posts.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_queryset(self) -> django.db.models.QuerySet:
+        return (
+            organization.models.OrganizationPost.objects.filter(
+                posted_by__pk=self.kwargs['pk']
+            )
+            .select_related('posted_by')
+            .only('name', 'text', 'posted_by__id')
+        )
+
+
+class PostCommentsView(
+    OrganizationNameMixinView, django.views.generic.ListView
+):
+    """комментарии к посту"""
+
+    template_name = 'organization/post_comments.html'
+    paginate_by = 50
+    context_object_name = 'comments'
+
+    def get_context_data(self, *args, **kwargs) -> dict:
+        """дополняем контекст"""
+        context = super().get_context_data(*args, **kwargs)
+        context['post'] = django.shortcuts.get_object_or_404(
+            organization.models.OrganizationPost, pk=self.kwargs['post_pk']
+        )
+        return context
+
+    def get_queryset(self) -> django.db.models.QuerySet:
+        return (
+            organization.models.CommentToOrganizationPost.objects.filter(
+                post__pk=self.kwargs['post_pk']
+            )
+            .select_related('user')
+            .only('user__username', 'text')
         )

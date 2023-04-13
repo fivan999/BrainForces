@@ -22,6 +22,12 @@ class Organization(django.db.models.Model):
         verbose_name='описание', help_text='Описание организации'
     )
 
+    is_private = django.db.models.BooleanField(
+        default=False,
+        verbose_name='приватная',
+        help_text='Приватная организация или нет',
+    )
+
     class Meta:
         verbose_name = 'организация'
         verbose_name_plural = 'организации'
@@ -79,3 +85,67 @@ class OrganizationToUser(django.db.models.Model):
     def __str__(self) -> str:
         """строковое представление"""
         return f'Участник организации {self.pk}'
+
+
+class OrganizationPost(django.db.models.Model):
+    """объявление организации"""
+
+    objects = organization.managers.OrganizationPostManager()
+
+    name = django.db.models.CharField(
+        max_length=150,
+        verbose_name='название',
+        help_text='Название объявления',
+    )
+
+    text = ckeditor_uploader.fields.RichTextUploadingField(
+        verbose_name='текст', help_text='Текст поста'
+    )
+
+    posted_by = django.db.models.ForeignKey(
+        Organization,
+        verbose_name='организация',
+        help_text='Организация, написавшая пост',
+        on_delete=django.db.models.CASCADE,
+        related_name='posts',
+    )
+
+    class Meta:
+        verbose_name = 'пост'
+        verbose_name_plural = 'посты'
+
+    def __str__(self) -> str:
+        """строковое представление"""
+        return self.name[:20]
+
+
+class CommentToOrganizationPost(django.db.models.Model):
+    """моедль комментария к посту"""
+
+    text = django.db.models.TextField(
+        verbose_name='текст', help_text='Текст комментария'
+    )
+
+    user = django.db.models.ForeignKey(
+        users.models.User,
+        verbose_name='пользователь',
+        help_text='Пользователь, котрый оставил комментарий',
+        on_delete=django.db.models.CASCADE,
+        related_name='comments',
+    )
+
+    post = django.db.models.ForeignKey(
+        OrganizationPost,
+        verbose_name='пост',
+        help_text='Пост, к которому оставлен комментарий',
+        on_delete=django.db.models.CASCADE,
+        related_name='comments',
+    )
+
+    class Meta:
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'комментарии'
+
+    def __str__(self) -> str:
+        """строковое представление"""
+        return f'Комментарий {self.pk}'

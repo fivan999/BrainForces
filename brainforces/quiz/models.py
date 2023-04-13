@@ -95,6 +95,12 @@ class Quiz(django.db.models.Model):
         related_name='quizzes',
     )
 
+    is_private = django.db.models.BooleanField(
+        verbose_name='приватная',
+        help_text='Приватная викторина или нет',
+        default=False,
+    )
+
     class Meta:
         verbose_name = 'викторина'
         verbose_name_plural = 'викторины'
