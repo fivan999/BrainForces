@@ -9,9 +9,14 @@
       <h1 class="display-6 fw-bold lh-1">
         Архив вопросов
       </h1>
-      <form class="col-12 d-flex col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{% url 'archive:search' %}" method="get">
-        {% csrf_token %}
+      <form class="col-12 d-inline-flex col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{% url 'archive:archive' %}" method="get">
         <input type="text" name="searched" class="form-control" aria-label="Search" placeholder="Поиск...">
+        <select class="form-select" aria-label="Default select example" name="search_critery">
+          <option value="all">По всем критериям</option>
+          <option value="name">По имени</option>
+          <option value="text">По тексту</option>
+          <option value="tags">По тегам</option>
+        </select>
         <button class="btn btn-outline-secondary" type="submit">Найти</button>
       </form>
       <div class="p-3">
