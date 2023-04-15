@@ -36,7 +36,7 @@ class Organization(django.db.models.Model):
         """строковое представление"""
         return self.name[:20]
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """путь к organization detail"""
         return django.urls.reverse_lazy(
             'organization:profile', kwargs={'pk': self.pk}
