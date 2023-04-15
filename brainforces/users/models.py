@@ -23,7 +23,7 @@ class User(django.contrib.auth.models.AbstractUser):
         help_text='Электронная почта пользователя',
         blank=True,
         max_length=100,
-        unique=True
+        unique=True,
     )
     login_attempts = django.db.models.IntegerField(
         default=0,

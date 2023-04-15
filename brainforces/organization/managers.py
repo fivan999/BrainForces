@@ -10,14 +10,18 @@ class OrganizationManager(django.db.models.Manager):
 
     def filter_user_access(self, user_pk: int) -> django.db.models.QuerySet:
         """доступ пользователя к группе"""
-        return self.get_queryset().filter(
-            django.db.models.Q(
-                is_private=True,
-                users__user__pk=user_pk,
-                users__role__in=(1, 2, 3)
+        return (
+            self.get_queryset()
+            .filter(
+                django.db.models.Q(
+                    is_private=True,
+                    users__user__pk=user_pk,
+                    users__role__in=(1, 2, 3),
+                )
+                | django.db.models.Q(is_private=False)
             )
-            | django.db.models.Q(is_private=False)
-        ).distinct()
+            .distinct()
+        )
 
 
 class OrganizationPostManager(django.db.models.Manager):

@@ -1,8 +1,8 @@
 import django.contrib.auth.mixins
+import django.db.models
 import django.views.generic
 
 import quiz.models
-import django.db.models
 
 
 class HomeView(django.views.generic.ListView):

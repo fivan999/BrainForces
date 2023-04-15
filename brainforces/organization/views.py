@@ -18,7 +18,9 @@ class OrganizationMixinView(django.views.generic.View):
         organization_obj = (
             organization.models.Organization.objects.filter_user_access(
                 user_pk=self.request.user.pk
-            ).only('name').first()
+            )
+            .only('name')
+            .first()
         )
         context['organization'] = organization_obj
         return context
@@ -29,12 +31,9 @@ class UserIsOrganizationMemberMixinView(OrganizationMixinView):
 
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
-        org_user_obj = (
-            organization.models.OrganizationToUser.objects.filter(
-                user__pk=self.request.user.pk,
-                organization__pk=self.kwargs['pk']
-            ).first()
-        )
+        org_user_obj = organization.models.OrganizationToUser.objects.filter(
+            user__pk=self.request.user.pk, organization__pk=self.kwargs['pk']
+        ).first()
         context['organization_to_user'] = org_user_obj
         return context
 
@@ -46,12 +45,9 @@ class OrganizationMainView(django.views.generic.DetailView):
     context_object_name = 'organization'
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return (
-            organization.models.Organization.objects
-            .filter_user_access(user_pk=self.request.user.pk).only(
-                'name', 'description'
-            )
-        )
+        return organization.models.Organization.objects.filter_user_access(
+            user_pk=self.request.user.pk
+        ).only('name', 'description')
 
     def get_context_data(self, *args, **kwargs) -> dict:
         """дополняем контекст"""
@@ -242,9 +238,9 @@ class OrganizationPostsView(
     def get_context_data(self, *args, **kwargs) -> dict:
         """дополняем контекст"""
         context = super().get_context_data(*args, **kwargs)
-        context[
-            'is_group_member'
-        ] = context['organization_to_user'] is not None
+        context['is_group_member'] = (
+            context['organization_to_user'] is not None
+        )
         return context
 
     def get_queryset(self) -> django.db.models.QuerySet:
@@ -291,25 +287,21 @@ class PostCommentsView(
         """обрабатываем добавление комментария"""
         comment_text = request.POST.get('comment_text')
         post = django.shortcuts.get_object_or_404(
-            organization.models.OrganizationPost,
-            pk=post_pk,
-            posted_by__pk=pk
+            organization.models.OrganizationPost, pk=post_pk, posted_by__pk=pk
         )
         django.shortcuts.get_object_or_404(
             organization.models.OrganizationToUser,
             organization__pk=pk,
             user__pk=request.user.pk,
-            role__in=(1, 2, 3)
+            role__in=(1, 2, 3),
         )
         if comment_text:
             organization.models.CommentToOrganizationPost.objects.create(
-                user=request.user,
-                text=comment_text,
-                post=post
+                user=request.user, text=comment_text, post=post
             )
         return django.shortcuts.redirect(
             django.urls.reverse(
                 'organization:post_detail',
-                kwargs={'pk': pk, 'post_pk': post_pk}
+                kwargs={'pk': pk, 'post_pk': post_pk},
             )
         )
