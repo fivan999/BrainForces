@@ -52,9 +52,9 @@ class OrganizationMainView(django.views.generic.DetailView):
     def get_context_data(self, *args, **kwargs) -> dict:
         """дополняем контекст"""
         context = super().get_context_data(*args, **kwargs)
+        org_user_manager = organization.models.OrganizationToUser.objects
         user = (
-            organization.models.OrganizationToUser.objects
-            .get_organization_member(
+            org_user_manager.get_organization_member(
                 org_pk=self.kwargs['pk'], user_pk=self.request.user.pk
             )
             .only('role')
