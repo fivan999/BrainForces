@@ -32,6 +32,7 @@ else:
 INSTALLED_APPS = [
     'quiz.apps.QuizConfig',
     'homepage.apps.HomepageConfig',
+    'archive.apps.ArchiveConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'core.apps.CoreConfig',
