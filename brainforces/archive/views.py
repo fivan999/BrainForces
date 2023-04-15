@@ -13,25 +13,25 @@ class ArchiveView(django.views.generic.ListView):
     context_object_name = 'questions'
 
     def get_queryset(self) -> django.db.models.QuerySet:
+        """обрабатываем поисковый запрос от пользователя"""
         queryset = quiz.models.Question.objects.get_only_useful_list_fields()
-        searched = self.request.GET.get('searched', '')
+        searched = self.request.GET.get('searched')
         search_criteria = self.request.GET.get('search_critery', 'all')
-        if searched and search_criteria == 'all':
-            queryset = (
-                queryset.filter(
-                    django.db.models.Q(name__iregex=searched)
-                    | django.db.models.Q(text__iregex=searched)
-                    | django.db.models.Q(tags__name__iregex=searched)
-                )
-            ).distinct()
-        elif searched and search_criteria == 'name':
-            queryset = (queryset.filter(name__iregex=searched)).distinct()
-        elif searched and search_criteria == 'text':
-            queryset = (queryset.filter(text__iregex=searched)).distinct()
-        elif searched and search_criteria == 'tags':
-            queryset = (
-                queryset.filter(tags__name__iregex=searched)
-            ).distinct()
+        if searched:
+            if search_criteria == 'all':
+                queryset = (
+                    queryset.filter(
+                        django.db.models.Q(name__icontains=searched)
+                        | django.db.models.Q(text__icontains=searched)
+                        | django.db.models.Q(tags__name__icontains=searched)
+                    )
+                ).distinct()
+            elif search_criteria == 'name':
+                queryset = queryset.filter(name__icontains=searched)
+            elif search_criteria == 'text':
+                queryset = queryset.filter(text__icontains=searched)
+            elif search_criteria == 'tags':
+                queryset = queryset.filter(tags__name__icontains=searched)
         return queryset
 
     def get_context_data(self, **kwargs):

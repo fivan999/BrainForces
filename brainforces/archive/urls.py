@@ -1,6 +1,6 @@
-import archive.views
-
 import django.urls
+
+import archive.views
 
 
 app_name = 'archive'

@@ -2,8 +2,6 @@ import django.contrib.auth.models
 import django.core.exceptions
 import django.db.models
 
-import quiz.models
-
 
 class QuizManager(django.db.models.Manager):
     """менеджер модели Quiz"""
@@ -74,20 +72,10 @@ class QuestionManager(django.db.models.Manager):
         return (
             self.get_queryset()
             .filter(quiz__status=3)
-            .prefetch_related(
-                django.db.models.Prefetch(
-                    'tags',
-                    queryset=quiz.models.Tag.objects.filter(
-                        is_published=True
-                    ).only('name'),
-                )
-            )
             .only(
                 'id',
                 'name',
-                'text',
                 'difficulty',
-                'tags',
             )
             .order_by('difficulty')
         )
