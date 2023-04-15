@@ -34,8 +34,8 @@ class ArchiveView(django.views.generic.ListView):
                 queryset = queryset.filter(tags__name__icontains=searched)
         return queryset
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(self, *args, **kwargs) -> dict:
+        context = super().get_context_data(*args, **kwargs)
         context['searched'] = self.request.GET.get('searched', '')
         return context
 

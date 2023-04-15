@@ -7,6 +7,7 @@ import django.views.generic
 
 import organization.forms
 import organization.models
+import quiz.forms
 import quiz.models
 
 
@@ -35,6 +36,12 @@ class UserIsOrganizationMemberMixinView(OrganizationMixinView):
             user__pk=self.request.user.pk, organization__pk=self.kwargs['pk']
         ).first()
         context['organization_to_user'] = org_user_obj
+        context['is_group_member'] = org_user_obj is not None
+        context['user_is_admin'] = (
+            org_user_obj.role in (2, 3)
+            if context['is_group_member']
+            else False
+        )
         return context
 
 
@@ -86,7 +93,7 @@ class OrganizationListView(django.views.generic.ListView):
 
 
 class OrganizationUsersView(
-    OrganizationMixinView, django.views.generic.ListView
+    UserIsOrganizationMemberMixinView, django.views.generic.ListView
 ):
     """страница с пользователями организации"""
 
@@ -106,13 +113,6 @@ class OrganizationUsersView(
     def get_context_data(self, *args, **kwargs) -> dict:
         """дополняем контекст"""
         context = super().get_context_data(*args, **kwargs)
-        context['user_is_admin'] = (
-            organization.models.OrganizationToUser.objects.filter(
-                organization__pk=self.kwargs['pk'],
-                user__pk=self.request.user.pk,
-                role__in=(2, 3),
-            )
-        ).exists()
         if context['user_is_admin']:
             context['form'] = organization.forms.InviteToOrganizationForm()
         return context
@@ -142,7 +142,7 @@ class OrganizationUsersView(
             if invitation_allowed:
                 try:
                     organization.models.OrganizationToUser.objects.create(
-                        user=invited_user, role=4, organization=org_obj
+                        user=invited_user, role=0, organization=org_obj
                     )
                     django.contrib.messages.success(
                         request, 'Приглашение отправлено'
@@ -151,6 +151,8 @@ class OrganizationUsersView(
                     django.contrib.messages.error(request, 'Ошибка')
             else:
                 django.contrib.messages.error(request, 'Ошибка')
+        else:
+            django.contrib.messages.error(request, 'Ошибка')
         return django.shortcuts.redirect(
             django.urls.reverse('organization:users', kwargs={'pk': pk})
         )
@@ -171,23 +173,43 @@ class OrganizationQuizzesView(
         )
 
 
-class DeleteUserFromOrganizationView(django.views.generic.View):
+class ActionWithUserView(django.views.generic.View):
+    def get(
+        self, request: django.http.HttpRequest, org_pk: int, user_pk: int
+    ) -> None:
+        self.self_user = (
+            organization.models.OrganizationToUser.objects.filter(
+                organization__pk=org_pk,
+                user__pk=request.user.pk,
+            )
+            .only('role')
+            .first()
+        )
+        self.target_user = (
+            organization.models.OrganizationToUser.objects.filter(
+                user__pk=user_pk, organization__pk=org_pk
+            )
+            .only('role')
+            .first()
+        )
+
+
+class DeleteUserFromOrganizationView(ActionWithUserView):
     """удаляем пользователя из организации"""
 
     def get(
         self, request: django.http.HttpRequest, org_pk: int, user_pk: int
     ) -> django.http.HttpResponsePermanentRedirect:
+        super().get(request, org_pk, user_pk)
         if (
-            request.user.pk == user_pk
-            or organization.models.OrganizationToUser.objects.filter(
-                organization__pk=org_pk,
-                user__pk=request.user.pk,
-                role__in=(2, 3),
-            ).exists()
+            self.self_user
+            and self.target_user
+            and (
+                self.self_user.role > self.target_user.role
+                or self.request.user.pk == user_pk
+            )
         ):
-            organization.models.OrganizationToUser.objects.filter(
-                user__pk=user_pk, organization__pk=org_pk
-            ).delete()
+            self.target_user.delete()
             django.contrib.messages.success(request, 'Успешно')
         else:
             django.contrib.messages.error(request, 'Ошибка')
@@ -196,7 +218,7 @@ class DeleteUserFromOrganizationView(django.views.generic.View):
         )
 
 
-class UpdateUserOrganizationRoleView(django.views.generic.View):
+class UpdateUserOrganizationRoleView(ActionWithUserView):
     """изменение статуса пользователя"""
 
     def get(
@@ -206,18 +228,19 @@ class UpdateUserOrganizationRoleView(django.views.generic.View):
         user_pk: int,
         new_role: int,
     ) -> django.http.HttpResponsePermanentRedirect:
+        super().get(request, org_pk, user_pk)
+        print(self.self_user, self.target_user)
         if (
-            organization.models.OrganizationToUser.objects.filter(
-                organization__pk=org_pk,
-                user__pk=request.user.pk,
-                role__in=(2, 3),
-            ).exists()
-            or request.user.pk == user_pk
-            and new_role == 1
+            self.self_user
+            and self.target_user
+            and (
+                self.self_user.role > self.target_user.role
+                or self.request.user.pk == user_pk
+                and new_role == 1
+            )
         ):
-            organization.models.OrganizationToUser.objects.filter(
-                user__pk=user_pk, organization__pk=org_pk
-            ).update(role=new_role)
+            self.target_user.role = new_role
+            self.target_user.save()
             django.contrib.messages.success(request, 'Успешно')
         else:
             django.contrib.messages.error(request, 'Ошибка')
@@ -234,14 +257,6 @@ class OrganizationPostsView(
     template_name = 'organization/posts.html'
     context_object_name = 'posts'
     paginate_by = 5
-
-    def get_context_data(self, *args, **kwargs) -> dict:
-        """дополняем контекст"""
-        context = super().get_context_data(*args, **kwargs)
-        context['is_group_member'] = (
-            context['organization_to_user'] is not None
-        )
-        return context
 
     def get_queryset(self) -> django.db.models.QuerySet:
         return (
@@ -265,7 +280,7 @@ class PostCommentsView(
     def get_context_data(self, *args, **kwargs) -> dict:
         """дополняем контекст"""
         context = super().get_context_data(*args, **kwargs)
-        if context['organization_to_user'] is None:
+        if not context['is_group_member']:
             raise django.http.Http404()
         context['post'] = django.shortcuts.get_object_or_404(
             organization.models.OrganizationPost, pk=self.kwargs['post_pk']
@@ -304,4 +319,65 @@ class PostCommentsView(
                 'organization:post_detail',
                 kwargs={'pk': pk, 'post_pk': post_pk},
             )
+        )
+
+
+class QuizCreateView(django.views.generic.View):
+    """создание викторины"""
+
+    def get(
+        self, request: django.http.HttpRequest, pk: int
+    ) -> django.http.HttpResponse:
+        if not organization.models.OrganizationToUser.objects.filter(
+            user__pk=self.request.user.pk, organization__pk=pk, role__in=(2, 3)
+        ).exists():
+            raise django.http.Http404()
+        context = {
+            'quiz_form': quiz.forms.QuizForm(),
+            'question_formset': quiz.forms.QuestionFormSet(),
+            'variant_formset': quiz.forms.VariantFormSet(),
+        }
+        return django.shortcuts.render(
+            request, 'organization/create_quiz.html', context
+        )
+
+    def post(
+        self, request: django.http.HttpRequest, pk: int
+    ) -> django.http.HttpResponse:
+        if not organization.models.OrganizationToUser.objects.filter(
+            user__pk=self.request.user.pk, organization__pk=pk, role__in=(2, 3)
+        ).exists():
+            raise django.http.Http404()
+        quiz_form = quiz.forms.QuizForm(request.POST or None)
+        question_formset = quiz.forms.QuestionFormSet(request.POST or None)
+        variant_formset = quiz.forms.VariantFormSet(request.POST or None)
+        if (
+            quiz_form.is_valid()
+            and question_formset.is_valid()
+            and variant_formset.is_valid()
+        ):
+            quiz_obj = quiz_form.save(commit=False)
+            quiz_obj.organized_by = (
+                organization.models.Organization.objects.get(pk=pk)
+            )
+            quiz_obj.creator = request.user
+            quiz_obj.save()
+            questions = question_formset.save(commit=False)
+            for question in questions:
+                question.quiz = quiz_obj
+                question.save()
+            variants = variant_formset.save(commit=False)
+            for variant in variants:
+                variant.question = question
+                variant.save()
+            return django.shortcuts.redirect(
+                django.urls.reverse('organization:quizzes', kwargs={'pk': pk})
+            )
+        context = {
+            'quiz_form': quiz_form,
+            'question_formset': question_formset,
+            'variant_formset': variant_formset,
+        }
+        return django.shortcuts.render(
+            request, 'organization/create_quiz.html', context
         )

@@ -1,0 +1,125 @@
+{% extends "organization/detail.html" %}
+
+{% load widget_tweaks %}
+
+{% block organization_page %}
+<form enctype="multipart/form-data" method="post">
+  {% csrf_token %}
+  <div class="card">
+    <div class="card-header card-header-secondary">
+      <h4 class="card-title">Создать викторину</h4>
+    </div>
+    <div class="card-body p-2">
+      {% for error in quiz_form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+          {{ error|safe }}
+        </div>
+      {% endfor %}
+      {% for field in quiz_form.visible_fields %}
+        <p>
+          {{ field.label }}
+          {% if field.name == 'description' %}
+            {{ field }}
+          {% elif field.name == 'is_private' or field.name == 'is_rated' %}
+            {{ field|add_class:'form-check-input' }}
+          {% else %}
+            {{ field|add_class:'form-control' }}
+          {% endif %}
+          <small><span class="text-muted">{{ field.help_text }}</span></small>
+          {% for error in field.errors %}
+            <div class="alert alert-danger" role="alert">
+              {{ error|safe }}
+            </div>
+          {% endfor %}
+        </p>
+      {% endfor %}
+    </div>
+  </div>
+
+  {{ question_formset.management_form }}
+  <div class="table-responsive card mt-4">
+    <div class="card-header card-header-secondary">
+      <h4 class="card-title">Добавить вопросы</h4>
+    </div>
+    <table class="table card-body">
+      <thead class="text-secondary">
+        <th>Название</th>
+        <th>Текст</th>
+        <th>Сложность</th>
+      </thead>
+      <tbody id="item-questions p-2">
+        {% for error in question_formset.non_form_errors %}
+          <div class="alert alert-danger" role="alert">
+            {{ error|safe }}
+          </div>
+        {% endfor %}
+        {% for form in question_formset %}
+          <tr>
+            {% for field in form.visible_fields %}
+              <td>
+                {% if field.name != 'DELETE' %}
+                  {% if field.name != 'text' %}
+                    {{ field|add_class:'form-control' }}
+                  {% else %}
+                    {{ field }}
+                  {% endif %}
+                  {% for error in field.errors %}
+                    <div class="alert alert-danger" role="alert">
+                      {{ error|safe }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="#" id="add-image-button" class="btn btn-primary">Добавить еще</a>
+  </div>
+
+  {{ variant_formset.management_form }}
+  <div class="table-responsive card mt-4">
+    <div class="card-header card-header-secondary">
+      <h4 class="card-title">Добавить варианты ответа</h4>
+    </div>
+    <table class="table card-header">
+      <thead class="text-secondary">
+        <th>Текст</th>
+        <th>Правильность</th>
+      </thead>
+      <tbody id="item-variants p-2">
+        {% for error in variant_formset.non_form_errors %}
+          <div class="alert alert-danger" role="alert">
+            {{ error|safe }}
+          </div>
+        {% endfor %}
+        {% for form in variant_formset %}
+          <tr>
+            {% for field in form.visible_fields %}
+              <td>
+                {% if field.name != 'DELETE' %}
+                  {% if field.name == 'is_correct' %}
+                    {{ field|add_class:'form-check-input' }}
+                  {% else %}
+                    {{ field|add_class:'form-control' }}
+                  {% endif %}
+                  {% for error in field.errors %}
+                    <div class="alert alert-danger" role="alert">
+                      {{ error|safe }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="#" class="btn btn-primary">Добавить еще</a>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Создать</button>
+</form>
+        
+{% endblock organization_page %}

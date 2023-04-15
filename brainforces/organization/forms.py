@@ -20,8 +20,6 @@ class InviteToOrganizationForm(django.forms.Form):
             | django.db.models.Q(email=username)
         ).first()
         if user is None:
-            raise django.core.exceptions.ValidationError(
-                'Такого пользователя не существует'
-            )
+            raise django.core.exceptions.ValidationError('Ошибка')
         self.cleaned_data['user_obj'] = user
         return username

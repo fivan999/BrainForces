@@ -51,10 +51,10 @@ class OrganizationToUser(django.db.models.Model):
     class UserRoles(django.db.models.IntegerChoices):
         """роли пользователя в органицазии"""
 
+        INVITED = 0, 'Приглашен'
         PARTICIPANT = 1, 'Участник'
         ADMIN = 2, 'Админ'
         CREATOR = 3, 'Создатель'
-        INVITED = 4, 'Приглашен'
 
     organization = django.db.models.ForeignKey(
         Organization,
