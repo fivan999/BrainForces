@@ -62,3 +62,20 @@ class QuizResultsManager(django.db.models.Manager):
                 'place',
             )
         )
+
+
+class QuestionManager(django.db.models.Manager):
+    """менеджер модели Question"""
+
+    def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
+        """только нужные поля для списка архивных вопросов"""
+        return (
+            self.get_queryset()
+            .filter(quiz__status=3)
+            .only(
+                'id',
+                'name',
+                'difficulty',
+            )
+            .order_by('difficulty')
+        )

@@ -1,6 +1,8 @@
 import ckeditor_uploader.fields
 
 import django.db.models
+import django.shortcuts
+import django.urls
 
 import organization.models
 import quiz.managers
@@ -165,6 +167,8 @@ class QuizResults(django.db.models.Model):
 class Question(django.db.models.Model):
     """модель вопроса"""
 
+    objects = quiz.managers.QuestionManager()
+
     name = django.db.models.CharField(
         max_length=100,
         help_text='Напишите название вопроса',
@@ -204,6 +208,12 @@ class Question(django.db.models.Model):
     def __str__(self) -> str:
         """строковое представление"""
         return self.name[:20]
+
+    def get_absolute_url(self) -> str:
+        """путь к user_detail"""
+        return django.urls.reverse_lazy(
+            'archive:question_detail', kwargs={'pk': self.pk}
+        )
 
 
 class Variant(django.db.models.Model):

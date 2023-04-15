@@ -39,7 +39,7 @@
             <a href="" class="nav-link {% if app_name == 'quiz' %}active text-white{% else %}text-dark{% endif %}">Соревнования</a>
           </li>
           <li>
-            <a href="" class="nav-link {% if app_name == 'about' %}active text-white{% else %}text-dark{% endif %}">Архив</a>
+            <a href="{% url 'archive:archive' %}" class="nav-link {% if app_name == 'archive' %}active text-white{% else %}text-dark{% endif %}">Архив</a>
           </li>
           <li>
             <a href="{% url 'users:list' %}" class="nav-link {% if app_name == 'users' %}active text-white{% else %}text-dark{% endif %}">Рейтинг</a>

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="container col-xxl-9">
+    <div class="col">
+        <div class="card shadow-sm mb-2">
+          <div class="card-body">
+            {% include "archive/question_card.html" %}
+            <a href="{{ question.get_absolute_url }}" class="btn btn-primary">Показать ответ</a>
+          </div>
+        </div>
+      </div>
+  </div>
+{% endblock content %}
