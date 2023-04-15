@@ -1,0 +1,22 @@
+{% extends "organization/detail.html" %}
+
+{% block organization_page %}
+  {% if posts %}
+    {% for post in posts %}
+      <div class="col">
+        <div class="card shadow-sm mb-2">
+          <div class="card-body">
+            <h2 class="display-6 fw-bold">{{ post.name }}</h2>
+            {{ post.text|safe }}
+            {% if is_group_member %}
+              <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary">Смотреть</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    {% include "includes/pagination.html" %}
+  {% else %}
+    {% include "includes/empty.html" %}
+  {% endif %}
+{% endblock organization_page %}

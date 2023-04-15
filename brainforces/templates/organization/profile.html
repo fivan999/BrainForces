@@ -1,0 +1,10 @@
+{% extends "organization/detail.html" %}
+
+{% block organization_page %}
+  {{ organization.description|safe }}
+  {% if is_group_member == 1 %}
+    <a href="{% url 'organization:delete_user' org_pk=request.resolver_match.kwargs.pk user_pk=request.user.pk %}" class="nav-link p-2">
+      <button class="btn btn-danger">Покинуть организацию</button>
+    </a>
+  {% endif %}
+{% endblock organization_page %}

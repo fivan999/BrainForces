@@ -43,7 +43,7 @@ class UserProfileTests(django.test.TestCase):
     ) -> None:
         """тестируем статус код страницы с информацией о пользователе"""
         response = django.test.Client().get(
-            django.urls.reverse('users:user_profile', kwargs={'pk': pk})
+            django.urls.reverse('users:profile', kwargs={'pk': pk})
         )
         self.assertEqual(response.status_code, expected)
 
@@ -53,21 +53,21 @@ class UserProfileTests(django.test.TestCase):
     ) -> None:
         """тестируем статус код страницы с ответами пользователя"""
         response = django.test.Client().get(
-            django.urls.reverse('users:user_answers', kwargs={'pk': pk})
+            django.urls.reverse('users:answers', kwargs={'pk': pk})
         )
         self.assertEqual(response.status_code, expected)
 
     def test_user_profile_answers_context(self) -> None:
         """теcтируем контекст страницы с ответами пользователя"""
         response = django.test.Client().get(
-            django.urls.reverse('users:user_answers', kwargs={'pk': 1})
+            django.urls.reverse('users:answers', kwargs={'pk': 1})
         )
         self.assertIn('answers', response.context)
 
     def test_user_profile_answers_correct_model(self) -> None:
         """тестируем правильный объект модели на странице с ответами"""
         response = django.test.Client().get(
-            django.urls.reverse('users:user_answers', kwargs={'pk': 1})
+            django.urls.reverse('users:answers', kwargs={'pk': 1})
         )
         self.assertTrue(
             all(
@@ -86,7 +86,7 @@ class UserProfileTests(django.test.TestCase):
             {'username': 'testuser2', 'password': 'password'},
         )
         response = client.get(
-            django.urls.reverse('users:user_profile_change', kwargs={'pk': 2})
+            django.urls.reverse('users:profile_change', kwargs={'pk': 2})
         )
         self.assertEqual(response.status_code, 200)
 
@@ -98,7 +98,7 @@ class UserProfileTests(django.test.TestCase):
             {'username': 'testuser2', 'password': 'password'},
         )
         response = client.get(
-            django.urls.reverse('users:user_profile_change', kwargs={'pk': 1})
+            django.urls.reverse('users:profile_change', kwargs={'pk': 1})
         )
         self.assertEqual(response.status_code, 404)
 
@@ -108,21 +108,21 @@ class UserProfileTests(django.test.TestCase):
     ) -> None:
         """тестируем статус код страницы с викторинами пользователя"""
         response = django.test.Client().get(
-            django.urls.reverse('users:user_quizzes', kwargs={'pk': pk})
+            django.urls.reverse('users:quizzes', kwargs={'pk': pk})
         )
         self.assertEqual(response.status_code, expected)
 
     def test_user_profile_quizzes_context(self) -> None:
         """теcтируем контекст страницы с викторинами пользователя"""
         response = django.test.Client().get(
-            django.urls.reverse('users:user_quizzes', kwargs={'pk': 1})
+            django.urls.reverse('users:quizzes', kwargs={'pk': 1})
         )
         self.assertIn('results', response.context)
 
     def test_user_profile_quizzes_correct_model(self) -> None:
         """тестируем правильный объект модели на странице с викторинами"""
         response = django.test.Client().get(
-            django.urls.reverse('users:user_quizzes', kwargs={'pk': 1})
+            django.urls.reverse('users:quizzes', kwargs={'pk': 1})
         )
         self.assertTrue(
             all(

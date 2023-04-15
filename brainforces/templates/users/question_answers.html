@@ -1,4 +1,4 @@
-{% extends "users/user_detail.html" %}
+{% extends "users/detail.html" %}
 
 {% block user_page %}
   {% if answers %}
@@ -17,7 +17,7 @@
           {% for answer in answers %}
             <tr>
               <td>{{ forloop.revcounter }}</td>
-              <td>{{ answer.time_answered|date:'Y.m.d H:m:s' }} UTC</td>
+              <td>{{ answer.time_answered|date:'Y.m.d H:m:s' }}</td>
               <td>{{ answer.user.username }}</td>
               <td>{{ answer.question.id }} - {{ answer.question.name }}</td>
               <td>
@@ -29,7 +29,7 @@
           {% endfor %}
         </tbody>
       </table>
-    <div>
+    </div>
   {% else %}
     {% include "includes/empty.html" %}
   {% endif %}

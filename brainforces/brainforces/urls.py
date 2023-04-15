@@ -11,6 +11,12 @@ urlpatterns = [
     django.urls.path('admin/', django.contrib.admin.site.urls),
     django.urls.path('auth/', django.urls.include('users.urls')),
     django.urls.path('auth/', django.urls.include('django.contrib.auth.urls')),
+    django.urls.path(
+        'ckeditor', django.urls.include('ckeditor_uploader.urls')
+    ),
+    django.urls.path(
+        'organizations/', django.urls.include('organization.urls')
+    ),
 ]
 
 
