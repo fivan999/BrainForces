@@ -2,6 +2,7 @@ import django.contrib.auth.mixins
 import django.views.generic
 
 import quiz.models
+import django.db.models
 
 
 class HomeView(django.views.generic.ListView):

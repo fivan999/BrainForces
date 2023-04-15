@@ -10,6 +10,11 @@
     </div>
   </div>
   <h2 class="display-7 fw-bold">Комментарии</h2>
+  <form method="post" class="d-flex mb-3">
+    {% csrf_token %}
+    <input class="form-control me-2" type="textarea" placeholder="Введите комментарий" name="comment_text" />
+    <button class="btn btn-primary" type="submit">Готово</button>
+  </form>
   {% for comment in comments %}
     <div class="col-12">
       <div class="card shadow-sm mb-2">

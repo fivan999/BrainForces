@@ -7,18 +7,11 @@ import dotenv
 import django.contrib.messages
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 dotenv.load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY', default='default')
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', default='True').lower() in ('true', 'y', '1', 'yes')
 
 if DEBUG:
@@ -26,8 +19,6 @@ if DEBUG:
 else:
     ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='127.0.0.1').split()
 
-
-# Application definition
 
 INSTALLED_APPS = [
     'quiz.apps.QuizConfig',
@@ -85,10 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'brainforces.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -102,15 +89,12 @@ DATABASES = {
 
 if 'test' in sys.argv or not os.getenv(
     'USE_POSTGRES', default='False'
-).lower() in ('true', 'y', '1', 'yes'):
+).lower() in ('true', 'y', '1', 'yes') or True:
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',
     }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -145,8 +129,6 @@ USER_IS_ACTIVE = os.getenv('USER_IS_ACTIVE', default='False').lower() in (
 AUTHENTICATION_BACKENDS = ['users.backends.EmailBackend']
 LOGIN_ATTEMPTS = int(os.environ.get('LOGIN_ATTEMPTS', default=3))
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'ru'
 
@@ -159,17 +141,12 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static_dev',
 ]
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

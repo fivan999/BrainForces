@@ -3,7 +3,6 @@ import transliterate
 import django.contrib.auth.models
 import django.db.models
 import django.urls
-from django.utils.translation import gettext_lazy as _
 
 import core.models
 import users.managers
@@ -20,7 +19,11 @@ class User(django.contrib.auth.models.AbstractUser):
 
     objects = users.managers.UserManager()
     email = django.db.models.EmailField(
-        _('email address'), blank=True, max_length=100, unique=True
+        verbose_name='почта',
+        help_text='Электронная почта пользователя',
+        blank=True,
+        max_length=100,
+        unique=True
     )
     login_attempts = django.db.models.IntegerField(
         default=0,

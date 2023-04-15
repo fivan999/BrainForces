@@ -8,7 +8,9 @@
           <div class="card-body">
             <h2 class="display-6 fw-bold">{{ post.name }}</h2>
             {{ post.text|safe }}
-            <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary">Смотреть</a>
+            {% if is_group_member %}
+              <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary">Смотреть</a>
+            {% endif %}
           </div>
         </div>
       </div>

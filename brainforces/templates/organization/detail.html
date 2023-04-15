@@ -3,11 +3,7 @@
 {% block content %}
   <div class="container col-xxl-9">
     <h2 class="fw-bold display-6">
-      {% if organization_name %}
-        {{ organization_name }}
-      {% else %}
-        {{ organization.name }}
-      {% endif %}
+      {{ organization.name }}
     </h2>
     {% with request.resolver_match.view_name as view_name %}
       <ul class="nav nav-tabs mb-4">
