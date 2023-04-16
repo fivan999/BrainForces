@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container col-xxl-9 mb-4">
+    <h2 class="fw-bold display-6">
+      {% if username %}
+        {{ username }}
+      {% else %}
+        {{ user.username }}
+      {% endif %}
+    </h2>
+    {% with request.resolver_match.view_name as view_name %}
+      <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'users:profile' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:profile' %}aria-current="page"{% endif %} href="{% url 'users:profile' pk=request.resolver_match.kwargs.pk %}">Профиль</a>
+        </li>
+        {% if request.user.id == request.resolver_match.kwargs.pk %}
+          <li class="nav-item">
+            <a class="nav-link {% if view_name == 'users:profile_change' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:profile_change' %}aria-current="page"{% endif %} href="{% url 'users:profile_change' pk=request.resolver_match.kwargs.pk %}">Изменить профиль</a>
+          </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'users:quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:quizzes' %}aria-current="page"{% endif %} href="{% url 'users:quizzes' pk=request.resolver_match.kwargs.pk %}">Соревнования</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'users:answers' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:answers' %}aria-current="page"{% endif %} href="{% url 'users:answers' pk=request.resolver_match.kwargs.pk %}">Полылки</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'users:organizations' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:organizations' %}aria-current="page"{% endif %} href="{% url 'users:organizations' pk=request.resolver_match.kwargs.pk %}">Организации</a>
+        </li>
+      </ul>
+    {% endwith %}
+    <div class="row flex-lg-row-reverse align-items-center">
+      {% block user_page %}{% endblock user_page %}
+    </div>
+  </div>
+{% endblock content %}

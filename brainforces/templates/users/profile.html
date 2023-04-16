@@ -1,0 +1,16 @@
+{% extends "users/detail.html" %}
+
+{% load static %}
+
+{% block user_page %}
+  <div class="col-10 col-sm-8 col-lg-6">
+    <img src="{% if user.profile.image %}{{ user.profile.image.url }}{% else %}{% static 'img/default_user.svg' %}{% endif %}" class="img-fluid border rounded-3 shadow-lg " width="100%" height="auto" alt="главная картинка" />
+  </div>
+  <div class="col-lg-6">
+    {% if request.user.id == user.pk or request.user.is_staff %}<p class="lead"><span class="fw-bold">Почта: {{ user.email }}</span></p>{% endif %}
+    <p class="lead"><span class="fw-bold">Имя: {% if user.first_name %}{{ user.first_name }}{% else %}не указано{% endif %}</span></p>
+    <p class="lead"><span class="fw-bold">Фамилия: {% if user.last_name %}{{ user.last_name }}{% else %}не указано{% endif %}</span></p>
+    <p class="lead"><span class="fw-bold">Рейтинг: {{ user.profile.rating }}</span></p>
+  </div>
+  {% block profile_form %}{% endblock profile_form %}
+{% endblock user_page %}

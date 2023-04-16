@@ -1,4 +1,4 @@
-{% extends "users/user_detail.html" %}
+{% extends "users/detail.html" %}
 
 {% block user_page %}
   {% if results %}
@@ -19,7 +19,7 @@
             <tr>
               <td>{{ forloop.revcounter }}</td>
               <td>{{ result.quiz.name }}</td>
-              <td>{{ result.quiz.start_time|date:'Y.m.d H:m:s' }} UTC</td>
+              <td>{{ result.quiz.start_time|date:'Y.m.d H:m:s' }}</td>
               <td>{{ result.place }}</td>
               <td>{{ result.solved }}</td>
               <td><span class="text-{% if result.rating_after >= result.rating_before %}success{% else %}danger{% endif %}">{{ result.rating_before }} -> {{ result.rating_after }}</span></td>
@@ -27,7 +27,7 @@
           {% endfor %}
         </tbody>
       </table>
-    <div>
+    </div>
   {% else %}
     {% include "includes/empty.html" %}
   {% endif %}

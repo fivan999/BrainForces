@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
-{% load static %}
-
 {% block content %}
-  <div class="container col-xxl-8">
+  <div class="container col-xxl-9">
     {% if quizzes %}
       <h1 class="display-6 fw-bold lh-1">
         Викторины
@@ -20,7 +18,7 @@
       {% endfor %}
       {% include "includes/pagination.html" %}
     {% else %}
-        {% include "includes/empty.html" %}
+      {% include "includes/empty.html" %}
     {% endif %}
   </div>
 {% endblock content %}

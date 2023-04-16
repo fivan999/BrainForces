@@ -7,10 +7,17 @@ import django.urls
 
 urlpatterns = [
     django.urls.path('', django.urls.include('homepage.urls')),
+    django.urls.path('archive/', django.urls.include('archive.urls')),
     django.urls.path('admin/', django.contrib.admin.site.urls),
     django.urls.path('auth/', django.urls.include('users.urls')),
     django.urls.path('auth/', django.urls.include('django.contrib.auth.urls')),
     django.urls.path('quiz/', django.urls.include('quiz.urls')),
+    django.urls.path(
+        'ckeditor', django.urls.include('ckeditor_uploader.urls')
+    ),
+    django.urls.path(
+        'organizations/', django.urls.include('organization.urls')
+    ),
 ]
 
 

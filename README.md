@@ -51,12 +51,12 @@ pip install -r requirements/test.txt
 
 Сделать миграции:
 ```
-python shop/manage.py migrate
+python brainforces/manage.py migrate
 ```
 
 Запустите проект:
 ```
-python shop/manage.py runserver
+python brainforces/manage.py runserver
 ```
 
 ## Техническое задание

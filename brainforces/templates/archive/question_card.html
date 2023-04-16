@@ -1,0 +1,16 @@
+{% load static %}
+
+{% block content %}
+    <h3 class="display-7 fw-bold lh-1 mb-3">BrainForces Question {{ question.pk }}</h3>
+    <h3 class="display-8 fw-bold lh-1 mb-3">{{ question.name }}</h3>
+    <p class="lead">{{ question.text|safe }}</p>
+    <p class="lead">Сложность вопроса:
+    <span class="badge badge-pill text-bg-primary">{{ question.difficulty }}</span></p>
+    {% if question.tags.all %}
+      <p class="lead">Тэги: 
+        {% for tag in question.tags.all %}
+          <span class="badge rounded-pill text-bg-primary">{{ tag.name }}</span>
+        {% endfor %}
+      </p>
+    {% endif %}
+{% endblock content %}

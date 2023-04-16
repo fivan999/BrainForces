@@ -12,11 +12,11 @@ class QuizAdmin(django.contrib.admin.ModelAdmin):
         'name',
         'status',
         'start_time',
-        'duration',
         'is_rated',
+        'is_private',
     )
     list_display_links = ('id',)
-    list_editable = ('status', 'is_rated')
+    list_editable = ('status', 'is_rated', 'is_private')
 
 
 class VariantInline(django.contrib.admin.TabularInline):

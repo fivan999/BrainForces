@@ -1,0 +1,19 @@
+{% extends "organization/detail.html" %}
+
+{% block organization_page %}
+  {% if quizzes %}
+    {% for quiz in quizzes %}
+      <div class="col">
+        <div class="card shadow-sm mb-2">
+          <div class="card-body">
+            {% include "homepage/quiz_detail.html" %}
+            <a href="{{ quiz.get_absolute_url }}" class="btn btn-primary">Принять участие</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    {% include "includes/pagination.html" %}
+  {% else %}
+    {% include "includes/empty.html" %}
+  {% endif %}
+{% endblock organization_page %}

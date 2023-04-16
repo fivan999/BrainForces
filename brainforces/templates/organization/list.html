@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container col-xxl-9">
+    {% if organizations %}
+      <h1 class="display-6 fw-bold lh-1">
+        Организации
+      </h1>
+      {% for organization in organizations %}
+        <div class="col">
+          <div class="card shadow-sm mb-2">
+            <div class="card-body">
+              <h2 class="display-6 fw-bold">{{ organization.name }}</h2>
+              {{ organization.description|safe }}
+              <a href="{{ organization.get_absolute_url }}" class="btn btn-primary">Смотреть</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      {% include "includes/pagination.html" %}
+    {% else %}
+      {% include "includes/empty.html" %}
+    {% endif %}
+  </div>
+{% endblock content %}

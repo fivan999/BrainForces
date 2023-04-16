@@ -1,0 +1,31 @@
+{% extends "organization/detail.html" %}
+
+{% block organization_page %}
+  <div class="col-12">
+    <div class="card shadow-sm mb-2">
+      <div class="card-body">
+        <h2 class="display-6 fw-bold">{{ post.name }}</h2>
+        {{ post.text|safe }}
+      </div>
+    </div>
+  </div>
+  <h2 class="display-7 fw-bold">Комментарии</h2>
+  <form method="post" class="d-flex mb-3">
+    {% csrf_token %}
+    <input class="form-control me-2" type="textarea" placeholder="Введите комментарий" name="comment_text" />
+    <button class="btn btn-primary" type="submit">Готово</button>
+  </form>
+  {% for comment in comments %}
+    <div class="col-12">
+      <div class="card shadow-sm mb-2">
+        <div class="card-body">
+          <span class="fw-bold">{{ comment.user.username }}</span><br/>
+          {{ comment.text }}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  <div class="col-12">
+    {% include "includes/pagination.html" %}
+  </div>
+{% endblock organization_page %}
