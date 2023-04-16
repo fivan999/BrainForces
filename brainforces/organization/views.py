@@ -82,7 +82,7 @@ class OrganizationListView(django.views.generic.ListView):
     context_object_name = 'organizations'
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return (
+        return list(
             organization.models.Organization.objects.filter_user_access(
                 user_pk=self.request.user.pk
             )
@@ -102,7 +102,7 @@ class OrganizationUsersView(
     paginate_by = 50
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return (
+        return list(
             organization.models.OrganizationToUser.objects.filter(
                 organization__pk=self.kwargs['pk']
             )
@@ -159,7 +159,7 @@ class OrganizationUsersView(
 
 
 class OrganizationQuizzesView(
-    OrganizationMixinView, django.views.generic.ListView
+    UserIsOrganizationMemberMixinView, django.views.generic.ListView
 ):
     """список соревнований организации"""
 
@@ -168,8 +168,14 @@ class OrganizationQuizzesView(
     paginate_by = 5
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
-            organized_by=self.kwargs['pk']
+        return list(
+            quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
+                django.db.models.Q(is_private=False)
+                | django.db.models.Q(
+                    organized_by__users__user__pk=self.request.user.pk
+                ),
+                organized_by__pk=self.kwargs['pk']
+            )
         )
 
 
@@ -259,7 +265,7 @@ class OrganizationPostsView(
     paginate_by = 5
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return (
+        return list(
             organization.models.OrganizationPost.objects.filter(
                 posted_by__pk=self.kwargs['pk']
             )
@@ -288,7 +294,7 @@ class PostCommentsView(
         return context
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return (
+        return list(
             organization.models.CommentToOrganizationPost.objects.filter(
                 post__pk=self.kwargs['post_pk']
             )
@@ -336,6 +342,7 @@ class QuizCreateView(django.views.generic.View):
             'quiz_form': quiz.forms.QuizForm(),
             'question_formset': quiz.forms.QuestionFormSet(),
             'variant_formset': quiz.forms.VariantFormSet(),
+            'user_is_admin': True
         }
         return django.shortcuts.render(
             request, 'organization/create_quiz.html', context
@@ -381,3 +388,21 @@ class QuizCreateView(django.views.generic.View):
         return django.shortcuts.render(
             request, 'organization/create_quiz.html', context
         )
+
+
+# class CreatePostView(
+#     UserIsOrganizationMemberMixinView, django.views.generic.edit.FormView
+# ):
+#     """создание публикации организации"""
+
+#     form_class = organization.forms.PostForm
+#     template_name = 'organization/create_post.html'
+
+#     def post(self, request: django.http.HttpRequest, pk: int) -> django.http.HttpResponse:
+#         """обрабатываем форму"""
+#         form = self.form_class(request.POST or None)
+#         if form.is_valid():
+#             post_obj = form.save(commit=False)
+#             post_obj.posted_by =
+#             return redirect(self.success_url)
+#         return render(request, self.template_name, {'form': form})

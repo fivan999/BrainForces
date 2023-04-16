@@ -143,7 +143,7 @@ class UserListView(django.views.generic.ListView):
 
     template_name = 'users/list.html'
     context_object_name = 'users'
-    queryset = (
+    queryset = list(
         users.models.User.objects.get_only_useful_list_fields().order_by(
             '-profile__rating'
         )
@@ -207,9 +207,9 @@ class UserAnswersView(UsernameMixinView, django.views.generic.ListView):
         useful_answer_fields = (
             quiz.models.UserAnswer.objects.get_only_useful_list_fields()
         )
-        return useful_answer_fields.filter(
+        return list(useful_answer_fields.filter(
             user__id=self.kwargs['pk']
-        ).order_by('-time_answered')
+        ).order_by('-time_answered'))
 
 
 class UserQuizzesView(UsernameMixinView, django.views.generic.ListView):
@@ -223,9 +223,9 @@ class UserQuizzesView(UsernameMixinView, django.views.generic.ListView):
         useful_quiz_results_fields = (
             quiz.models.QuizResults.objects.get_only_useful_list_fields()
         )
-        return useful_quiz_results_fields.filter(
+        return list(useful_quiz_results_fields.filter(
             user__pk=self.kwargs['pk']
-        ).order_by('-quiz__start_time')
+        ).order_by('-quiz__start_time'))
 
 
 class UserOrganizationsView(UsernameMixinView, django.views.generic.ListView):
@@ -236,7 +236,7 @@ class UserOrganizationsView(UsernameMixinView, django.views.generic.ListView):
     paginate_by = 15
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return (
+        return list(
             organization.models.OrganizationToUser.objects.filter(
                 user__pk=self.request.user.pk
             )

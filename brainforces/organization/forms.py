@@ -5,6 +5,7 @@ import django.db.models
 import django.forms
 
 import users.models
+import organization.models
 
 
 class InviteToOrganizationForm(django.forms.Form):
@@ -23,3 +24,11 @@ class InviteToOrganizationForm(django.forms.Form):
             raise django.core.exceptions.ValidationError('Ошибка')
         self.cleaned_data['user_obj'] = user
         return username
+
+
+class PostForm(django.forms.ModelForm):
+    """форма создания поста организации"""
+
+    class Meta:
+        model = organization.models.OrganizationPost
+        fields = ('name', 'text')
