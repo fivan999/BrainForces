@@ -88,7 +88,7 @@
         <th>Текст</th>
         <th>Правильность</th>
       </thead>
-      <tbody id="item-variants p-2">
+      <tbody id="variants p-2">
         {% for error in variant_formset.non_form_errors %}
           <div class="alert alert-danger" role="alert">
             {{ error|safe }}
@@ -116,10 +116,42 @@
         {% endfor %}
       </tbody>
     </table>
-    <a href="#" class="btn btn-primary">Добавить еще</a>
+    <a href="#" class="btn btn-primary add-variants">Добавить еще</a>
   </div>
 
   <button type="submit" class="btn btn-primary">Создать</button>
 </form>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function() {
+        // when user clicks add more btn of images
+      $('.add-images').click(function(ev) {
+          ev.preventDefault();
+          var count = $('#item-images').children().length;
+          var tmplMarkup = $('#images-template').html();
+          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+          $('#item-images').append(compiledTmpl);
+  
+          // update form count
+          $('#id_images-TOTAL_FORMS').attr('value', count+1);
+      });
+  });
+
+  $(document).ready(function() {
+    // when user clicks add more btn of variants
+      $('.add-variants').click(function(ev) {
+          ev.preventDefault();
+          var count = $('#variants').children().length;
+          var tmplMarkup = $('#variants-template').html();
+          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+          $('variants').append(compiledTmpl);
+  
+          // update form count
+          $('#id_variants-TOTAL_FORMS').attr('value', count+1);
+      });
+  });
+</script>
         
 {% endblock organization_page %}

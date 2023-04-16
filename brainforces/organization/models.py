@@ -46,8 +46,6 @@ class Organization(django.db.models.Model):
 class OrganizationToUser(django.db.models.Model):
     """связь организации с пользователем"""
 
-    objects = organization.managers.OrganizationToUserManager()
-
     class UserRoles(django.db.models.IntegerChoices):
         """роли пользователя в органицазии"""
 

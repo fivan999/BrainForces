@@ -57,7 +57,7 @@
                       {% endif %}
                     {% endif %}
                   {% else %}
-                    <a href="{% url 'organization:delete_user' org_pk=request.resolver_match.kwargs.pk user_pk=request.user.pk %}" class="nav-link">Покинуть организацию</a>
+                    <a href="{% url 'organization:delete_user' org_pk=request.resolver_match.kwargs.pk user_pk=request.user.pk %}" class="nav-link">Выйти</a>
                   {% endif %}
                 </td>
               {% endif %}

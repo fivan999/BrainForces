@@ -61,8 +61,9 @@ class OrganizationMainView(django.views.generic.DetailView):
         context = super().get_context_data(*args, **kwargs)
         org_user_manager = organization.models.OrganizationToUser.objects
         user = (
-            org_user_manager.get_organization_member(
-                org_pk=self.kwargs['pk'], user_pk=self.request.user.pk
+            org_user_manager.filter(
+                organization__pk=self.kwargs['pk'],
+                user__pk=self.request.user.pk,
             )
             .only('role')
             .first()
@@ -174,7 +175,7 @@ class OrganizationQuizzesView(
                 | django.db.models.Q(
                     organized_by__users__user__pk=self.request.user.pk
                 ),
-                organized_by__pk=self.kwargs['pk']
+                organized_by__pk=self.kwargs['pk'],
             )
         )
 
@@ -342,7 +343,7 @@ class QuizCreateView(django.views.generic.View):
             'quiz_form': quiz.forms.QuizForm(),
             'question_formset': quiz.forms.QuestionFormSet(),
             'variant_formset': quiz.forms.VariantFormSet(),
-            'user_is_admin': True
+            'user_is_admin': True,
         }
         return django.shortcuts.render(
             request, 'organization/create_quiz.html', context
@@ -390,19 +391,42 @@ class QuizCreateView(django.views.generic.View):
         )
 
 
-# class CreatePostView(
-#     UserIsOrganizationMemberMixinView, django.views.generic.edit.FormView
-# ):
-#     """создание публикации организации"""
+class CreatePostView(
+    UserIsOrganizationMemberMixinView, django.views.generic.edit.FormView
+):
+    """создание публикации организации"""
 
-#     form_class = organization.forms.PostForm
-#     template_name = 'organization/create_post.html'
+    form_class = organization.forms.PostForm
+    template_name = 'organization/create_post.html'
 
-#     def post(self, request: django.http.HttpRequest, pk: int) -> django.http.HttpResponse:
-#         """обрабатываем форму"""
-#         form = self.form_class(request.POST or None)
-#         if form.is_valid():
-#             post_obj = form.save(commit=False)
-#             post_obj.posted_by =
-#             return redirect(self.success_url)
-#         return render(request, self.template_name, {'form': form})
+    def get_context_data(self, *args, **kwargs) -> dict:
+        context = super().get_context_data(*args, **kwargs)
+        if not context['user_is_admin']:
+            raise django.http.Http404()
+        return context
+
+    def post(
+        self, request: django.http.HttpRequest, pk: int
+    ) -> django.http.HttpResponse:
+        """обрабатываем форму"""
+        if not organization.models.OrganizationToUser.objects.filter(
+            user__pk=self.request.user.pk, organization__pk=pk, role__in=(2, 3)
+        ).exists():
+            raise django.http.Http404()
+        form = self.form_class(request.POST or None)
+        if form.is_valid():
+            post_obj = form.save(commit=False)
+            post_obj.posted_by = organization.models.Organization.objects.get(
+                pk=pk
+            )
+            post_obj.save()
+            return django.shortcuts.redirect(self.get_success_url())
+        return django.shortcuts.render(
+            request, self.template_name, {'form': form}
+        )
+
+    def get_success_url(self) -> str:
+        """редиректим при успешной отправке формы"""
+        return django.urls.reverse_lazy(
+            'organization:create_post', kwargs={'pk': self.kwargs['pk']}
+        )
