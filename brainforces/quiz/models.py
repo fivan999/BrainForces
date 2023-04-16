@@ -207,6 +207,12 @@ class Variant(django.db.models.Model):
         help_text='вопрос, к которому относится вариант ответа',
     )
 
+    is_correct = django.db.models.BooleanField(
+        verbose_name='правильность ответа',
+        help_text='правильный ответ или нет',
+        default=False,
+    )
+
     class Meta:
         verbose_name = 'вариант ответа'
         verbose_name_plural = 'варианты ответов'

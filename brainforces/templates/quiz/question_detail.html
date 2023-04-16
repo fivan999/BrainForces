@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="container col-xxl-8">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url 'quiz:quiz_detail' pk=quiz_id%}">Задачи</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'quiz:user_answers_list' quiz_id=quiz_id %}">Мои попытки</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'quiz:standings_list' quiz_id=quiz_id %}">Положение</a>
+      </li>
+    </ul>
+    <div class="text-center">
+      <h3>{{question_number}}.{{question.name}}</h3>
+      <h5> сложность: {{question.difficulty}}</h5>
+    </div>
+
+
+    {% autoescape off %}
+        <p>{{question.text}}</p>
+    {% endautoescape %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <div class="row gy-3">
+          <div class="col-12">
+            {% include 'includes/form.html' with form=form %}
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock content %}
