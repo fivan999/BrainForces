@@ -6,24 +6,20 @@
   <div class="container col-xxl-8">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link active" href="{% url 'quiz:quiz_detail' pk=quiz_id%}">Задачи</a>
+        <a class="nav-link" href="{% url 'quiz:quiz_detail' pk=request.resolver_match.kwargs.quiz_id %}">Задачи</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'quiz:user_answers_list' quiz_id=quiz_id %}">Мои попытки</a>
+        <a class="nav-link" href="{% url 'quiz:user_answers_list' quiz_id=request.resolver_match.kwargs.quiz_id %}">Мои попытки</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'quiz:standings_list' quiz_id=quiz_id %}">Положение</a>
+        <a class="nav-link" href="{% url 'quiz:standings_list' quiz_id=request.resolver_match.kwargs.quiz_id %}">Положение</a>
       </li>
     </ul>
     <div class="text-center">
-      <h3>{{question_number}}.{{question.name}}</h3>
-      <h5> сложность: {{question.difficulty}}</h5>
+      <h3>{{ question.name }}</h3>
+      <h5> сложность: {{ question.difficulty }}</h5>
     </div>
-
-
-    {% autoescape off %}
-        <p>{{question.text}}</p>
-    {% endautoescape %}
+    <p>{{ question.text|safe }}</p>
     <form method="post">
       {% csrf_token %}
       <div class="form-group">

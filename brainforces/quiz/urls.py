@@ -18,7 +18,7 @@ urlpatterns = [
         name='quiz_detail',
     ),
     django.urls.path(
-        'question/<int:quiz_id>/<int:question_number>/<int:pk>/',
+        '<int:quiz_id>/questions/<int:pk>/',
         quiz.views.QuestionDetailView.as_view(),
         name='question_detail',
     ),

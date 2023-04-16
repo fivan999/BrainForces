@@ -57,24 +57,19 @@ class QuestionDetailView(django.views.generic.DetailView):
     def get_context_data(self, *args, **kwargs) -> typing.Dict:
         """Дополняем контекст информацией об id викторины
         в которой сейчас участвуют и порядковым номером вопроса"""
-        context = super(QuestionDetailView, self).get_context_data(
-            *args, **kwargs
-        )
+        context = super().get_context_data(*args, **kwargs)
         variants = quiz.models.Variant.objects.filter(
             question__id=self.kwargs['pk']
         )
-        arr = []
-        for variant in variants:
-            arr.append((variant.id, variant.text))
-        context['quiz_id'] = self.kwargs['quiz_id']
-        context['question_number'] = self.kwargs['question_number']
         form = quiz.forms.AnswerForm()
-        form.fields['answers'].choices = arr
+        form.fields['answers'].choices = [
+            (variant.id, variant.text) for variant in variants
+        ]
         context['form'] = form
         return context
 
     def post(
-        self, request: django.http.HttpRequest, *args, **kwargs
+        self, request: django.http.HttpRequest
     ) -> django.http.HttpResponse:
         """сохраняем ответ пользователя"""
         is_correct = (
@@ -102,7 +97,7 @@ class UserAnswersList(django.views.generic.ListView):
     context_object_name = 'answers'
     paginate_by = 40
 
-    def get_queryset(self, *args, **kwargs) -> django.db.models.QuerySet:
+    def get_queryset(self) -> django.db.models.QuerySet:
         """получаем queryset"""
         useful_answer_fields = (
             quiz.models.UserAnswer.objects.get_only_useful_list_fields()
@@ -112,20 +107,11 @@ class UserAnswersList(django.views.generic.ListView):
             )
             .order_by('-time_answered')
         )
-        return useful_answer_fields
-
-    def get_context_data(self, *args, **kwargs) -> typing.Dict:
-        """Дополняем контекст информацией об id викторины
-        в которой сейчас участвуют"""
-        context = super(UserAnswersList, self).get_context_data(
-            *args, **kwargs
-        )
-        context['quiz_id'] = self.kwargs['quiz_id']
-        return context
+        return list(useful_answer_fields)
 
 
 class StandingsList(django.views.generic.ListView):
-    """`положение`"""
+    """положение"""
 
     template_name = 'quiz/user_answers_list.html'
     context_object_name = 'answers'
@@ -140,11 +126,4 @@ class StandingsList(django.views.generic.ListView):
             )
             .order_by('-time_answered')
         )
-        return useful_answer_fields
-
-    def get_context_data(self, *args, **kwargs) -> typing.Dict:
-        """Дополняем контекст информацией об id викторины
-        в которой сейчас участвуют"""
-        context = super(StandingsList, self).get_context_data(*args, **kwargs)
-        context['quiz_id'] = self.kwargs['quiz_id']
-        return context
+        return list(useful_answer_fields)
