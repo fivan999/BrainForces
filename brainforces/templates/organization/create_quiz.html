@@ -3,155 +3,73 @@
 {% load widget_tweaks %}
 
 {% block organization_page %}
-<form enctype="multipart/form-data" method="post">
-  {% csrf_token %}
-  <div class="card">
-    <div class="card-header card-header-secondary">
-      <h4 class="card-title">Создать викторину</h4>
+  <form enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    <div class="card mb-4">
+      <div class="card-header card-header-secondary">
+        <h4 class="card-title">Создать викторину</h4>
+      </div>
+      <div class="card-body p-2">
+        {% for error in quiz_form.non_field_errors %}
+          <div class="alert alert-danger" role="alert">
+            {{ error|safe }}
+          </div>
+        {% endfor %}
+        {% for field in quiz_form.visible_fields %}
+          <p>
+            {{ field.label }}
+            {% if field.name == 'description' %}
+              {{ field }}<br/>
+            {% elif field.name == 'is_private' or field.name == 'is_rated' %}
+              {{ field|add_class:'form-check-input' }}
+            {% else %}
+              {{ field|add_class:'form-control' }}
+            {% endif %}
+            <small><span class="text-muted">{{ field.help_text }}</span></small>
+            {% for error in field.errors %}
+              <div class="alert alert-danger" role="alert">
+                {{ error|safe }}
+              </div>
+            {% endfor %}
+          </p>
+        {% endfor %}
+      </div>
     </div>
-    <div class="card-body p-2">
-      {% for error in quiz_form.non_field_errors %}
-        <div class="alert alert-danger" role="alert">
-          {{ error|safe }}
+    {{ question_formset.management_form }}
+    {% for error in question_formset.non_form_errors %}
+      <div class="alert alert-danger" role="alert">
+        {{ error|safe }}
+      </div>
+    {% endfor %}
+    {% for form in question_formset %}
+      <div class="card mb-4">
+        <div class="card-header card-header-secondary">
+          <h4 class="card-title">Добавить вопрос {{ forloop.counter }}</h4>
         </div>
-      {% endfor %}
-      {% for field in quiz_form.visible_fields %}
-        <p>
-          {{ field.label }}
-          {% if field.name == 'description' %}
-            {{ field }}
-          {% elif field.name == 'is_private' or field.name == 'is_rated' %}
-            {{ field|add_class:'form-check-input' }}
-          {% else %}
-            {{ field|add_class:'form-control' }}
-          {% endif %}
-          <small><span class="text-muted">{{ field.help_text }}</span></small>
-          {% for error in field.errors %}
-            <div class="alert alert-danger" role="alert">
-              {{ error|safe }}
-            </div>
+        <div class="card-body p-2">
+          {% for field in form.visible_fields %}
+            <p>
+              {% if field.name != 'DELETE' %}
+                {{ field.label }}
+                {% if field.name == 'is_correct' %}
+                  {{ field|add_class:'form-check-input' }}
+                {% elif field.name == 'text' %}
+                  {{ field }}<br/>
+                {% else %}
+                  {{ field|add_class:'form-control' }}
+                {% endif %}
+                <small><span class="text-muted">{{ field.help_text }}</span></small>
+                {% for error in field.errors %}
+                  <div class="alert alert-danger" role="alert">
+                    {{ error|safe }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            </p>
           {% endfor %}
-        </p>
-      {% endfor %}
-    </div>
-  </div>
-
-  {{ question_formset.management_form }}
-  <div class="table-responsive card mt-4">
-    <div class="card-header card-header-secondary">
-      <h4 class="card-title">Добавить вопросы</h4>
-    </div>
-    <table class="table card-body">
-      <thead class="text-secondary">
-        <th>Название</th>
-        <th>Текст</th>
-        <th>Сложность</th>
-      </thead>
-      <tbody id="item-questions p-2">
-        {% for error in question_formset.non_form_errors %}
-          <div class="alert alert-danger" role="alert">
-            {{ error|safe }}
-          </div>
-        {% endfor %}
-        {% for form in question_formset %}
-          <tr>
-            {% for field in form.visible_fields %}
-              <td>
-                {% if field.name != 'DELETE' %}
-                  {% if field.name != 'text' %}
-                    {{ field|add_class:'form-control' }}
-                  {% else %}
-                    {{ field }}
-                  {% endif %}
-                  {% for error in field.errors %}
-                    <div class="alert alert-danger" role="alert">
-                      {{ error|safe }}
-                    </div>
-                  {% endfor %}
-                {% endif %}
-              </td>
-            {% endfor %}
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <a href="#" id="add-image-button" class="btn btn-primary">Добавить еще</a>
-  </div>
-
-  {{ variant_formset.management_form }}
-  <div class="table-responsive card mt-4">
-    <div class="card-header card-header-secondary">
-      <h4 class="card-title">Добавить варианты ответа</h4>
-    </div>
-    <table class="table card-header">
-      <thead class="text-secondary">
-        <th>Текст</th>
-        <th>Правильность</th>
-      </thead>
-      <tbody id="variants p-2">
-        {% for error in variant_formset.non_form_errors %}
-          <div class="alert alert-danger" role="alert">
-            {{ error|safe }}
-          </div>
-        {% endfor %}
-        {% for form in variant_formset %}
-          <tr>
-            {% for field in form.visible_fields %}
-              <td>
-                {% if field.name != 'DELETE' %}
-                  {% if field.name == 'is_correct' %}
-                    {{ field|add_class:'form-check-input' }}
-                  {% else %}
-                    {{ field|add_class:'form-control' }}
-                  {% endif %}
-                  {% for error in field.errors %}
-                    <div class="alert alert-danger" role="alert">
-                      {{ error|safe }}
-                    </div>
-                  {% endfor %}
-                {% endif %}
-              </td>
-            {% endfor %}
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <a href="#" class="btn btn-primary add-variants">Добавить еще</a>
-  </div>
-
-  <button type="submit" class="btn btn-primary">Создать</button>
-</form>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-
-<script>
-    $(document).ready(function() {
-        // when user clicks add more btn of images
-      $('.add-images').click(function(ev) {
-          ev.preventDefault();
-          var count = $('#item-images').children().length;
-          var tmplMarkup = $('#images-template').html();
-          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-          $('#item-images').append(compiledTmpl);
-  
-          // update form count
-          $('#id_images-TOTAL_FORMS').attr('value', count+1);
-      });
-  });
-
-  $(document).ready(function() {
-    // when user clicks add more btn of variants
-      $('.add-variants').click(function(ev) {
-          ev.preventDefault();
-          var count = $('#variants').children().length;
-          var tmplMarkup = $('#variants-template').html();
-          var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-          $('variants').append(compiledTmpl);
-  
-          // update form count
-          $('#id_variants-TOTAL_FORMS').attr('value', count+1);
-      });
-  });
-</script>
-        
+        </div>
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary mb-3">Создать</button>
+  </form>
 {% endblock organization_page %}
