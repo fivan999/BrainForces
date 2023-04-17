@@ -21,7 +21,7 @@ class OrganizationMixinView(django.views.generic.View):
             organization.models.Organization.objects.filter_user_access(
                 user_pk=self.request.user.pk
             ).only('name'),
-            pk=self.kwargs['pk']
+            pk=self.kwargs['pk'],
         )
         context['organization'] = organization_obj
         return context
@@ -396,6 +396,7 @@ class QuizCreateView(
                     pk=self.kwargs['pk']
                 )
             )
+            quiz_obj.creator = request.user
             question_objects = list()
             variants_objects = list()
             formset_valid = True

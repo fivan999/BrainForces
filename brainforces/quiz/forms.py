@@ -1,4 +1,3 @@
-import django.forms
 import django.core.exceptions
 import django.forms
 
@@ -6,17 +5,12 @@ import quiz.models
 
 
 class AnswerForm(django.forms.Form):
-    CHOICES = []
-    answers = django.forms.ChoiceField(
+    answer = django.forms.ChoiceField(
         required=True,
-        choices=CHOICES,
+        choices=[],
         widget=django.forms.RadioSelect(),
-        label='Ответы:',
+        label='Варианты ответа:',
     )
-
-    def get_user_answer(self) -> int:
-        answer = self.cleaned_data['answers']
-        return answer[0]
 
 
 class QuizQuestionsNumberForm(django.forms.Form):

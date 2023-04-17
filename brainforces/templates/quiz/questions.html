@@ -11,15 +11,11 @@
     </thead>
     <tbody>
       {% for question in questions %}
-        {% with forloop.counter as number %}
-          <tr>
-            <th scope="row">{{ number }}</th>
-            <td> <a href="{% url 'quiz:question_detail' pk=quiz.id question_pk=question.pk %}"> {{ question.name }} </a></td>
-            {% with question.useranswer_question.all|first as user_answer %}
-              <td class={% if user_answer.is_correct == True %} "table-success" {% elif user_answer.is_correct == False %} "table-danger" {% endif %}></td>
-            {% endwith %}
-          </tr>
-        {% endwith %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td> <a href="{% url 'quiz:question_detail' pk=quiz.pk question_pk=question.pk %}"> {{ question.name }} </a></td>
+          <td class="{% if question.total_answers > 0 and question.success_answers > 0 %}table-success{% elif question.total_answers > 0 %}table-danger{% endif %}"></td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>

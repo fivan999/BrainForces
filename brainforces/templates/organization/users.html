@@ -48,16 +48,16 @@
                   {% if user.user.id != request.user.id %}
                     {% if user.role < organization_to_user.role %}
                       {% if user.role == 2 or user.role == 1 %}
-                        <a href="{% url 'organization:delete_user' org_pk=request.resolver_match.kwargs.pk user_pk=user.user.pk %}" class="nav-link">Удалить</a>
+                        <a href="{% url 'organization:delete_user' pk=request.resolver_match.kwargs.pk user_pk=user.user.pk %}" class="nav-link">Удалить</a>
                       {% endif %}
                       {% if user.role == 2 %}
-                        <a href="{% url 'organization:update_user_role' org_pk=request.resolver_match.kwargs.pk user_pk=user.user.pk new_role=1 %}" class="nav-link">Понизить</a>
+                        <a href="{% url 'organization:update_user_role' pk=request.resolver_match.kwargs.pk user_pk=user.user.pk new_role=1 %}" class="nav-link">Понизить</a>
                       {% elif user.role == 1 and user.role < organization_to_user.role %}
-                        <a href="{% url 'organization:update_user_role' org_pk=request.resolver_match.kwargs.pk user_pk=user.user.pk new_role=2 %}" class="nav-link">Повысить</a>
+                        <a href="{% url 'organization:update_user_role' pk=request.resolver_match.kwargs.pk user_pk=user.user.pk new_role=2 %}" class="nav-link">Повысить</a>
                       {% endif %}
                     {% endif %}
                   {% else %}
-                    <a href="{% url 'organization:delete_user' org_pk=request.resolver_match.kwargs.pk user_pk=request.user.pk %}" class="nav-link">Выйти</a>
+                    <a href="{% url 'organization:delete_user' pk=request.resolver_match.kwargs.pk user_pk=request.user.pk %}" class="nav-link">Выйти</a>
                   {% endif %}
                 </td>
               {% endif %}

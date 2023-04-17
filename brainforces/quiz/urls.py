@@ -32,4 +32,9 @@ urlpatterns = [
         quiz.views.QuestionsView.as_view(),
         name='questions',
     ),
+    django.urls.path(
+        '<int:pk>/register/',
+        quiz.views.QuizRegistrationView.as_view(),
+        name='register',
+    ),
 ]

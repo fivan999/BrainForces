@@ -1,49 +1,32 @@
-{% extends "base.html" %}
+{% extends "quiz/detail.html" %}
 
-{% load static %}
-
-{% block content %}
-  <div class="container col-xxl-8">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'quiz:quiz_detail' pk=request.resolver_match.kwargs.quiz_id %}">Задачи</a>
-      </li>
-      {% with request.resolver_match.view_name as view_name %}
-      <li class="nav-item">
-        <a class="nav-link {% if view_name == 'quiz:user_answers_list' %}active {%endif%}" href="{% url 'quiz:user_answers_list' quiz_id=request.resolver_match.kwargs.quiz_id %}">Мои попытки</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {% if view_name == 'quiz:standings_list' %}active {%endif%}" href="{% url 'quiz:standings_list' quiz_id=request.resolver_match.kwargs.quiz_id %}">Положение</a>
-      </li>
-      {% endwith %}
-    </ul>
-    <div class="p-3">
-      <table class="table">
-        <thead>
+{% block quiz_page %}
+  <div class="p-3">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">№</th>
+          <th scope="col">Когда</th>
+          <th scope="col">Кто</th>
+          <th scope="col">Вопрос</th>
+          <th scope="col">Вердикт</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for answer in answers %}
           <tr>
-            <th scope="col">№</th>
-            <th scope="col">Когда</th>
-            <th scope="col">Кто</th>
-            <th scope="col">Вопрос</th>
-            <th scope="col">Вердикт</th>
+            <td>{{ forloop.revcounter }}</td>
+            <td>{{ answer.time_answered|date:'Y.m.d H:m:s' }}</td>
+            <td>{{ answer.user.username }}</td>
+            <td>{{ answer.question.id }} - {{ answer.question.name }}</td>
+            <td>
+              <span class="text-{% if answer.is_correct %}success{% else %}danger{% endif %}">
+              {% if answer.is_correct %}Верно{% else %}Неверно{% endif %}
+              </span>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {% for answer in answers %}
-            <tr>
-              <td>{{ forloop.revcounter }}</td>
-              <td>{{ answer.time_answered|date:'Y.m.d H:m:s' }} UTC</td>
-              <td>{{ answer.user.username }}</td>
-              <td>{{ answer.question.id }} - {{ answer.question.name }}</td>
-              <td>
-                <span class="text-{% if answer.is_correct %}success{% else %}danger{% endif %}">
-                {% if answer.is_correct %}Верно{% else %}Неверно{% endif %}
-                </span>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-{% endblock %}
+{% endblock quiz_page %}

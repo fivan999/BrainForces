@@ -6,7 +6,7 @@ import django.views.generic
 import quiz.models
 
 
-class ArchiveView(django.views.generic.ListView):
+class ArchiveQuestionsView(django.views.generic.ListView):
     """список архивных вопросов"""
 
     template_name = 'archive/archive.html'
@@ -39,11 +39,3 @@ class ArchiveView(django.views.generic.ListView):
         context = super().get_context_data(*args, **kwargs)
         context['searched'] = self.request.GET.get('searched', '')
         return context
-
-
-class ArchiveQuestionView(django.views.generic.DetailView):
-    """архивный вопрос"""
-
-    template_name = 'archive/question_detail.html'
-    context_object_name = 'question'
-    queryset = quiz.models.Question.objects.get_only_useful_list_fields()

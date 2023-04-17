@@ -136,7 +136,7 @@ LOGIN_ATTEMPTS = int(os.environ.get('LOGIN_ATTEMPTS', default=3))
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
