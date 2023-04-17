@@ -22,12 +22,12 @@ urlpatterns = [
         name='quizzes',
     ),
     django.urls.path(
-        '<int:org_pk>/users/<int:user_pk>/delete/',
+        '<int:pk>/users/<int:user_pk>/delete/',
         organization.views.DeleteUserFromOrganizationView.as_view(),
         name='delete_user',
     ),
     django.urls.path(
-        '<int:org_pk>/users/<int:user_pk>/update/<int:new_role>/',
+        '<int:pk>/users/<int:user_pk>/update/<int:new_role>/',
         organization.views.UpdateUserOrganizationRoleView.as_view(),
         name='update_user_role',
     ),

@@ -1,0 +1,26 @@
+{% extends "quiz/detail.html" %}
+
+{% block quiz_page %}
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">№</th>
+        <th scope="col">Название</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for question in questions %}
+        {% with forloop.counter as number %}
+          <tr>
+            <th scope="row">{{ number }}</th>
+            <td> <a href="{% url 'quiz:question_detail' pk=quiz.id question_pk=question.pk %}"> {{ question.name }} </a></td>
+            {% with question.useranswer_question.all|first as user_answer %}
+              <td class={% if user_answer.is_correct == True %} "table-success" {% elif user_answer.is_correct == False %} "table-danger" {% endif %}></td>
+            {% endwith %}
+          </tr>
+        {% endwith %}
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock quiz_page %}

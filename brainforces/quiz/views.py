@@ -9,39 +9,45 @@ import quiz.forms
 import quiz.models
 
 
+class QuizMixinView(django.views.generic.View):
+    """дополняем контекст именем организации и проверяем доступ пользователя"""
+
+    def get_context_data(self, *args, **kwargs) -> dict:
+        context = super().get_context_data(*args, **kwargs)
+        organization_obj = (
+            quiz.models.Organization.objects.filter_user_access(
+                user_pk=self.request.user.pk,
+            )
+            .only('name')
+            .first()
+        )
+        context['organization'] = organization_obj
+        return context
+
+
 class QuizDetailView(django.views.generic.DetailView):
     """детальная информация о викторине"""
 
-    model = quiz.models.Quiz
+    queryset = quiz.models.Quiz.objects.get_only_useful_list_fields()
     template_name = 'quiz/quiz_detail.html'
     context_object_name = 'quiz'
 
+
+class QuestionsView(django.views.generic.ListView):
+    """список вопросов в викторине"""
+
+    template_name = 'quiz/questions.html'
+    context_object_name = 'questions'
+
     def get_queryset(self) -> django.db.models.QuerySet:
-        return (
-            quiz.models.Quiz.objects.select_related('creator')
-            .prefetch_related(
-                django.db.models.Prefetch(
-                    'quiz_question',
-                    queryset=(
-                        quiz.models.Question.objects.prefetch_related(
-                            django.db.models.Prefetch(
-                                'useranswer_question',
-                                queryset=quiz.models.UserAnswer.objects.filter(
-                                    user__id=self.request.user.id
-                                ),
-                            )
-                        )
-                    ),
-                )
-            )
-            .only(
-                'name',
-                'description',
-                'start_time',
-                'duration',
-                'creator__username',
-                'id',
-                'status',
+        return quiz.models.Question.objects.filter(
+            quiz__pk=self.kwargs['pk']
+        ).prefetch_related(
+            django.db.models.Prefetch(
+                'useranswer_question',
+                queryset=quiz.models.UserAnswer.objects.filter(
+                    user__id=self.request.user.id
+                ),
             )
         )
 
@@ -69,7 +75,7 @@ class QuestionDetailView(django.views.generic.DetailView):
         return context
 
     def post(
-        self, request: django.http.HttpRequest
+        self, request: django.http.HttpRequest, pk: int, question_pk: int
     ) -> django.http.HttpResponse:
         """сохраняем ответ пользователя"""
         is_correct = (
@@ -80,13 +86,13 @@ class QuestionDetailView(django.views.generic.DetailView):
         answer = quiz.models.UserAnswer(
             user=request.user,
             question=(
-                quiz.models.Question.objects.filter(pk=self.kwargs['pk'])[0]
+                quiz.models.Question.objects.filter(pk=pk)[0]
             ),
             is_correct=is_correct,
         )
         answer.save()
         return django.shortcuts.redirect(
-            'quiz:user_answers_list', quiz_id=self.kwargs['quiz_id']
+            'quiz:user_answers_list', pk=pk
         )
 
 

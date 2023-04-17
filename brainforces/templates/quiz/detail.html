@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="container col-xxl-9 mb-4">
+    {% with request.resolver_match.view_name as view_name %}
+      <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'quiz:quiz_detail' %}active{% else %}text-dark{% endif %}" {% if view_name == 'quiz:quiz_detail' %}aria-current="page"{% endif %} href="{% url 'quiz:quiz_detail' pk=request.resolver_match.kwargs.pk %}">Описание</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'quiz:questions' %}active{% else %}text-dark{% endif %}" {% if view_name == 'quiz:questions' %}aria-current="page"{% endif %} href="{% url 'quiz:questions' pk=request.resolver_match.kwargs.pk %}">Вопросы</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'quiz:user_answers_list' %}active{% else %}text-dark{% endif %}" {% if view_name == 'quiz:user_answers_list' %}aria-current="page"{% endif %} href="{% url 'quiz:user_answers_list' pk=request.resolver_match.kwargs.pk %}">Мои попытки</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'quiz:standings_list' %}active{% else %}text-dark{% endif %}" {% if view_name == 'quiz:standings_list' %}aria-current="page"{% endif %} href="{% url 'quiz:standings_list' pk=request.resolver_match.kwargs.pk %}">Положение</a>
+        </li>
+      </ul>
+    {% endwith %}
+    <div class="row flex-lg-row-reverse align-items-center">
+      {% block quiz_page %}{% endblock quiz_page %}
+    </div>
+  </div>
+{% endblock content %}

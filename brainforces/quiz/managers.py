@@ -11,6 +11,7 @@ class QuizManager(django.db.models.Manager):
         return (
             self.get_queryset()
             .select_related('creator')
+            .select_related('organized_by')
             .only(
                 'name',
                 'description',
@@ -18,6 +19,7 @@ class QuizManager(django.db.models.Manager):
                 'duration',
                 'status',
                 'start_time',
+                'organized_by__name',
             )
             .order_by('-start_time')
         )

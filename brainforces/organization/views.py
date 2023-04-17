@@ -15,12 +15,11 @@ class OrganizationMixinView(django.views.generic.View):
 
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
-        organization_obj = (
+        organization_obj = django.shortcuts.get_object_or_404(
             organization.models.Organization.objects.filter_user_access(
                 user_pk=self.request.user.pk
-            )
-            .only('name')
-            .first()
+            ).only('name'),
+            pk=self.kwargs['pk']
         )
         context['organization'] = organization_obj
         return context
@@ -55,7 +54,7 @@ class OrganizationMainView(django.views.generic.DetailView):
         org_user_manager = organization.models.OrganizationToUser.objects
         user = (
             org_user_manager.get_organization_member(
-                org_pk=self.kwargs['pk'], user_pk=self.request.user.pk
+                pk=self.kwargs['pk'], user_pk=self.request.user.pk
             )
             .only('role')
             .first()
@@ -175,24 +174,24 @@ class DeleteUserFromOrganizationView(django.views.generic.View):
     """удаляем пользователя из организации"""
 
     def get(
-        self, request: django.http.HttpRequest, org_pk: int, user_pk: int
+        self, request: django.http.HttpRequest, pk: int, user_pk: int
     ) -> django.http.HttpResponsePermanentRedirect:
         if (
             request.user.pk == user_pk
             or organization.models.OrganizationToUser.objects.filter(
-                organization__pk=org_pk,
+                organization__pk=pk,
                 user__pk=request.user.pk,
                 role__in=(2, 3),
             ).exists()
         ):
             organization.models.OrganizationToUser.objects.filter(
-                user__pk=user_pk, organization__pk=org_pk
+                user__pk=user_pk, organization__pk=pk
             ).delete()
             django.contrib.messages.success(request, 'Успешно')
         else:
             django.contrib.messages.error(request, 'Ошибка')
         return django.shortcuts.redirect(
-            django.urls.reverse('organization:users', kwargs={'pk': org_pk})
+            django.urls.reverse('organization:users', kwargs={'pk': pk})
         )
 
 
@@ -202,13 +201,13 @@ class UpdateUserOrganizationRoleView(django.views.generic.View):
     def get(
         self,
         request: django.http.HttpRequest,
-        org_pk: int,
+        pk: int,
         user_pk: int,
         new_role: int,
     ) -> django.http.HttpResponsePermanentRedirect:
         if (
             organization.models.OrganizationToUser.objects.filter(
-                organization__pk=org_pk,
+                organization__pk=pk,
                 user__pk=request.user.pk,
                 role__in=(2, 3),
             ).exists()
@@ -216,13 +215,13 @@ class UpdateUserOrganizationRoleView(django.views.generic.View):
             and new_role == 1
         ):
             organization.models.OrganizationToUser.objects.filter(
-                user__pk=user_pk, organization__pk=org_pk
+                user__pk=user_pk, organization__pk=pk
             ).update(role=new_role)
             django.contrib.messages.success(request, 'Успешно')
         else:
             django.contrib.messages.error(request, 'Ошибка')
         return django.shortcuts.redirect(
-            django.urls.reverse('organization:users', kwargs={'pk': org_pk})
+            django.urls.reverse('organization:users', kwargs={'pk': pk})
         )
 
 

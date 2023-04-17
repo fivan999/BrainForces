@@ -1,47 +1,13 @@
-{% extends "base.html" %}
+{% extends "quiz/detail.html" %}
 
-{% load static %}
-
-{% block content %}
-  <div class="container col-xxl-8">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link active" href="{% url 'quiz:quiz_detail' pk=quiz.id %}">Задачи</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'quiz:user_answers_list' quiz_id=quiz.id %}">Мои попытки</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'quiz:standings_list' quiz_id=quiz.id %}">Положение</a>
-      </li>
-    </ul>
-    <h3 class="display-8 fw-bold lh-1 mb-3">{{ quiz.name }}</h3>
-    <span class="badge badge-pill text-bg-primary">{{ quiz.get_status_display }}</span>
-    <p class="lead">{{ quiz.description|safe }}</p>
-    <p class="lead">Начало: {{ quiz.start_time }}</p>
-    <p class="lead">Продолжительность: {{ quiz.duration }} минут</p>
-    <p class="lead">Создатель викторины: <span class="badge badge-pill text-bg-secondary">{{ quiz.creator.username }}</span></p>
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th scope="col">№</th>
-          <th scope="col">Название</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for question in quiz.quiz_question.all %}
-          {% with forloop.counter as number %}
-          <tr>
-            <th scope="row"> <a href="{% url 'quiz:question_detail' pk=question.pk quiz_id=quiz.id %}"> {{ number }} </a></th>
-            <td> <a href="{% url 'quiz:question_detail' pk=question.pk quiz_id=quiz.id %}"> {{ question.name }} </a></td>
-            {% with question.useranswer_question.all|first as user_answer %}
-              <td class={% if user_answer.is_correct == True %} "table-success" {% elif user_answer.is_correct == False %} "table-danger" {% endif %}></td>
-            {% endwith %}
-          <tr>
-          {% endwith %}
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-{% endblock content %}
+{% block quiz_page %}
+  <h3 class="display-8 fw-bold lh-1 mb-3">{{ quiz.name }}</h3>
+  <div><span class="badge badge-pill text-bg-primary">{{ quiz.get_status_display }}</span></div>
+  <p class="lead">{{ quiz.description|safe }}</p>
+  <p class="lead">Начало: {{ quiz.start_time }}</p>
+  <p class="lead">Продолжительность: {{ quiz.duration }} минут</p>
+  <p class="lead">Создатель викторины: <span class="badge badge-pill text-bg-secondary">{{ quiz.creator.username }}</span></p>
+  {% if quiz.organized_by.name %}
+    <p class="lead">Организация: <span class="badge badge-pill text-bg-secondary">{{ quiz.organized_by.name }}</span></p>
+  {% endif %}
+{% endblock quiz_page %}

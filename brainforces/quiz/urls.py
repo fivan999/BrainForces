@@ -8,7 +8,7 @@ app_name = 'quiz'
 
 urlpatterns = [
     django.urls.path(
-        '<int:quiz_id>/user_answers/',
+        '<int:pk>/user_answers/',
         quiz.views.UserAnswersList.as_view(),
         name='user_answers_list',
     ),
@@ -18,13 +18,18 @@ urlpatterns = [
         name='quiz_detail',
     ),
     django.urls.path(
-        '<int:quiz_id>/questions/<int:pk>/',
+        '<int:pk>/questions/<int:question_pk>/',
         quiz.views.QuestionDetailView.as_view(),
         name='question_detail',
     ),
     django.urls.path(
-        '<int:quiz_id>/standings/',
+        '<int:pk>/standings/',
         quiz.views.StandingsList.as_view(),
         name='standings_list',
+    ),
+    django.urls.path(
+        '<int:pk>/questions/',
+        quiz.views.QuestionsView.as_view(),
+        name='questions',
     ),
 ]
