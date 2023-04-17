@@ -46,4 +46,19 @@ urlpatterns = [
         organization.views.PostCommentsView.as_view(),
         name='post_detail',
     ),
+    django.urls.path(
+        '<int:pk>/create_quiz/',
+        organization.views.ChooseQuizQuestionsNumber.as_view(),
+        name='choose_questions_number',
+    ),
+    django.urls.path(
+        '<int:pk>/create_quiz/<int:num_questions>/',
+        organization.views.QuizCreateView.as_view(),
+        name='create_quiz',
+    ),
+    django.urls.path(
+        '<int:pk>/create_post/',
+        organization.views.CreatePostView.as_view(),
+        name='create_post',
+    ),
 ]

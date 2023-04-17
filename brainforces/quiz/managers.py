@@ -73,7 +73,7 @@ class QuestionManager(django.db.models.Manager):
         """только нужные поля для списка архивных вопросов"""
         return (
             self.get_queryset()
-            .filter(quiz__status=3)
+            .filter(quiz__status=3, quiz__is_private=False)
             .only(
                 'id',
                 'name',

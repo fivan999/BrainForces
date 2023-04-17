@@ -68,7 +68,7 @@ class Quiz(django.db.models.Model):
     )
 
     start_time = django.db.models.DateTimeField(
-        help_text='Назначьте стартовое время для Вашей викторины',
+        help_text='Время начала викторины в формате день.месяц.год',
         null=True,
         blank=True,
         verbose_name='стартовое время',
@@ -234,8 +234,8 @@ class Variant(django.db.models.Model):
     )
 
     is_correct = django.db.models.BooleanField(
-        verbose_name='правильность ответа',
-        help_text='правильный ответ или нет',
+        verbose_name='правильность варианта',
+        help_text='правильный вариант или нет',
         default=False,
     )
 
