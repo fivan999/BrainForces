@@ -10,12 +10,12 @@
         <h4 class="card-title">Создать викторину</h4>
       </div>
       <div class="card-body p-2">
-        {% for error in quiz_form.non_field_errors %}
+        {% for error in form.non_field_errors %}
           <div class="alert alert-danger" role="alert">
             {{ error|safe }}
           </div>
         {% endfor %}
-        {% for field in quiz_form.visible_fields %}
+        {% for field in form.visible_fields %}
           <p>
             {{ field.label }}
             {% if field.name == 'description' %}

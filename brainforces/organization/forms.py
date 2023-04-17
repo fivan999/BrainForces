@@ -1,5 +1,3 @@
-import typing
-
 import django.core.exceptions
 import django.db.models
 import django.forms
@@ -13,7 +11,7 @@ class InviteToOrganizationForm(django.forms.Form):
 
     username = django.forms.CharField(help_text='Имя или почта')
 
-    def clean_username(self) -> typing.Union[str, None]:
+    def clean_username(self) -> str:
         """валидируем пользователя"""
         username = self.cleaned_data['username']
         user = users.models.User.objects.filter(

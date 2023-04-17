@@ -1,5 +1,6 @@
 import django.contrib.messages
 import django.db.models
+import django.forms
 import django.http
 import django.shortcuts
 import django.urls
@@ -9,7 +10,6 @@ import organization.forms
 import organization.models
 import quiz.forms
 import quiz.models
-import django.forms
 
 
 class OrganizationMixinView(django.views.generic.View):
@@ -131,7 +131,6 @@ class OrganizationUsersView(
                 organization.models.Organization,
                 pk=pk,
             )
-            invited_user = form.cleaned_data['user_obj']
 
             invitation_allowed = (
                 organization.models.OrganizationToUser.objects.filter(
@@ -142,15 +141,14 @@ class OrganizationUsersView(
             ).exists()
 
             if invitation_allowed:
-                try:
-                    organization.models.OrganizationToUser.objects.create(
-                        user=invited_user, role=0, organization=org_obj
-                    )
-                    django.contrib.messages.success(
-                        request, 'Приглашение отправлено'
-                    )
-                except Exception:
-                    django.contrib.messages.error(request, 'Ошибка')
+                organization.models.OrganizationToUser.objects.create(
+                    user=form.cleaned_data['user_obj'],
+                    role=0,
+                    organization=org_obj,
+                )
+                django.contrib.messages.success(
+                    request, 'Приглашение отправлено'
+                )
             else:
                 django.contrib.messages.error(request, 'Ошибка')
         else:
@@ -237,7 +235,6 @@ class UpdateUserOrganizationRoleView(ActionWithUserView):
         new_role: int,
     ) -> django.http.HttpResponsePermanentRedirect:
         super().get(request, org_pk, user_pk)
-        print(self.self_user, self.target_user)
         if (
             self.self_user
             and self.target_user
@@ -338,16 +335,24 @@ class ChooseQuizQuestionsNumber(
     template_name = 'organization/choose_questions_num.html'
     form_class = quiz.forms.QuizQuestionsNumberForm
 
+    def get_context_data(self, *args, **kwargs) -> dict:
+        """проверка на админа"""
+        context = super().get_context_data(*args, **kwargs)
+        if not context['user_is_admin']:
+            raise django.http.Http404()
+        return context
+
     def form_valid(
         self, form: quiz.forms.QuizQuestionsNumberForm
     ) -> django.http.HttpResponse:
+        """редиректим на создание викторины"""
         return django.shortcuts.redirect(
             django.urls.reverse(
                 'organization:create_quiz',
                 kwargs={
                     'pk': self.kwargs['pk'],
-                    'num_questions': form.cleaned_data['num_questions']
-                }
+                    'num_questions': form.cleaned_data['num_questions'],
+                },
             )
         )
 
@@ -366,33 +371,70 @@ class QuizCreateView(
         if not context['user_is_admin']:
             raise django.http.Http404()
         question_formset = django.forms.inlineformset_factory(
-            quiz.models.Quiz, quiz.models.Question,
-            form=quiz.forms.QuestionForm, extra=self.kwargs['num_questions']
+            quiz.models.Quiz,
+            quiz.models.Question,
+            form=quiz.forms.QuestionForm,
+            extra=self.kwargs['num_questions'],
         )
         context['question_formset'] = question_formset()
-        context['quiz_form'] = quiz.forms.QuizForm()
         return context
 
     def post(
         self, request: django.http.HttpRequest, pk: int, num_questions: int
     ) -> django.http.HttpResponse:
         """обрабатываем создание викторины"""
+        context = self.get_context_data()
         quiz_form = self.form_class(request.POST or None)
         question_formset = django.forms.inlineformset_factory(
-            quiz.models.Quiz, quiz.models.Question,
-            form=quiz.forms.QuestionForm, extra=self.kwargs['num_questions']
+            quiz.models.Quiz,
+            quiz.models.Question,
+            form=quiz.forms.QuestionForm,
+            extra=self.kwargs['num_questions'],
         )(self.request.POST or None)
         if quiz_form.is_valid():
             quiz_obj = quiz_form.save(commit=False)
-            quiz_obj.organized_by = organization.models.Organization.objects.get(
-                pk=self.kwargs['pk']
-            )
-            if question_formset.is_valid():
-                for question in question_formset:
-                    question.quiz = quiz_obj
-                return django.shortcuts.redirect(
-                    django.urls.reverse('organization:quizzes', kwargs={'pk': pk})
+            quiz_obj.organized_by = (
+                organization.models.Organization.objects.get(
+                    pk=self.kwargs['pk']
                 )
+            )
+            question_objects = list()
+            variants_objects = list()
+            formset_valid = True
+            for question in question_formset:
+                if question.is_valid():
+                    question_obj = question.save(commit=False)
+                    question_obj.quiz = quiz_obj
+                    question_objects.append(question_obj)
+                    variants = question.cleaned_data['variants']
+                    for variant in variants:
+                        if variant.endswith('right'):
+                            variant_obj = quiz.models.Variant(
+                                text=variant[: variant.rfind('right')],
+                                question=question_obj,
+                                is_correct=True,
+                            )
+                        else:
+                            variant_obj = quiz.models.Variant(
+                                text=variant,
+                                question=question_obj,
+                                is_correct=False,
+                            )
+                        variants_objects.append(variant_obj)
+                else:
+                    formset_valid = False
+            if formset_valid:
+                quiz_obj.save()
+                for item in question_objects + variants_objects:
+                    item.save()
+                return django.shortcuts.redirect(
+                    django.urls.reverse(
+                        'organization:quizzes', kwargs={'pk': pk}
+                    )
+                )
+        context['question_formset'] = question_formset
+        context['form'] = quiz_form
+        return django.shortcuts.render(request, self.template_name, context)
 
 
 class CreatePostView(
