@@ -68,7 +68,7 @@ class Quiz(django.db.models.Model):
     )
 
     start_time = django.db.models.DateTimeField(
-        help_text='Назначьте стартовое время для Вашей викторины',
+        help_text='Время начала викторины в формате день.месяц.год',
         null=True,
         blank=True,
         verbose_name='стартовое время',
@@ -231,6 +231,12 @@ class Variant(django.db.models.Model):
         on_delete=django.db.models.CASCADE,
         related_name='variants',
         help_text='вопрос, к которому относится вариант ответа',
+    )
+
+    is_correct = django.db.models.BooleanField(
+        verbose_name='правильность варианта',
+        help_text='правильный вариант или нет',
+        default=False,
     )
 
     class Meta:

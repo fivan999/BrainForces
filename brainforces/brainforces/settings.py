@@ -77,23 +77,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'brainforces.wsgi.application'
 
-DATABASES = {
-    'default': {
+DATABASES = dict()
+
+if (
+    'test' in sys.argv
+    or not os.getenv('USE_POSTGRES', default='False').lower()
+    in ('true', 'y', '1', 'yes')
+    or True
+):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+    }
+else:
+    DATABASES['default'] = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
-    }
-}
-
-if 'test' in sys.argv or not os.getenv(
-    'USE_POSTGRES', default='False'
-).lower() in ('true', 'y', '1', 'yes'):
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
     }
 
 
@@ -157,6 +160,84 @@ MEDIA_URL = '/media/'
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 
 AUTH_USER_MODEL = 'users.User'
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'skin': 'moono-lisa',
+        'toolbar_Basic': [['Source', '-', 'Bold', 'Italic']],
+        'toolbar_YourCustomToolbarConfig': [
+            {'name': 'clipboard', 'items': ['Undo', 'Redo']},
+            {
+                'name': 'basicstyles',
+                'items': [
+                    'Bold',
+                    'Italic',
+                    'Underline',
+                    'Strike',
+                    'Subscript',
+                    'Superscript',
+                ],
+            },
+            {
+                'name': 'paragraph',
+                'items': [
+                    'NumberedList',
+                    'BulletedList',
+                    '-',
+                    'Outdent' 'Indent',
+                    '-',
+                    'JustifyLeft',
+                    'JustifyCenter',
+                    'JustifyRight',
+                    'JustifyBlock',
+                    '-',
+                    'BidiLtr',
+                    'BidiRtl',
+                ],
+            },
+            {
+                'name': 'insert',
+                'items': [
+                    'Image',
+                    'Flash',
+                    'Table',
+                    'HorizontalRule',
+                    'Smiley',
+                    'SpecialChar',
+                ],
+            },
+            {
+                'name': 'styles',
+                'items': ['Styles', 'Format', 'Font', 'FontSize'],
+            },
+            {'name': 'colors', 'items': ['TextColor']},
+            {
+                'name': 'yourcustomtools',
+                'items': [
+                    'Maximize',
+                ],
+            },
+        ],
+        'toolbar': 'YourCustomToolbarConfig',
+        'tabSpaces': 4,
+        'extraPlugins': ','.join(
+            [
+                'uploadimage',
+                'div',
+                'autolink',
+                'autoembed',
+                'embedsemantic',
+                'autogrow',
+                'widget',
+                'lineutils',
+                'clipboard',
+                'dialog',
+                'dialogui',
+                'elementspath',
+            ]
+        ),
+    }
+}
 
 EMAIL = os.getenv('EMAIL')
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'

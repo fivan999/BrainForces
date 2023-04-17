@@ -48,7 +48,7 @@ class Profile(core.models.AbstractImageModel):
     user = django.db.models.OneToOneField(
         User,
         related_name='profile',
-        verbose_name='Профиль',
+        verbose_name='профиль',
         help_text='Профиль пользователя',
         on_delete=django.db.models.CASCADE,
         blank=True,

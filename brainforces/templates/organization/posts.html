@@ -9,7 +9,7 @@
             <h2 class="display-6 fw-bold">{{ post.name }}</h2>
             {{ post.text|safe }}
             {% if is_group_member %}
-              <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary">Смотреть</a>
+              <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary mt-2">Смотреть</a>
             {% endif %}
           </div>
         </div>

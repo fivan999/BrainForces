@@ -1,0 +1,8 @@
+{% extends "organization/detail.html" %}
+
+{% block organization_page %}
+  <form method="post" class="mb-2">
+    {% include "includes/make_form.html" %}
+    <button type="submit" class="btn btn-primary">Создать</button>
+  </form>
+{% endblock organization_page %}

@@ -11,6 +11,8 @@ class HomeView(django.views.generic.ListView):
     template_name = 'homepage/homepage.html'
     context_object_name = 'quizzes'
     paginate_by = 5
-    queryset = quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
-        is_private=False
+    queryset = list(
+        quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
+            is_private=False
+        )
     )
