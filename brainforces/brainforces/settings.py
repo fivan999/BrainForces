@@ -79,12 +79,9 @@ WSGI_APPLICATION = 'brainforces.wsgi.application'
 
 DATABASES = dict()
 
-if (
-    'test' in sys.argv
-    or not os.getenv('USE_POSTGRES', default='False').lower()
-    in ('true', 'y', '1', 'yes')
-    or True
-):
+if 'test' in sys.argv or not os.getenv(
+    'USE_POSTGRES', default='False'
+).lower() in ('true', 'y', '1', 'yes'):
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',

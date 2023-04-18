@@ -166,14 +166,12 @@ class OrganizationQuizzesView(
     paginate_by = 5
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return (
-            quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
-                django.db.models.Q(is_private=False)
-                | django.db.models.Q(
-                    organized_by__users__user__pk=self.request.user.pk
-                ),
-                organized_by__pk=self.kwargs['pk'],
-            )
+        return quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
+            django.db.models.Q(is_private=False)
+            | django.db.models.Q(
+                organized_by__users__user__pk=self.request.user.pk
+            ),
+            organized_by__pk=self.kwargs['pk'],
         )
 
 
