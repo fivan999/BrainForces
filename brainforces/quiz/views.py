@@ -9,51 +9,22 @@ import django.utils.timezone
 import django.views.generic
 
 import quiz.forms
+import quiz.mixins
 import quiz.models
 import quiz.services
 
 
-class QuizMixinView(django.views.generic.View):
-    """дополняем контекст именем организации и проверяем доступ пользователя"""
+class QuizListView(django.views.generic.ListView):
+    """список викторин на главной странице"""
 
-    def get_context_data(self, *args, **kwargs) -> dict:
-        context = super().get_context_data(*args, **kwargs)
-        quiz_obj = django.shortcuts.get_object_or_404(
-            quiz.models.Quiz.objects.only(
-                'id', 'is_private', 'start_time', 'duration'
-            ),
-            pk=self.kwargs['pk'],
+    template_name = 'quiz/list.html'
+    context_object_name = 'quizzes'
+    paginate_by = 5
+    queryset = list(
+        quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
+            is_private=False
         )
-        context['quiz'] = quiz_obj
-        context['can_participate'] = quiz.models.QuizResults.objects.filter(
-            quiz__pk=self.kwargs['pk'], user__pk=self.request.user.pk
-        ).exists()
-        quiz_status = quiz_obj.get_quiz_status()
-        if quiz_status == 1:
-            context['can_access_questions'] = False
-        elif quiz_status == 2:
-            context['can_access_questions'] = context['can_participate']
-        else:
-            context[
-                'can_access_questions'
-            ] = quiz.services.user_can_access_quiz(quiz_obj, self.request.user)
-        context['quiz_status'] = quiz_status
-        context['now_time'] = str(django.utils.timezone.now())
-        context['end_time'] = str(
-            quiz_obj.start_time
-            + django.utils.timezone.timedelta(minutes=quiz_obj.duration)
-        )
-        return context
-
-
-class AccessToQuizMixinView(QuizMixinView):
-    """проверяем доступ участника к викторине"""
-
-    def get_context_data(self, *args, **kwargs) -> dict:
-        context = super().get_context_data(*args, **kwargs)
-        if not context['can_access_questions']:
-            raise django.http.Http404()
-        return context
+    )
 
 
 class QuizDetailView(django.views.generic.DetailView):
@@ -115,7 +86,9 @@ class MakeQuizResultsView(django.views.generic.View):
         )
 
 
-class QuestionsView(AccessToQuizMixinView, django.views.generic.ListView):
+class QuestionsView(
+    quiz.mixins.AccessToQuizMixin, django.views.generic.ListView
+):
     """список вопросов в викторине"""
 
     template_name = 'quiz/questions.html'
@@ -144,7 +117,7 @@ class QuestionsView(AccessToQuizMixinView, django.views.generic.ListView):
 
 
 class QuestionDetailView(
-    AccessToQuizMixinView, django.views.generic.DetailView
+    quiz.mixins.AccessToQuizMixin, django.views.generic.DetailView
 ):
     """детальная информация о вопросе"""
 
@@ -202,7 +175,9 @@ class QuestionDetailView(
         return django.shortcuts.redirect('quiz:user_answers_list', pk=pk)
 
 
-class UserAnswersList(AccessToQuizMixinView, django.views.generic.ListView):
+class UserAnswersList(
+    quiz.mixins.AccessToQuizMixin, django.views.generic.ListView
+):
     """`мои посылки`"""
 
     template_name = 'quiz/user_answers_list.html'
@@ -222,7 +197,9 @@ class UserAnswersList(AccessToQuizMixinView, django.views.generic.ListView):
         return useful_answer_fields
 
 
-class StandingsList(AccessToQuizMixinView, django.views.generic.ListView):
+class StandingsList(
+    quiz.mixins.AccessToQuizMixin, django.views.generic.ListView
+):
     """положение"""
 
     template_name = 'quiz/standing.html'

@@ -25,8 +25,9 @@ class OrganizationToUserAdmin(django.contrib.admin.ModelAdmin):
 class OrganizationPostAdmin(django.contrib.admin.ModelAdmin):
     """отображение модели OrganizationPost в админке"""
 
-    list_display = ('id', 'name', 'posted_by')
+    list_display = ('id', 'name', 'posted_by', 'is_private')
     list_display_links = ('id',)
+    list_editable = ('is_private',)
 
 
 @django.contrib.admin.register(organization.models.CommentToOrganizationPost)

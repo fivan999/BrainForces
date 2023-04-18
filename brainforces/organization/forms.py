@@ -29,4 +29,4 @@ class PostForm(django.forms.ModelForm):
 
     class Meta:
         model = organization.models.OrganizationPost
-        fields = ('name', 'text')
+        fields = ('name', 'text', 'is_private')

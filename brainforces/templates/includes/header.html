@@ -37,7 +37,7 @@
             <a href="{% url 'homepage:homepage' %}" class="nav-link {% if app_name == 'homepage' %}active text-white{% else %}text-dark{% endif %}">Главная</a>
           </li>
           <li>
-            <a href="" class="nav-link {% if app_name == 'quiz' %}active text-white{% else %}text-dark{% endif %}">Соревнования</a>
+            <a href="{% url 'quiz:list' %}" class="nav-link {% if app_name == 'quiz' %}active text-white{% else %}text-dark{% endif %}">Викторины</a>
           </li>
           <li>
             <a href="{% url 'archive:archive' %}" class="nav-link {% if app_name == 'archive' %}active text-white{% else %}text-dark{% endif %}">Архив</a>
@@ -46,10 +46,10 @@
             <a href="{% url 'users:list' %}" class="nav-link {% if app_name == 'users' %}active text-white{% else %}text-dark{% endif %}">Рейтинг</a>
           </li>
           <li>
-            <a href="" class="nav-link {% if app_name == 'about' %}active text-white{% else %}text-dark{% endif %}">Помощь</a>
+            <a href="{% url 'organization:list' %}" class="nav-link {% if app_name == 'organization' %}active text-white{% else %}text-dark{% endif %}">Организации</a>
           </li>
           <li>
-            <a href="{% url 'organization:list' %}" class="nav-link {% if app_name == 'organization' %}active text-white{% else %}text-dark{% endif %}">Организации</a>
+            <a href="{% url 'about:about' %}" class="nav-link {% if app_name == 'about' %}active text-white{% else %}text-dark{% endif %}">О сайте</a>
           </li>
         </ul>
       {% endwith %}

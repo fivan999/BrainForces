@@ -18,6 +18,7 @@ urlpatterns = [
     django.urls.path(
         'organizations/', django.urls.include('organization.urls')
     ),
+    django.urls.path('about/', django.urls.include('about.urls')),
 ]
 
 

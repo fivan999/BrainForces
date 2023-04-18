@@ -1,3 +1,4 @@
+import django.contrib.auth.mixins
 import django.contrib.messages
 import django.db.models
 import django.forms
@@ -7,42 +8,10 @@ import django.urls
 import django.views.generic
 
 import organization.forms
+import organization.mixins
 import organization.models
 import quiz.forms
 import quiz.models
-
-
-class OrganizationMixinView(django.views.generic.View):
-    """дополняем контекст именем организации и проверяем доступ пользователя"""
-
-    def get_context_data(self, *args, **kwargs) -> dict:
-        context = super().get_context_data(*args, **kwargs)
-        organization_obj = django.shortcuts.get_object_or_404(
-            organization.models.Organization.objects.filter_user_access(
-                user_pk=self.request.user.pk
-            ).only('name'),
-            pk=self.kwargs['pk'],
-        )
-        context['organization'] = organization_obj
-        return context
-
-
-class UserIsOrganizationMemberMixinView(OrganizationMixinView):
-    """пользователь - участник организации"""
-
-    def get_context_data(self, *args, **kwargs) -> dict:
-        context = super().get_context_data(*args, **kwargs)
-        org_user_obj = organization.models.OrganizationToUser.objects.filter(
-            user__pk=self.request.user.pk, organization__pk=self.kwargs['pk']
-        ).first()
-        context['organization_to_user'] = org_user_obj
-        context['is_group_member'] = org_user_obj is not None
-        context['user_is_admin'] = (
-            org_user_obj.role in (2, 3)
-            if context['is_group_member']
-            else False
-        )
-        return context
 
 
 class OrganizationMainView(django.views.generic.DetailView):
@@ -93,7 +62,8 @@ class OrganizationListView(django.views.generic.ListView):
 
 
 class OrganizationUsersView(
-    UserIsOrganizationMemberMixinView, django.views.generic.ListView
+    organization.mixins.UserIsOrganizationMemberMixin,
+    django.views.generic.ListView,
 ):
     """страница с пользователями организации"""
 
@@ -148,7 +118,7 @@ class OrganizationUsersView(
                     request, 'Приглашение отправлено'
                 )
             else:
-                django.contrib.messages.error(request, 'Ошибка')
+                raise django.http.Http404()
         else:
             django.contrib.messages.error(request, 'Ошибка')
         return django.shortcuts.redirect(
@@ -157,7 +127,8 @@ class OrganizationUsersView(
 
 
 class OrganizationQuizzesView(
-    UserIsOrganizationMemberMixinView, django.views.generic.ListView
+    organization.mixins.UserIsOrganizationMemberMixin,
+    django.views.generic.ListView,
 ):
     """список соревнований организации"""
 
@@ -176,6 +147,12 @@ class OrganizationQuizzesView(
 
 
 class ActionWithUserView(django.views.generic.View):
+    """
+    получаем модель organizationtouser
+    того кто спрашивает
+    и того о ком спрашивают
+    """
+
     def get(
         self, request: django.http.HttpRequest, pk: int, user_pk: int
     ) -> None:
@@ -251,7 +228,8 @@ class UpdateUserOrganizationRoleView(ActionWithUserView):
 
 
 class OrganizationPostsView(
-    UserIsOrganizationMemberMixinView, django.views.generic.ListView
+    organization.mixins.UserIsOrganizationMemberMixin,
+    django.views.generic.ListView,
 ):
     """объявления организации"""
 
@@ -261,8 +239,8 @@ class OrganizationPostsView(
 
     def get_queryset(self) -> django.db.models.QuerySet:
         return (
-            organization.models.OrganizationPost.objects.filter(
-                posted_by__pk=self.kwargs['pk']
+            organization.models.OrganizationPost.objects.filter_user_access(
+                self.request.user.pk, org_pk=self.kwargs['pk']
             )
             .select_related('posted_by')
             .only('name', 'text', 'posted_by__id')
@@ -270,7 +248,8 @@ class OrganizationPostsView(
 
 
 class PostCommentsView(
-    UserIsOrganizationMemberMixinView, django.views.generic.ListView
+    django.contrib.auth.mixins.LoginRequiredMixin,
+    django.views.generic.ListView,
 ):
     """комментарии к посту"""
 
@@ -281,10 +260,11 @@ class PostCommentsView(
     def get_context_data(self, *args, **kwargs) -> dict:
         """дополняем контекст"""
         context = super().get_context_data(*args, **kwargs)
-        if not context['is_group_member']:
-            raise django.http.Http404()
         context['post'] = django.shortcuts.get_object_or_404(
-            organization.models.OrganizationPost, pk=self.kwargs['post_pk']
+            organization.models.OrganizationPost.objects.filter_user_access(
+                self.request.user.pk, org_pk=self.kwargs['pk']
+            ),
+            pk=self.kwargs['post_pk'],
         )
         return context
 
@@ -303,13 +283,10 @@ class PostCommentsView(
         """обрабатываем добавление комментария"""
         comment_text = request.POST.get('comment_text')
         post = django.shortcuts.get_object_or_404(
-            organization.models.OrganizationPost, pk=post_pk, posted_by__pk=pk
-        )
-        django.shortcuts.get_object_or_404(
-            organization.models.OrganizationToUser,
-            organization__pk=pk,
-            user__pk=request.user.pk,
-            role__in=(1, 2, 3),
+            organization.models.OrganizationPost.objects.filter_user_access(
+                self.request.user.pk, org_pk=self.kwargs['pk']
+            ),
+            pk=self.kwargs['post_pk'],
         )
         if comment_text:
             organization.models.CommentToOrganizationPost.objects.create(
@@ -324,7 +301,8 @@ class PostCommentsView(
 
 
 class ChooseQuizQuestionsNumber(
-    UserIsOrganizationMemberMixinView, django.views.generic.edit.FormView
+    organization.mixins.UserIsOrganizationMemberMixin,
+    django.views.generic.edit.FormView,
 ):
     """выбор количества вопросов в викторине"""
 
@@ -354,7 +332,8 @@ class ChooseQuizQuestionsNumber(
 
 
 class QuizCreateView(
-    UserIsOrganizationMemberMixinView, django.views.generic.edit.FormView
+    organization.mixins.UserIsOrganizationMemberMixin,
+    django.views.generic.edit.FormView,
 ):
     """создание викторины"""
 
@@ -435,7 +414,8 @@ class QuizCreateView(
 
 
 class CreatePostView(
-    UserIsOrganizationMemberMixinView, django.views.generic.edit.FormView
+    organization.mixins.UserIsOrganizationMemberMixin,
+    django.views.generic.edit.FormView,
 ):
     """создание публикации организации"""
 

@@ -31,6 +31,18 @@ class OrganizationPostManager(django.db.models.Manager):
         """только нужные поля для поста"""
         return self.get_queryset().only('name', 'text')
 
+    def filter_user_access(
+        self, user_pk: int, org_pk: int = None
+    ) -> django.db.models.QuerySet:
+        """доступ пользователя к посту"""
+        posts_queryset = self.get_queryset().filter(
+            django.db.models.Q(posted_by__users__user__pk=user_pk)
+            | django.db.models.Q(is_private=False)
+        )
+        if org_pk:
+            posts_queryset.filter(posted_by__pk=org_pk)
+        return posts_queryset.distinct()
+
 
 class OrganizationToUserManager(django.db.models.Manager):
     """менеджер модели OrganizationToUSer"""

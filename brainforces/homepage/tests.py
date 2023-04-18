@@ -1,7 +1,7 @@
 import django.test
 import django.urls
 
-import quiz.models
+import organization.models
 
 
 class HomeTests(django.test.TestCase):
@@ -19,7 +19,7 @@ class HomeTests(django.test.TestCase):
         response = django.test.Client().get(
             django.urls.reverse('homepage:homepage')
         )
-        self.assertIn('quizzes', response.context)
+        self.assertIn('posts', response.context)
 
     def test_homepage_model(self) -> None:
         """тестиуем правильную модель на странице"""
@@ -29,8 +29,10 @@ class HomeTests(django.test.TestCase):
         self.assertTrue(
             all(
                 map(
-                    lambda x: isinstance(x, quiz.models.Quiz),
-                    response.context['quizzes'],
+                    lambda x: isinstance(
+                        x, organization.models.OrganizationPost
+                    ),
+                    response.context['posts'],
                 )
             )
         )

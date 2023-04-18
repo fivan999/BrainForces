@@ -11,7 +11,10 @@
     <div class="form-group">
       <div class="row gy-3">
         <div class="col-12">
-          {% include "includes/form.html" with form=form %}
+          <form>
+            {% include "includes/make_form.html" %}
+            <button type="sumbit" class="btn btn-primary">Ответить</button>
+          </form>
         </div>
       </div>
     </div>

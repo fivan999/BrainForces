@@ -7,15 +7,16 @@ import quiz.views
 app_name = 'quiz'
 
 urlpatterns = [
-    django.urls.path(
-        '<int:pk>/user_answers/',
-        quiz.views.UserAnswersList.as_view(),
-        name='user_answers_list',
-    ),
+    django.urls.path('', quiz.views.QuizListView.as_view(), name='list'),
     django.urls.path(
         '<int:pk>/',
         quiz.views.QuizDetailView.as_view(),
         name='quiz_detail',
+    ),
+    django.urls.path(
+        '<int:pk>/user_answers/',
+        quiz.views.UserAnswersList.as_view(),
+        name='user_answers_list',
     ),
     django.urls.path(
         '<int:pk>/questions/<int:question_pk>/',
