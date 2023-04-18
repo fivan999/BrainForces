@@ -77,12 +77,12 @@ urlpatterns = [
         name='activate_user',
     ),
     django.urls.path(
-        'profile/<int:pk>/',
+        '<int:pk>/',
         users.views.UserProfileView.as_view(),
         name='profile',
     ),
     django.urls.path(
-        'profile/<int:pk>/change/',
+        '<int:pk>/change/',
         users.views.UserProfileChangeView.as_view(),
         name='profile_change',
     ),
@@ -97,18 +97,23 @@ urlpatterns = [
         name='reset_login_attempts',
     ),
     django.urls.path(
-        'profile/<int:pk>/answers/',
+        '<int:pk>/answers/',
         users.views.UserAnswersView.as_view(),
         name='answers',
     ),
     django.urls.path(
-        'profile/<int:pk>/quizzes/',
+        '<int:pk>/quizzes/',
         users.views.UserQuizzesView.as_view(),
         name='quizzes',
     ),
     django.urls.path(
-        'profile/<int:pk>/organizations/',
+        '<int:pk>/organizations/',
         users.views.UserOrganizationsView.as_view(),
         name='organizations',
+    ),
+    django.urls.path(
+        '<int:pk>/create_organization/',
+        users.views.CreateOrganizationView.as_view(),
+        name='create_organization',
     ),
 ]

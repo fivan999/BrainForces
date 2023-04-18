@@ -2,6 +2,9 @@
   <h3 class="display-7 fw-bold lh-1 mb-3">BrainForces Round {{ quiz.pk }}</h3>
   <h3 class="display-8 fw-bold lh-1 mb-3">{{ quiz.name }}</h3>
   <span class="badge badge-pill text-bg-primary">{{ quiz.get_status_display }}</span>
+  {% if quiz.is_ended %}
+    <span class="badge badge-pill text-bg-primary">Итоги подведены</span>
+  {% endif %}
   <p class="lead">{{ quiz.description|safe }}</p>
   <p class="lead">Начало: {{ quiz.start_time }}</p>
   <p class="lead">Продолжительность: {{ quiz.duration }} минут</p>

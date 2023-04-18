@@ -82,7 +82,7 @@ class OrganizationListView(django.views.generic.ListView):
     context_object_name = 'organizations'
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return list(
+        return (
             organization.models.Organization.objects.filter_user_access(
                 user_pk=self.request.user.pk
             )
@@ -102,7 +102,7 @@ class OrganizationUsersView(
     paginate_by = 50
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return list(
+        return (
             organization.models.OrganizationToUser.objects.filter(
                 organization__pk=self.kwargs['pk']
             )
@@ -166,7 +166,7 @@ class OrganizationQuizzesView(
     paginate_by = 5
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return list(
+        return (
             quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
                 django.db.models.Q(is_private=False)
                 | django.db.models.Q(
@@ -262,7 +262,7 @@ class OrganizationPostsView(
     paginate_by = 5
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return list(
+        return (
             organization.models.OrganizationPost.objects.filter(
                 posted_by__pk=self.kwargs['pk']
             )
@@ -291,7 +291,7 @@ class PostCommentsView(
         return context
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return list(
+        return (
             organization.models.CommentToOrganizationPost.objects.filter(
                 post__pk=self.kwargs['post_pk']
             )

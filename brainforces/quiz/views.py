@@ -4,6 +4,7 @@ import django.contrib.messages
 import django.db.models
 import django.http
 import django.shortcuts
+import django.urls
 import django.utils.timezone
 import django.views.generic
 
@@ -36,6 +37,12 @@ class QuizMixinView(django.views.generic.View):
             context[
                 'can_access_questions'
             ] = quiz.services.user_can_access_quiz(quiz_obj, self.request.user)
+        context['quiz_status'] = quiz_status
+        context['now_time'] = str(django.utils.timezone.now())
+        context['end_time'] = str(
+            quiz_obj.start_time
+            + django.utils.timezone.timedelta(minutes=quiz_obj.duration)
+        )
         return context
 
 
@@ -78,7 +85,34 @@ class QuizDetailView(django.views.generic.DetailView):
             context[
                 'can_access_questions'
             ] = quiz.services.user_can_access_quiz(quiz_obj, self.request.user)
+        context['can_end'] = (
+            quiz_status == 3 and quiz_obj.creator.pk == self.request.user.pk
+        )
+        context['now_time'] = str(django.utils.timezone.now())
+        context['end_time'] = str(
+            quiz_obj.start_time
+            + django.utils.timezone.timedelta(minutes=quiz_obj.duration)
+        )
         return context
+
+
+class MakeQuizResultsView(django.views.generic.View):
+    """администратор подводит итоги викторины"""
+
+    def get(
+        self, request: django.http.HttpRequest, pk: int
+    ) -> django.http.HttpResponse:
+        print(True)
+        quiz_obj = django.shortcuts.get_object_or_404(
+            quiz.models.Quiz, pk=pk, is_ended=False
+        )
+        if quiz_obj.creator.pk != request.user.pk:
+            raise django.http.Http404()
+        quiz.services.make_quiz_results(quiz_obj)
+        django.contrib.messages.success(request, 'Успешно!')
+        return django.shortcuts.redirect(
+            django.urls.reverse('quiz:quiz_detail', kwargs={'pk': pk}),
+        )
 
 
 class QuestionsView(AccessToQuizMixinView, django.views.generic.ListView):
@@ -91,10 +125,18 @@ class QuestionsView(AccessToQuizMixinView, django.views.generic.ListView):
         return (
             quiz.models.Question.objects.filter(quiz__pk=self.kwargs['pk'])
             .annotate(
-                total_answers=django.db.models.Count('answers__id'),
+                total_answers=django.db.models.Count(
+                    'answers__id',
+                    filter=django.db.models.Q(
+                        answers__user__pk=self.request.user.pk
+                    ),
+                ),
                 success_answers=django.db.models.Count(
                     'answers__id',
-                    filter=django.db.models.Q(answers__is_correct=True),
+                    filter=django.db.models.Q(
+                        answers__is_correct=True,
+                        answers__user__pk=self.request.user.pk,
+                    ),
                 ),
             )
             .only('name')
@@ -154,7 +196,7 @@ class QuestionDetailView(
                 == 1
             ):
                 quiz_result.solved += 1
-                if quiz_obj.is_rated:
+                if quiz_obj.is_rated and not quiz_obj.is_private:
                     quiz_result.rating_after += question_obj.difficulty
                 quiz_result.save()
         return django.shortcuts.redirect('quiz:user_answers_list', pk=pk)
@@ -177,7 +219,7 @@ class UserAnswersList(AccessToQuizMixinView, django.views.generic.ListView):
             )
             .order_by('-time_answered')
         )
-        return list(useful_answer_fields)
+        return useful_answer_fields
 
 
 class StandingsList(AccessToQuizMixinView, django.views.generic.ListView):
@@ -189,7 +231,7 @@ class StandingsList(AccessToQuizMixinView, django.views.generic.ListView):
 
     def get_queryset(self, *args, **kwargs) -> django.db.models.QuerySet:
         """получаем queryset"""
-        return list(
+        return (
             quiz.models.QuizResults.objects.select_related('user')
             .filter(quiz__pk=self.kwargs['pk'])
             .only('solved', 'user__username')

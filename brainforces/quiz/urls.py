@@ -37,4 +37,9 @@ urlpatterns = [
         quiz.views.QuizRegistrationView.as_view(),
         name='register',
     ),
+    django.urls.path(
+        '<int:pk>/make_results/',
+        quiz.views.MakeQuizResultsView.as_view(),
+        name='make_results',
+    ),
 ]

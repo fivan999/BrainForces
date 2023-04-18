@@ -18,6 +18,9 @@
           <li class="nav-item">
             <a class="nav-link {% if view_name == 'users:profile_change' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:profile_change' %}aria-current="page"{% endif %} href="{% url 'users:profile_change' pk=request.resolver_match.kwargs.pk %}">Изменить профиль</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link {% if view_name == 'users:create_organization' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:create_organization' %}aria-current="page"{% endif %} href="{% url 'users:create_organization' pk=request.resolver_match.kwargs.pk %}">Создать организацию</a>
+          </li>
         {% endif %}
         <li class="nav-item">
           <a class="nav-link {% if view_name == 'users:quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:quizzes' %}aria-current="page"{% endif %} href="{% url 'users:quizzes' pk=request.resolver_match.kwargs.pk %}">Соревнования</a>

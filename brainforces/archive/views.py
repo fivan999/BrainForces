@@ -33,7 +33,7 @@ class ArchiveQuestionsView(django.views.generic.ListView):
                 queryset = queryset.filter(text__icontains=searched)
             elif search_criteria == 'tags':
                 queryset = queryset.filter(tags__name__icontains=searched)
-        return list(queryset)
+        return queryset
 
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)

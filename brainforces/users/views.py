@@ -143,7 +143,7 @@ class UserListView(django.views.generic.ListView):
 
     template_name = 'users/list.html'
     context_object_name = 'users'
-    queryset = list(
+    queryset = (
         users.models.User.objects.get_only_useful_list_fields().order_by(
             '-profile__rating'
         )
@@ -158,6 +158,8 @@ class UserProfileChangeView(
 ):
     """Профиль пользователя"""
 
+    template_name = 'users/change.html'
+
     def get(
         self, request: django.http.HttpRequest, pk: int
     ) -> django.http.HttpResponse:
@@ -171,7 +173,7 @@ class UserProfileChangeView(
                 'forms': [user_form, profile_form],
             }
             return django.shortcuts.render(
-                request, 'users/change.html', context=context
+                request, self.template_name, context=context
             )
         raise django.http.Http404()
 
@@ -192,7 +194,13 @@ class UserProfileChangeView(
                 django.contrib.messages.success(
                     request, 'Профиль успешно изменен!'
                 )
-            return django.shortcuts.redirect('users:profile', pk=pk)
+                return django.shortcuts.redirect('users:profile', pk=pk)
+            else:
+                return django.shortcuts.render(
+                    request,
+                    self.template_name,
+                    {'forms': [user_form, profile_form]},
+                )
         raise django.http.Http404()
 
 
@@ -207,7 +215,7 @@ class UserAnswersView(UsernameMixinView, django.views.generic.ListView):
         useful_answer_fields = (
             quiz.models.UserAnswer.objects.get_only_useful_list_fields()
         )
-        return list(
+        return (
             useful_answer_fields.filter(user__id=self.kwargs['pk']).order_by(
                 '-time_answered'
             )
@@ -225,7 +233,7 @@ class UserQuizzesView(UsernameMixinView, django.views.generic.ListView):
         useful_quiz_results_fields = (
             quiz.models.QuizResults.objects.get_only_useful_list_fields()
         )
-        return list(
+        return (
             useful_quiz_results_fields.filter(
                 user__pk=self.kwargs['pk']
             ).order_by('-quiz__start_time')
@@ -240,10 +248,40 @@ class UserOrganizationsView(UsernameMixinView, django.views.generic.ListView):
     paginate_by = 15
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return list(
+        return (
             organization.models.OrganizationToUser.objects.filter(
                 user__pk=self.request.user.pk
             )
             .select_related('organization')
             .only('organization__name', 'role')
+        )
+
+
+class CreateOrganizationView(
+    UsernameMixinView, django.views.generic.edit.FormView
+):
+    """создание организации"""
+
+    template_name = 'users/create_organization.html'
+    form_class = users.forms.CreateOrganizationForm
+
+    def get_context_data(self, *args, **kwargs) -> dict:
+        """проверка на доступ"""
+        context = super().get_context_data(*args, **kwargs)
+        if self.request.user.pk != self.kwargs['pk']:
+            raise django.http.Http404()
+        return context
+
+    def form_valid(
+        self, form: users.forms.CreateOrganizationForm
+    ) -> django.http.HttpResponse:
+        """создаем объект организации"""
+        org_obj = form.save()
+        organization.models.OrganizationToUser.objects.create(
+            organization=org_obj, user=self.request.user, role=3
+        )
+        return django.shortcuts.redirect(
+            django.urls.reverse_lazy(
+                'organization:profile', kwargs={'pk': org_obj.pk}
+            )
         )

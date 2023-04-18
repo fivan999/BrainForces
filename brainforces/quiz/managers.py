@@ -10,8 +10,7 @@ class QuizManager(django.db.models.Manager):
         """только нужные поля для списка викторин на главной"""
         return (
             self.get_queryset()
-            .select_related('creator')
-            .select_related('organized_by')
+            .select_related('creator', 'organized_by')
             .only(
                 'name',
                 'description',
@@ -20,6 +19,7 @@ class QuizManager(django.db.models.Manager):
                 'start_time',
                 'organized_by__name',
                 'is_private',
+                'is_ended',
             )
             .order_by('-start_time')
         )
