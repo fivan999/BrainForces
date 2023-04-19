@@ -2,7 +2,7 @@
 [![Django CI](https://github.com/fivan999/BrainForces/actions/workflows/django.yml/badge.svg)](https://github.com/fivan999/BrainForces/actions/workflows/django.yml)
 [![Python package](https://github.com/fivan999/BrainForces/actions/workflows/python-package.yml/badge.svg)](https://github.com/fivan999/BrainForces/actions/workflows/python-package.yml)
 ## Суть проекта
-
+Создание сайта для проведения онлайн соревновательных викторин
 ## Установка и запуск
 ### Клонировать репозиторий
 ```
