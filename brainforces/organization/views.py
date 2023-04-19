@@ -52,9 +52,7 @@ class OrganizationListView(django.views.generic.ListView):
 
     def get_queryset(self) -> django.db.models.QuerySet:
         return (
-            organization.models.Organization.objects.filter(
-                is_private=False
-            )
+            organization.models.Organization.objects.filter(is_private=False)
             .only('name', 'description')
             .annotate(count_users=django.db.models.Count('users__id'))
             .order_by('-count_users')
@@ -137,13 +135,17 @@ class OrganizationQuizzesView(
     paginate_by = 5
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
-            django.db.models.Q(is_private=False)
-            | django.db.models.Q(
-                organized_by__users__user__pk=self.request.user.pk
-            ),
-            organized_by__pk=self.kwargs['pk'],
-        ).distinct()
+        return (
+            quiz.models.Quiz.objects.get_only_useful_list_fields()
+            .filter(
+                django.db.models.Q(is_private=False)
+                | django.db.models.Q(
+                    organized_by__users__user__pk=self.request.user.pk
+                ),
+                organized_by__pk=self.kwargs['pk'],
+            )
+            .distinct()
+        )
 
 
 class ActionWithUserView(django.views.generic.View):

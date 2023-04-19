@@ -20,10 +20,8 @@ class QuizListView(django.views.generic.ListView):
     template_name = 'quiz/list.html'
     context_object_name = 'quizzes'
     paginate_by = 5
-    queryset = (
-        quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
-            is_private=False
-        )
+    queryset = quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
+        is_private=False
     )
 
 
