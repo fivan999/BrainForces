@@ -1,6 +1,8 @@
 import django.contrib.auth.forms
+import django.core.exceptions
 import django.forms
 
+import organization.models
 import users.models
 
 
@@ -117,3 +119,11 @@ class ProfileChangeForm(django.forms.ModelForm):
         fields = ('image',)
         labels = {'image': 'Аватарка'}
         help_texts = {'image': 'Загрузите аватарку'}
+
+
+class CreateOrganizationForm(django.forms.ModelForm):
+    """создание пользователем организации"""
+
+    class Meta:
+        model = organization.models.Organization
+        fields = ('name', 'description', 'is_private')

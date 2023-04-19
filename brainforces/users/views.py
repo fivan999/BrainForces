@@ -16,6 +16,7 @@ import django.views.generic.edit
 import organization.models
 import quiz.models
 import users.forms
+import users.mixins
 import users.models
 import users.services
 import users.tokens
@@ -36,8 +37,10 @@ class SignupView(django.views.generic.edit.FormView):
     def form_valid(
         self, form: users.forms.SignUpForm
     ) -> django.http.HttpResponsePermanentRedirect:
-        """при валидной форме создается новый пользователь
-        и активируется(сразу или письмо для активации приходит на почту)"""
+        """
+        при валидной форме создается новый пользователь
+        и активируется(сразу или письмо для активации приходит на почту)
+        """
         user = form.save(commit=False)
         user.is_active = django.conf.settings.USER_IS_ACTIVE
         user.save()
@@ -66,7 +69,10 @@ class ActivateUserView(django.views.generic.View):
     def get(
         self, request: django.http.HttpRequest, uidb64: str, token: str
     ) -> django.http.HttpResponse:
-        """активация аккаунта пользователя"""
+        """
+        активация аккаунта пользователя
+        если токен валидный
+        """
         try:
             user = users.models.User.objects.get(
                 pk=django.utils.encoding.force_str(
@@ -96,7 +102,7 @@ class ResetLoginAttemptsView(django.views.generic.View):
     def get(
         self, request: django.http.HttpRequest, uidb64: str, token: str
     ) -> django.http.HttpResponsePermanentRedirect:
-        """активация аккаунта после превышения попыток"""
+        """реактивация аккаунта после превышения попыток входа"""
         try:
             user = users.models.User.objects.get(
                 pk=django.utils.encoding.force_str(
@@ -118,19 +124,6 @@ class ResetLoginAttemptsView(django.views.generic.View):
         return django.shortcuts.redirect('homepage:homepage')
 
 
-class UsernameMixinView(django.views.generic.View):
-    """дополняем контекст страниц именем пользователя"""
-
-    def get_context_data(self, *args, **kwargs) -> dict:
-        context = super().get_context_data(*args, **kwargs)
-        user = django.shortcuts.get_object_or_404(
-            users.models.User.objects.all().only('username'),
-            pk=self.kwargs['pk'],
-        )
-        context['username'] = user.username
-        return context
-
-
 class UserProfileView(django.views.generic.DetailView):
     """информация о пользователе"""
 
@@ -143,7 +136,7 @@ class UserListView(django.views.generic.ListView):
 
     template_name = 'users/list.html'
     context_object_name = 'users'
-    queryset = list(
+    queryset = (
         users.models.User.objects.get_only_useful_list_fields().order_by(
             '-profile__rating'
         )
@@ -152,11 +145,13 @@ class UserListView(django.views.generic.ListView):
 
 
 class UserProfileChangeView(
-    UsernameMixinView,
+    users.mixins.UsernameMixinView,
     django.contrib.auth.mixins.LoginRequiredMixin,
     django.views.generic.View,
 ):
     """Профиль пользователя"""
+
+    template_name = 'users/change.html'
 
     def get(
         self, request: django.http.HttpRequest, pk: int
@@ -171,7 +166,7 @@ class UserProfileChangeView(
                 'forms': [user_form, profile_form],
             }
             return django.shortcuts.render(
-                request, 'users/change.html', context=context
+                request, self.template_name, context=context
             )
         raise django.http.Http404()
 
@@ -192,11 +187,19 @@ class UserProfileChangeView(
                 django.contrib.messages.success(
                     request, 'Профиль успешно изменен!'
                 )
-            return django.shortcuts.redirect('users:profile', pk=pk)
+                return django.shortcuts.redirect('users:profile', pk=pk)
+            else:
+                return django.shortcuts.render(
+                    request,
+                    self.template_name,
+                    {'forms': [user_form, profile_form]},
+                )
         raise django.http.Http404()
 
 
-class UserAnswersView(UsernameMixinView, django.views.generic.ListView):
+class UserAnswersView(
+    users.mixins.UsernameMixinView, django.views.generic.ListView
+):
     """ответы пользователя на вопросы"""
 
     template_name = 'users/question_answers.html'
@@ -204,17 +207,32 @@ class UserAnswersView(UsernameMixinView, django.views.generic.ListView):
     paginate_by = 40
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        useful_answer_fields = (
+        """
+        викторины, к которым относятся ответы на вопрос,
+        могут быть приватными
+        поэтому ответы должны быть либо если она не приватная,
+        либо пользователь - участник организации,
+        которая организовала викторину
+        """
+        user_pk = self.request.user.pk
+        return (
             quiz.models.UserAnswer.objects.get_only_useful_list_fields()
-        )
-        return list(
-            useful_answer_fields.filter(user__id=self.kwargs['pk']).order_by(
-                '-time_answered'
+            .filter(
+                django.db.models.Q(
+                    question__quiz__is_private=False,
+                    question__quiz__organized_by__users__pk=user_pk,
+                )
+                | django.db.models.Q(question__quiz__is_private=False),
+                user__pk=self.kwargs['pk'],
             )
+            .distinct()
+            .order_by('-time_answered')
         )
 
 
-class UserQuizzesView(UsernameMixinView, django.views.generic.ListView):
+class UserQuizzesView(
+    users.mixins.UsernameMixinView, django.views.generic.ListView
+):
     """виторины, в которых участвовал пользователь"""
 
     template_name = 'users/quiz_results.html'
@@ -222,17 +240,30 @@ class UserQuizzesView(UsernameMixinView, django.views.generic.ListView):
     paginate_by = 15
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        useful_quiz_results_fields = (
+        """
+        викторины могут быть приватные,
+        поэтому результаты должны быть либо если она не приватная,
+        либо пользователь - участник организации,
+        которая организовала викторину
+        """
+        return (
             quiz.models.QuizResults.objects.get_only_useful_list_fields()
-        )
-        return list(
-            useful_quiz_results_fields.filter(
-                user__pk=self.kwargs['pk']
-            ).order_by('-quiz__start_time')
+            .filter(
+                django.db.models.Q(
+                    quiz__is_private=True,
+                    quiz__organized_by__users__pk=self.request.user.pk,
+                )
+                | django.db.models.Q(quiz__is_private=False),
+                user__pk=self.kwargs['pk'],
+            )
+            .distinct()
+            .order_by('-quiz__start_time')
         )
 
 
-class UserOrganizationsView(UsernameMixinView, django.views.generic.ListView):
+class UserOrganizationsView(
+    users.mixins.UsernameMixinView, django.views.generic.ListView
+):
     """список организаций пользователя"""
 
     template_name = 'users/organizations.html'
@@ -240,10 +271,52 @@ class UserOrganizationsView(UsernameMixinView, django.views.generic.ListView):
     paginate_by = 15
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        return list(
+        """
+        пользователь может смотреть как свои организации,
+        так и чужие
+        поэтому делаем проверку на приватность организации
+        или принадлежность юзера к ней
+        """
+        return (
             organization.models.OrganizationToUser.objects.filter(
-                user__pk=self.request.user.pk
+                django.db.models.Q(organization__is_private=False)
+                | django.db.models.Q(
+                    organization__is_private=True,
+                    organization__users__pk=self.request.user.pk,
+                ),
+                user__pk=self.kwargs['pk'],
             )
             .select_related('organization')
             .only('organization__name', 'role')
+            .distinct()
+        )
+
+
+class CreateOrganizationView(
+    users.mixins.UsernameMixinView, django.views.generic.edit.FormView
+):
+    """создание организации"""
+
+    template_name = 'users/create_organization.html'
+    form_class = users.forms.CreateOrganizationForm
+
+    def get_context_data(self, *args, **kwargs) -> dict:
+        """проверка на доступ"""
+        context = super().get_context_data(*args, **kwargs)
+        if self.request.user.pk != self.kwargs['pk']:
+            raise django.http.Http404()
+        return context
+
+    def form_valid(
+        self, form: users.forms.CreateOrganizationForm
+    ) -> django.http.HttpResponse:
+        """создаем объект организации"""
+        org_obj = form.save()
+        organization.models.OrganizationToUser.objects.create(
+            organization=org_obj, user=self.request.user, role=3
+        )
+        return django.shortcuts.redirect(
+            django.urls.reverse_lazy(
+                'organization:profile', kwargs={'pk': org_obj.pk}
+            )
         )

@@ -1,0 +1,24 @@
+{% extends "quiz/detail.html" %}
+
+{% block quiz_page %}
+  <div class="p-3">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">№</th>
+          <th scope="col">Кто</th>
+          <th scope="col">Решено</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for result in results %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td><a class="nav-link" href="{{ result.user.get_absolute_url }}">{{ result.user.username }}</a></td>
+            <td>{{ result.solved }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock quiz_page %}

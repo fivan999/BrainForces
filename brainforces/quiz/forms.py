@@ -4,6 +4,17 @@ import django.forms
 import quiz.models
 
 
+class AnswerForm(django.forms.Form):
+    """форма выбора варианта ответа"""
+
+    answer = django.forms.ChoiceField(
+        required=True,
+        choices=[],
+        widget=django.forms.RadioSelect(),
+        label='Варианты ответа:',
+    )
+
+
 class QuizQuestionsNumberForm(django.forms.Form):
     """форма выбора количества вопросов в викторине"""
 
@@ -44,7 +55,11 @@ class QuestionForm(django.forms.ModelForm):
         fields = ('name', 'text', 'difficulty')
 
     def clean_variants(self) -> list:
-        """валидируем варианты ответа"""
+        """
+        валидируем варианты ответа
+        их должно быть не меньше двух
+        не менее одного правильного ответа
+        """
         variants = list(
             map(lambda x: x.strip(), self.cleaned_data['variants'].split('\n'))
         )

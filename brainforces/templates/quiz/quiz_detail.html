@@ -1,0 +1,24 @@
+{% extends "quiz/detail.html" %}
+
+{% block quiz_page %}
+  <h3 class="display-8 fw-bold lh-1 mb-3">{{ quiz.name }}</h3>
+  <div>
+    <span class="badge badge-pill text-bg-primary">{{ quiz.get_status_display }}</span>
+    {% if quiz.is_ended %}
+      <span class="badge badge-pill text-bg-primary">Итоги подведены</span>
+    {% endif %}
+  </div>
+  <p class="lead">{{ quiz.description|safe }}</p>
+  <p class="lead">Начало: {{ quiz.start_time }}</p>
+  <p class="lead">Продолжительность: {{ quiz.duration }} минут</p>
+  <p class="lead">Создатель викторины: <span class="badge badge-pill text-bg-secondary">{{ quiz.creator.username }}</span></p>
+  {% if quiz.organized_by.name %}
+    <p class="lead">Организация: <span class="badge badge-pill text-bg-secondary">{{ quiz.organized_by.name }}</span></p>
+  {% endif %}
+  {% if not can_participate and quiz_status == 1 %}
+    <div><a href="{% url 'quiz:register' pk=quiz.pk %}" class="btn btn-primary">Зарегистрироваться</a></div>
+  {% endif %}
+  {% if quiz_status == 3 and quiz.creator.pk == request.user.pk and not quiz.is_ended %}
+    <div><a href="{% url 'quiz:make_results' pk=quiz.pk %}" class="btn btn-primary">Подвести итоги</a></div>
+  {% endif %}
+{% endblock quiz_page %}

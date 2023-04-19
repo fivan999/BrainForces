@@ -3,6 +3,7 @@ import ckeditor_uploader.fields
 import django.db.models
 import django.shortcuts
 import django.urls
+import django.utils.timezone
 
 import organization.models
 import quiz.managers
@@ -35,11 +36,6 @@ class Quiz(django.db.models.Model):
 
     objects = quiz.managers.QuizManager()
 
-    class Statuses(django.db.models.IntegerChoices):
-        NOT_STARTED = 1, 'Не начата'
-        GOES_ON = 2, 'Идет'
-        FINISHED = 3, 'Закончена'
-
     creator = django.db.models.ForeignKey(
         users.models.User,
         verbose_name='создатель',
@@ -55,20 +51,14 @@ class Quiz(django.db.models.Model):
         verbose_name='название викторины',
     )
 
-    status = django.db.models.IntegerField(
-        choices=Statuses.choices,
-        help_text='Поставьте статус викторины',
-        default=1,
-        verbose_name='статус',
-    )
-
     description = ckeditor_uploader.fields.RichTextUploadingField(
         help_text='Создайте описание для Вашей викторины',
         verbose_name='описание',
     )
 
     start_time = django.db.models.DateTimeField(
-        help_text='Время начала викторины в формате день.месяц.год',
+        help_text='Время начала викторины в формате день.месяц.год'
+        ' часы:минуты:секунды',
         null=True,
         blank=True,
         verbose_name='стартовое время',
@@ -103,6 +93,12 @@ class Quiz(django.db.models.Model):
         default=False,
     )
 
+    is_ended = django.db.models.BooleanField(
+        verbose_name='итоги подведены',
+        help_text='Подведены итоги или нет',
+        default=False,
+    )
+
     class Meta:
         verbose_name = 'викторина'
         verbose_name_plural = 'викторины'
@@ -110,6 +106,32 @@ class Quiz(django.db.models.Model):
     def __str__(self) -> str:
         """строковое представление"""
         return self.name[:20]
+
+    def get_absolute_url(self) -> str:
+        """ссылка на викторину"""
+        return django.urls.reverse_lazy(
+            'quiz:quiz_detail', kwargs={'pk': self.pk}
+        )
+
+    def get_quiz_status(self) -> int:
+        """статус викторины"""
+        now_datetime = django.utils.timezone.now()
+        if now_datetime < self.start_time:
+            return 1
+        elif (
+            self.start_time
+            < now_datetime
+            < self.start_time
+            + django.utils.timezone.timedelta(minutes=self.duration)
+        ):
+            return 2
+        else:
+            return 3
+
+    def get_status_display(self) -> str:
+        """получаем текстовое представление статусов"""
+        text_statuses = {1: 'Не начата', 2: 'Идет', 3: 'Закончена'}
+        return text_statuses[self.get_quiz_status()]
 
 
 class QuizResults(django.db.models.Model):
@@ -210,9 +232,10 @@ class Question(django.db.models.Model):
         return self.name[:20]
 
     def get_absolute_url(self) -> str:
-        """путь к user_detail"""
+        """путь к question detail"""
         return django.urls.reverse_lazy(
-            'archive:question_detail', kwargs={'pk': self.pk}
+            'quiz:question_detail',
+            kwargs={'pk': self.quiz.pk, 'question_pk': self.pk},
         )
 
 
@@ -257,7 +280,7 @@ class UserAnswer(django.db.models.Model):
         users.models.User,
         verbose_name='пользователь',
         on_delete=django.db.models.CASCADE,
-        related_name='useranswer_user',
+        related_name='answers',
         help_text='пользователь, который дал ответ',
     )
 
@@ -265,7 +288,7 @@ class UserAnswer(django.db.models.Model):
         Question,
         verbose_name='вопрос',
         help_text='вопрос на который пользователь дал ответ',
-        related_name='useranswer_question',
+        related_name='answers',
         on_delete=django.db.models.CASCADE,
     )
 

@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'organization.apps.OrganizationConfig',
+    'about.apps.AboutConfig',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -79,12 +80,9 @@ WSGI_APPLICATION = 'brainforces.wsgi.application'
 
 DATABASES = dict()
 
-if (
-    'test' in sys.argv
-    or not os.getenv('USE_POSTGRES', default='False').lower()
-    in ('true', 'y', '1', 'yes')
-    or True
-):
+if 'test' in sys.argv or not os.getenv(
+    'USE_POSTGRES', default='False'
+).lower() in ('true', 'y', '1', 'yes'):
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',
@@ -136,7 +134,7 @@ LOGIN_ATTEMPTS = int(os.environ.get('LOGIN_ATTEMPTS', default=3))
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

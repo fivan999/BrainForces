@@ -1,25 +1,28 @@
 {% extends "base.html" %}
 
-{% load static %}
-{% url 'archive:question_detail' %}
-
 {% block content %}
   <div class="container col-xxl-9">
+    <form action="{% url 'archive:archive' %}" method="get" class="mb-2">
+      {% csrf_token %}
+      <div class="gap-1 col-12 d-flex justify-content-between col-lg-auto mb-3 mb-lg-0 me-lg-3">
+        <div class="col-4">
+          <input type="text" name="searched" class="form-control" aria-label="Search" placeholder="Поиск" value="" />
+        </div>
+        <div class="col-5">
+          <select class="form-select form-control" aria-label="Default select example" name="search_critery">
+            <option value="all">Всё</option>
+            <option value="name">Имя</option>
+            <option value="text">Текст</option>
+            <option value="tags">Теги</option>
+          </select>
+        </div>
+        <button class="btn btn-primary col-3" type="submit">Найти</button>
+      </div>
+    </form>
     {% if questions %}
       <h1 class="display-6 fw-bold lh-1">
         Архив вопросов
       </h1>
-      <form class="col-12 d-flex justify-content-between col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{% url 'archive:archive' %}" method="get">
-        {% csrf_token %}
-        <input type="text" name="searched" class="form-control" aria-label="Search" placeholder="Поиск" value="" />
-        <select class="form-select" aria-label="Default select example" name="search_critery">
-          <option value="all">Всё</option>
-          <option value="name">Имя</option>
-          <option value="text">Текст</option>
-          <option value="tags">Теги</option>
-        </select>
-        <button class="btn btn-outline-secondary" type="submit">Найти</button>
-      </form>
       <div class="p-3">
         <table class="table">
           <thead>

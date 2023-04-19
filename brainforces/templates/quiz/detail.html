@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="container col-xxl-9 mb-4">
+    <div class="d-flex justify-content-between">
+      <h2 class="fw-bold display-7">
+        BrainForces Round {{ quiz.pk }}
+      </h2>
+      <h2 class="display-7 text-muted" id="remaining_time">
+      </h2>
+    </div>
+    {% with request.resolver_match.view_name as view_name %}
+      <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+          <a class="nav-link {% if view_name == 'quiz:quiz_detail' %}active{% else %}text-dark{% endif %}" {% if view_name == 'quiz:quiz_detail' %}aria-current="page"{% endif %} href="{% url 'quiz:quiz_detail' pk=quiz.pk %}">Описание</a>
+        </li>
+        {% if can_access_questions %}
+          <li class="nav-item">
+            <a class="nav-link {% if view_name == 'quiz:questions' or view_name == 'quiz:question_detail' %}active{% else %}text-dark{% endif %}" {% if view_name == 'quiz:questions' or view_name == 'quiz:question_detail' %}aria-current="page"{% endif %} href="{% url 'quiz:questions' pk=quiz.pk %}">Вопросы</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if view_name == 'quiz:user_answers_list' %}active{% else %}text-dark{% endif %}" {% if view_name == 'quiz:user_answers_list' %}aria-current="page"{% endif %} href="{% url 'quiz:user_answers_list' pk=quiz.pk %}">Мои попытки</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if view_name == 'quiz:standings_list' %}active{% else %}text-dark{% endif %}" {% if view_name == 'quiz:standings_list' %}aria-current="page"{% endif %} href="{% url 'quiz:standings_list' pk=quiz.pk %}">Положение</a>
+          </li>
+        {% endif %}
+      </ul>
+    {% endwith %}
+    <div class="row flex-lg-row-reverse align-items-center">
+      {% block quiz_page %}{% endblock quiz_page %}
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      function timer() {
+        remaining_time -= 1000;
+
+        if (remaining_time <= 0) {
+            clearInterval(countdown_timer);
+            location.reload();
+        }
+
+        var hours = Math.floor(remaining_time / (1000 * 60 * 60)).toString();
+        var minutes = Math.floor((remaining_time % (1000 * 60 * 60)) / (1000 * 60)).toString();
+        var seconds = Math.floor((remaining_time % (1000 * 60)) / 1000).toString();
+        if (hours.length == 1){
+          var hours = '0' + hours;
+        }
+        if (minutes.length == 1){
+          var minutes = '0' + minutes;
+        }
+        if (seconds.length == 1){
+          var seconds = '0' + seconds;
+        }
+
+        var countdown_element = document.getElementById('remaining_time');
+        if (seconds >= 0){
+          countdown_element.innerHTML = hours + ':' + minutes + ':' + seconds;
+        }
+      }
+      var now_time = new Date('{{ now_time }}');
+      var end_time = new Date('{{ end_time }}');
+  
+      var remaining_time = Math.max(0, end_time - now_time);
+      if (remaining_time >= 1 && '{{ quiz_status }}' == '2'){
+        timer();
+        var countdown_timer = setInterval(timer, 1000);
+      }
+      else{
+        var countdown_element = document.getElementById('remaining_time');
+        countdown_element.innerHTML = '{{ quiz.get_status_display }}';
+      }
+  });
+  </script>
+{% endblock content %}

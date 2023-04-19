@@ -10,14 +10,16 @@ class QuizManager(django.db.models.Manager):
         """только нужные поля для списка викторин на главной"""
         return (
             self.get_queryset()
-            .select_related('creator')
+            .select_related('creator', 'organized_by')
             .only(
                 'name',
                 'description',
                 'creator__username',
                 'duration',
-                'status',
                 'start_time',
+                'organized_by__name',
+                'is_private',
+                'is_ended',
             )
             .order_by('-start_time')
         )
@@ -33,10 +35,10 @@ class UserAnswerManager(django.db.models.Manager):
             .select_related('user', 'question')
             .only(
                 'user__username',
-                'question__id',
-                'question__name',
+                'question',
                 'is_correct',
                 'time_answered',
+                'question__name',
             )
         )
 
@@ -71,11 +73,13 @@ class QuestionManager(django.db.models.Manager):
         """только нужные поля для списка архивных вопросов"""
         return (
             self.get_queryset()
-            .filter(quiz__status=3, quiz__is_private=False)
+            .select_related('quiz')
+            .filter(quiz__is_ended=True, quiz__is_private=False)
             .only(
                 'id',
                 'name',
                 'difficulty',
+                'quiz__id',
             )
             .order_by('difficulty')
         )

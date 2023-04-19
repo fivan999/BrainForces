@@ -12,11 +12,16 @@ class InviteToOrganizationForm(django.forms.Form):
     username = django.forms.CharField(help_text='Имя или почта')
 
     def clean_username(self) -> str:
-        """валидируем пользователя"""
+        """
+        валидируем пользователя: имя или почта
+        должны существовать
+        """
         username = self.cleaned_data['username']
         user = users.models.User.objects.filter(
             django.db.models.Q(username=username)
-            | django.db.models.Q(email=username)
+            | django.db.models.Q(
+                email=users.models.User.objects.normalize_email(username)
+            )
         ).first()
         if user is None:
             raise django.core.exceptions.ValidationError('Ошибка')
@@ -29,4 +34,4 @@ class PostForm(django.forms.ModelForm):
 
     class Meta:
         model = organization.models.OrganizationPost
-        fields = ('name', 'text')
+        fields = ('name', 'text', 'is_private')

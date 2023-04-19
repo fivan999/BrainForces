@@ -2,17 +2,22 @@ import django.contrib.auth.mixins
 import django.db.models
 import django.views.generic
 
-import quiz.models
+import organization.models
 
 
 class HomeView(django.views.generic.ListView):
-    """список викторин на главной странице"""
+    """список постов на главной странице"""
 
     template_name = 'homepage/homepage.html'
-    context_object_name = 'quizzes'
-    paginate_by = 5
-    queryset = list(
-        quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
-            is_private=False
+    context_object_name = 'posts'
+    paginate_by = 10
+
+    def get_queryset(self) -> django.db.models.QuerySet:
+        """не показываем приватные викторины в общем списке"""
+        return (
+            organization.models.OrganizationPost.objects.filter(
+                is_private=False
+            )
+            .select_related('posted_by')
+            .only('name', 'text', 'posted_by__name')
         )
-    )

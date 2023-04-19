@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container col-xxl-9">
+    <form class="mb-2" action="{% url 'quiz:list' %}" method="get">
+      {% csrf_token %}
+      <div class="gap-1 col-12 d-flex justify-content-between col-lg-auto mb-3 mb-lg-0 me-lg-3">
+        <div class="col-5">
+          <input type="text" name="searched" class="form-control col-5" aria-label="Search" placeholder="Поиск" value="" />
+        </div>
+        <div class="col-4">
+          <select class="form-select col-5" aria-label="Default select example" name="search_critery">
+            <option value="all">Все</option>
+            <option value="name">Название</option>
+            <option value="description">Описание</option>
+            <option value="organized_by">Организация</option>
+          </select>
+        </div>
+        <button class="btn btn-primary col-3" type="submit">Найти</button>
+      </div>
+    </form>
+    {% if quizzes %}
+      <h1 class="display-6 fw-bold lh-1">
+        Викторины
+      </h1>
+      {% for quiz in quizzes %}
+        <div class="col-12">
+          <div class="card shadow-sm mb-2">
+            <div class="card-body">
+              {% include "includes/quiz_detail.html" %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      {% include "includes/pagination.html" %}
+    {% else %}
+      {% include "includes/empty.html" %}
+    {% endif %}
+  </div>
+{% endblock content %}

@@ -46,6 +46,8 @@ class Organization(django.db.models.Model):
 class OrganizationToUser(django.db.models.Model):
     """связь организации с пользователем"""
 
+    objects = organization.managers.OrganizationToUserManager()
+
     class UserRoles(django.db.models.IntegerChoices):
         """роли пользователя в органицазии"""
 
@@ -100,6 +102,12 @@ class OrganizationPost(django.db.models.Model):
 
     text = ckeditor_uploader.fields.RichTextUploadingField(
         verbose_name='текст', help_text='Текст поста'
+    )
+
+    is_private = django.db.models.BooleanField(
+        default=False,
+        verbose_name='приватный',
+        help_text='Приватный пост или нет',
     )
 
     posted_by = django.db.models.ForeignKey(

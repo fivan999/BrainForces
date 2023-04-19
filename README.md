@@ -9,10 +9,16 @@
 git clone https://github.com/fivan999/django_intensive_lessons
 ```
 ### Установка зависимостей
-Создайте виртуальное окружение и активируйте его
+Создайте виртуальное окружение и активируйте его<br>
+Для Windows:
 ```
 python -m venv venv
 venv\Scripts\activate
+```
+Для Linux:
+```
+python3 -m venv venv
+source venv/bin/activate
 ```
 
 Установите нужные зависимости

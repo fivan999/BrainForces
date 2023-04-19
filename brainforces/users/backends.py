@@ -13,6 +13,12 @@ class EmailBackend(django.contrib.auth.backends.ModelBackend):
     def authenticate(
         self, request, username=None, password=None, **kwargs
     ) -> None:
+        """
+        ищем пользователя с такой почтой,
+        если пароль неправильный то количество неудачных
+        попыток входа увеличивается
+        отправляем письмо с реактивацией аккаунта если попыток много
+        """
         email = users.models.User.objects.normalize_email(username)
         try:
             user = users.models.User.objects.get(

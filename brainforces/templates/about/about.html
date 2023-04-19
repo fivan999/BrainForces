@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="container col-xxl-9">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+      <div class="col-10 col-sm-8 col-lg-6">
+        <img src="{% static 'img/about_img.jpeg' %}" class="img-fluid border rounded-3 shadow-lg " width="100%" height="auto" alt="главная картинка" />
+      </div>
+      <div class="col-lg-6">
+        <h1 class="display-5 fw-bold lh-1 mb-3">О сайте</h1>
+        <p class="lead">В BrainForces можно участвовать в викторинах, проверять свои знания, соревнуясь в эрудиции с другими пользователями, а также создавать собственные.</p>
+        <p class="lead">Большое комьюнити, много викторин по разным тематикам и интересные вопросы - вот что вас ждет в BrainForces. Стоит только начать!</p>
+        <div class="d-grid gap-2 d-md-flex">
+          <a href="{% url 'quiz:list' %}"><button type="button" class="btn btn-primary btn-lg px-4 me-md-2">Вперёд!</button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

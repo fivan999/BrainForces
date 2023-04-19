@@ -2,16 +2,18 @@
 
 {% block content %}
   <div class="container col-xxl-9">
-    {% if quizzes %}
+    {% if posts %}
       <h1 class="display-6 fw-bold lh-1">
-        Викторины
+        Новости
       </h1>
-      {% for quiz in quizzes %}
+      {% for post in posts %}
         <div class="col">
           <div class="card shadow-sm mb-2">
             <div class="card-body">
-              {% include "homepage/quiz_detail.html" %}
-              <a href="{{ quiz.get_absolute_url }}" class="btn btn-primary">Принять участие</a>
+              <h2 class="display-6 fw-bold">{{ post.name }}</h2>
+              {{ post.text|safe }}
+              Опубликовано: <span class="badge badge-pill text-bg-primary">{{ post.posted_by.name }}</span><br />
+              <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary mt-2">Смотреть</a>
             </div>
           </div>
         </div>

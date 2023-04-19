@@ -8,7 +8,10 @@ import django.db.models
 
 
 def generate_image_path(obj: django.db.models.Model, filename: str) -> str:
-    """делаем путь к картинке"""
+    """
+    делаем путь к картинке, преобразуя русские буквы
+    в английские и добавляем рандома
+    """
     filename = transliterate.translit(filename, 'ru', reversed=True)
     filename = (
         filename[: filename.rfind('.')]

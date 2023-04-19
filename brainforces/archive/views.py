@@ -6,7 +6,7 @@ import django.views.generic
 import quiz.models
 
 
-class ArchiveView(django.views.generic.ListView):
+class ArchiveQuestionsView(django.views.generic.ListView):
     """список архивных вопросов"""
 
     template_name = 'archive/archive.html'
@@ -14,7 +14,11 @@ class ArchiveView(django.views.generic.ListView):
     paginate_by = 70
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        """обрабатываем поисковый запрос от пользователя"""
+        """
+        обрабатываем поисковый запрос от пользователя:
+        пользователь может искать по всем критериям,
+        по имени вопроса, по тексту или названиям тегов
+        """
         queryset = quiz.models.Question.objects.get_only_useful_list_fields()
         searched = self.request.GET.get('searched')
         search_criteria = self.request.GET.get('search_critery', 'all')
@@ -33,17 +37,9 @@ class ArchiveView(django.views.generic.ListView):
                 queryset = queryset.filter(text__icontains=searched)
             elif search_criteria == 'tags':
                 queryset = queryset.filter(tags__name__icontains=searched)
-        return list(queryset)
+        return queryset
 
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
         context['searched'] = self.request.GET.get('searched', '')
         return context
-
-
-class ArchiveQuestionView(django.views.generic.DetailView):
-    """архивный вопрос"""
-
-    template_name = 'archive/question_detail.html'
-    context_object_name = 'question'
-    queryset = quiz.models.Question.objects.get_only_useful_list_fields()
