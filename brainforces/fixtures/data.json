@@ -1,0 +1,500 @@
+[
+{
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$260000$WRTeCOOzklEZyuaaAIpQZD$sW57qEDcYrcbKPNIi1gBlYqxv4gQ2y/0IPpesYKtq24=",
+        "last_login": "2023-04-18T16:15:42.763Z",
+        "is_superuser": false,
+        "username": "bebradev",
+        "first_name": "",
+        "last_name": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2023-04-06T22:12:12.110Z",
+        "email": "bebradev@gmail.com",
+        "login_attempts": 0,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$260000$tbOLlj7ho3l7ocDpJxhqQ1$jHbuysWXk5MkyE7Q3f6HYbR9zcJ7dxdiMl4D6R3U/EM=",
+        "last_login": "2023-04-18T16:53:39.323Z",
+        "is_superuser": true,
+        "username": "fivan",
+        "first_name": "Олег",
+        "last_name": "Олегов",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2023-04-06T22:13:07Z",
+        "email": "fivan999@yandex.ru",
+        "login_attempts": 0,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.profile",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "image": "users/1/login_img_72Y7OFF.jpeg",
+        "rating": 1
+    }
+},
+{
+    "model": "users.profile",
+    "pk": 2,
+    "fields": {
+        "user": 2,
+        "image": "",
+        "rating": 1
+    }
+},
+{
+    "model": "quiz.quiz",
+    "pk": 1,
+    "fields": {
+        "creator": 2,
+        "name": "Тестовая викторина 1",
+        "description": "<p>крутая викторина</p>",
+        "start_time": "2023-04-17T19:00:00Z",
+        "duration": 100,
+        "is_rated": false,
+        "organized_by": 1,
+        "is_private": false,
+        "is_ended": false
+    }
+},
+{
+    "model": "quiz.quiz",
+    "pk": 2,
+    "fields": {
+        "creator": 2,
+        "name": "Тестовая викторина 2",
+        "description": "<p>викторина 2</p>",
+        "start_time": "2023-04-21T12:00:00Z",
+        "duration": 50,
+        "is_rated": false,
+        "organized_by": 1,
+        "is_private": false,
+        "is_ended": false
+    }
+},
+{
+    "model": "quiz.quiz",
+    "pk": 7,
+    "fields": {
+        "creator": 1,
+        "name": "as",
+        "description": "<p>as</p>",
+        "start_time": "2023-04-17T20:51:00Z",
+        "duration": 12,
+        "is_rated": false,
+        "organized_by": 2,
+        "is_private": false,
+        "is_ended": false
+    }
+},
+{
+    "model": "quiz.quiz",
+    "pk": 8,
+    "fields": {
+        "creator": 1,
+        "name": "asfd",
+        "description": "<p>asf</p>",
+        "start_time": "2023-04-29T00:00:00Z",
+        "duration": 45,
+        "is_rated": false,
+        "organized_by": 2,
+        "is_private": false,
+        "is_ended": false
+    }
+},
+{
+    "model": "quiz.quiz",
+    "pk": 9,
+    "fields": {
+        "creator": 2,
+        "name": "КРУТАЯ ВИКТОРИНА",
+        "description": "<h1>крутая викторина!</h1>\r\n\r\n<p><img alt=\"\" src=\"/media/uploads/2023/04/09/login_img.jpeg\" style=\"height:299px; width:200px\" /></p>\r\n\r\n<h1>&nbsp;</h1>",
+        "start_time": "2023-04-18T14:20:00Z",
+        "duration": 100,
+        "is_rated": true,
+        "organized_by": 1,
+        "is_private": false,
+        "is_ended": true
+    }
+},
+{
+    "model": "quiz.quiz",
+    "pk": 11,
+    "fields": {
+        "creator": 2,
+        "name": "Новая новейшая",
+        "description": "<p>Новая новейшая</p>",
+        "start_time": "2023-04-17T13:00:00Z",
+        "duration": 67,
+        "is_rated": true,
+        "organized_by": 1,
+        "is_private": false,
+        "is_ended": false
+    }
+},
+{
+    "model": "quiz.quizresults",
+    "pk": 7,
+    "fields": {
+        "user": 2,
+        "quiz": 9,
+        "rating_before": 0,
+        "rating_after": 1,
+        "solved": 1,
+        "place": 1
+    }
+},
+{
+    "model": "quiz.quizresults",
+    "pk": 8,
+    "fields": {
+        "user": 1,
+        "quiz": 9,
+        "rating_before": 0,
+        "rating_after": 1,
+        "solved": 1,
+        "place": 1
+    }
+},
+{
+    "model": "quiz.question",
+    "pk": 1,
+    "fields": {
+        "name": "Имя Фивана",
+        "text": "<p>как зовут фивана???</p>",
+        "quiz": 1,
+        "difficulty": 1,
+        "tags": []
+    }
+},
+{
+    "model": "quiz.question",
+    "pk": 2,
+    "fields": {
+        "name": "Имя",
+        "text": "<p>Имя Фивана</p>",
+        "quiz": 1,
+        "difficulty": 1,
+        "tags": []
+    }
+},
+{
+    "model": "quiz.question",
+    "pk": 4,
+    "fields": {
+        "name": "Новая новейшая",
+        "text": "<p>Новая новейшая</p>",
+        "quiz": 11,
+        "difficulty": 1,
+        "tags": []
+    }
+},
+{
+    "model": "quiz.question",
+    "pk": 17,
+    "fields": {
+        "name": "вопрос крутой викторины",
+        "text": "<p>цупаиуапри</p>",
+        "quiz": 9,
+        "difficulty": 1,
+        "tags": []
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 1,
+    "fields": {
+        "text": "Бебра",
+        "question": 1,
+        "is_correct": true
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 2,
+    "fields": {
+        "text": "Фиван",
+        "question": 1,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 3,
+    "fields": {
+        "text": "Иван",
+        "question": 1,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 4,
+    "fields": {
+        "text": "Гений",
+        "question": 1,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 6,
+    "fields": {
+        "text": "Новая новейшая",
+        "question": 4,
+        "is_correct": true
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 7,
+    "fields": {
+        "text": "да",
+        "question": 17,
+        "is_correct": true
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 8,
+    "fields": {
+        "text": "нет",
+        "question": 17,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 9,
+    "fields": {
+        "text": "да",
+        "question": 2,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 10,
+    "fields": {
+        "text": "нет",
+        "question": 2,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 11,
+    "fields": {
+        "text": "lf",
+        "question": 2,
+        "is_correct": true
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 14,
+    "fields": {
+        "text": "нет",
+        "question": 4,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.useranswer",
+    "pk": 31,
+    "fields": {
+        "user": 2,
+        "question": 17,
+        "is_correct": true,
+        "time_answered": "2023-04-18T16:11:43.314Z"
+    }
+},
+{
+    "model": "quiz.useranswer",
+    "pk": 32,
+    "fields": {
+        "user": 1,
+        "question": 17,
+        "is_correct": false,
+        "time_answered": "2023-04-18T16:12:13.837Z"
+    }
+},
+{
+    "model": "quiz.useranswer",
+    "pk": 33,
+    "fields": {
+        "user": 1,
+        "question": 17,
+        "is_correct": true,
+        "time_answered": "2023-04-18T16:12:19.011Z"
+    }
+},
+{
+    "model": "organization.organization",
+    "pk": 1,
+    "fields": {
+        "name": "Bebra developers",
+        "description": "<h2 style=\"font-style:italic\">BEBRA DEVS</h2>\r\n\r\n<p><strong>Правила</strong>: читы-бан, кемперство-бан, оскробление-бан, оскорбление администрации-расстрел, потом-бан</p>\r\n\r\n<p>Символ:</p>\r\n\r\n<p><img alt=\"\" src=\"/media/uploads/2023/04/09/brain.svg\" style=\"height:205px; width:200px\" /></p>\r\n\r\n<p><em><strong>Всем удачи!</strong></em></p>",
+        "is_private": false
+    }
+},
+{
+    "model": "organization.organization",
+    "pk": 2,
+    "fields": {
+        "name": "Новые решалы",
+        "description": "<p><strong>еееееееееееее</strong></p>",
+        "is_private": false
+    }
+},
+{
+    "model": "organization.organization",
+    "pk": 3,
+    "fields": {
+        "name": "Новая орга",
+        "description": "<p>уйакпыкап</p>",
+        "is_private": true
+    }
+},
+{
+    "model": "organization.organization",
+    "pk": 4,
+    "fields": {
+        "name": "Кастомная организация бебры дев",
+        "description": "<h2 style=\"font-style:italic\"><strong>фйкупукепуепм</strong></h2>\r\n\r\n<p><strong>Это мы</strong></p>",
+        "is_private": false
+    }
+},
+{
+    "model": "organization.organizationtouser",
+    "pk": 16,
+    "fields": {
+        "organization": 2,
+        "user": 1,
+        "role": 3
+    }
+},
+{
+    "model": "organization.organizationtouser",
+    "pk": 19,
+    "fields": {
+        "organization": 1,
+        "user": 2,
+        "role": 2
+    }
+},
+{
+    "model": "organization.organizationtouser",
+    "pk": 24,
+    "fields": {
+        "organization": 1,
+        "user": 1,
+        "role": 1
+    }
+},
+{
+    "model": "organization.organizationtouser",
+    "pk": 25,
+    "fields": {
+        "organization": 3,
+        "user": 1,
+        "role": 3
+    }
+},
+{
+    "model": "organization.organizationtouser",
+    "pk": 26,
+    "fields": {
+        "organization": 4,
+        "user": 1,
+        "role": 3
+    }
+},
+{
+    "model": "organization.organizationpost",
+    "pk": 1,
+    "fields": {
+        "name": "Мы открылись!",
+        "text": "<p>Привет мы организовались</p>\r\n\r\n<p><img alt=\"\" src=\"/media/uploads/2023/04/09/login_img.jpeg\" style=\"height:449px; width:300px\" /></p>\r\n\r\n<p><strong>УРААААААААААА</strong></p>",
+        "is_private": false,
+        "posted_by": 2
+    }
+},
+{
+    "model": "organization.organizationpost",
+    "pk": 2,
+    "fields": {
+        "name": "Vs  wrgfaqergt",
+        "text": "<h2 style=\"font-style:italic\">qrgqqrgqregqrgtfqtgqagt</h2>",
+        "is_private": false,
+        "posted_by": 4
+    }
+},
+{
+    "model": "organization.commenttoorganizationpost",
+    "pk": 1,
+    "fields": {
+        "text": "Ура наконец то будут викторины",
+        "user": 1,
+        "post": 1
+    }
+},
+{
+    "model": "organization.commenttoorganizationpost",
+    "pk": 2,
+    "fields": {
+        "text": "победа",
+        "user": 1,
+        "post": 1
+    }
+},
+{
+    "model": "organization.commenttoorganizationpost",
+    "pk": 3,
+    "fields": {
+        "text": "Я фиван",
+        "user": 1,
+        "post": 1
+    }
+},
+{
+    "model": "organization.commenttoorganizationpost",
+    "pk": 4,
+    "fields": {
+        "text": "я новенький",
+        "user": 2,
+        "post": 1
+    }
+},
+{
+    "model": "organization.commenttoorganizationpost",
+    "pk": 5,
+    "fields": {
+        "text": "asfg",
+        "user": 2,
+        "post": 1
+    }
+},
+{
+    "model": "organization.commenttoorganizationpost",
+    "pk": 6,
+    "fields": {
+        "text": "мдемс",
+        "user": 1,
+        "post": 2
+    }
+}
+]
