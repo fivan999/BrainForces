@@ -6,7 +6,7 @@
 ## Установка и запуск
 ### Клонировать репозиторий
 ```
-git clone https://github.com/fivan999/django_intensive_lessons
+git clone https://github.com/fivan999/BrainForces
 ```
 ### Установка зависимостей
 Создайте виртуальное окружение и активируйте его<br>
