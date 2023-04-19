@@ -52,8 +52,8 @@ class OrganizationListView(django.views.generic.ListView):
 
     def get_queryset(self) -> django.db.models.QuerySet:
         return (
-            organization.models.Organization.objects.filter_user_access(
-                user_pk=self.request.user.pk
+            organization.models.Organization.objects.filter(
+                is_private=False
             )
             .only('name', 'description')
             .annotate(count_users=django.db.models.Count('users__id'))
@@ -143,7 +143,7 @@ class OrganizationQuizzesView(
                 organized_by__users__user__pk=self.request.user.pk
             ),
             organized_by__pk=self.kwargs['pk'],
-        )
+        ).distinct()
 
 
 class ActionWithUserView(django.views.generic.View):

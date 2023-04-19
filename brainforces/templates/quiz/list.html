@@ -10,19 +10,7 @@
         <div class="col-12">
           <div class="card shadow-sm mb-2">
             <div class="card-body">
-              <h3 class="display-8 fw-bold lh-1 mb-3">{{ quiz.name }}</h3>
-              <span class="badge badge-pill text-bg-primary">{{ quiz.get_status_display }}</span>
-              {% if quiz.is_ended %}
-                <span class="badge badge-pill text-bg-primary">Итоги подведены</span>
-              {% endif %}
-              <p class="lead">{{ quiz.description|safe }}</p>
-              <p class="lead">Начало: {{ quiz.start_time }}</p>
-              <p class="lead">Продолжительность: {{ quiz.duration }} минут</p>
-              <p class="lead">Создатель викторины: <span class="badge badge-pill text-bg-secondary">{{ quiz.creator.username }}</span></p>
-              {% if quiz.organized_by.name %}
-                <p class="lead">Организация: <span class="badge badge-pill text-bg-secondary">{{ quiz.organized_by.name }}</span></p>
-              {% endif %}
-              <a href="{{ quiz.get_absolute_url }}" class="btn btn-primary">Принять участие</a>
+              {% include "includes/quiz_detail.html" %}
             </div>
           </div>
         </div>
