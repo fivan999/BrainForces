@@ -4,18 +4,18 @@
 
 {% block organization_page %}
   {% if user_is_admin %}
-    <form method="post">
+    <form method="post" class="mb-2">
       {% csrf_token %}
       {% for error in form.errors %}
         <div class="alert alert-danger" role="alert">
           {{ error|safe }}
         </div>
       {% endfor %}
-      <div class="row">
-        <div class="col-9">
+      <div class="gap-2 col-12 d-flex justify-content-between col-lg-auto mb-3 mb-lg-0 me-lg-3">
+        <div class="col-md-9 col-6">
           {% render_field form.username class="form-control" placeholder=form.username.help_text %}
         </div>
-        <button type="submit" class="btn btn-primary col-3">Пригласить</button>
+        <button type="submit" class="btn btn-primary col-md-3 col-6">Пригласить</button>
       </div>
       {% for error in form.username.errors %}
         <div class="alert alert-danger" role="alert">
@@ -30,7 +30,7 @@
         <thead>
           <tr>
             <th scope="col">№</th>
-            <th scope="col">Пользователь</th>
+            <th scope="col">Участник</th>
             <th scope="col">Роль</th>
             {% if user_is_admin %}
               <th scope="col">Действие</th>

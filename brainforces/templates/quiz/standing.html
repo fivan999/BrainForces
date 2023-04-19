@@ -14,7 +14,7 @@
         {% for result in results %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ result.user.username }}</td>
+            <td><a class="nav-link" href="{{ result.user.get_absolute_url }}">{{ result.user.username }}</a></td>
             <td>{{ result.solved }}</td>
           </tr>
         {% endfor %}

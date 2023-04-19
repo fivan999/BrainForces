@@ -1,5 +1,7 @@
 {% extends "quiz/detail.html" %}
 
+{% load widget_tweaks %}
+
 {% block quiz_page %}
   <div class="text-center">
     <h3>{{ question.name }}</h3>
@@ -12,7 +14,37 @@
       <div class="row gy-3">
         <div class="col-12">
           <form>
-            {% include "includes/make_form.html" %}
+            {% csrf_token %}
+            {% for error in form.non_field_errors %}
+              <div class="alert alert-danger" role="alert">
+                {{ error|safe }}
+              </div>
+            {% endfor %}
+            {% for field in form.visible_fields %}
+              <p>
+                {{ field.label }}
+                <div class="row">
+                  {% for ques_id, variant_txt in form.fields.answer.choices %}
+                    <div class="col-sm-12 col-md-6">
+                      <div class="card">
+                        <div class="card-body">
+                          <input type="radio" name="answer" value="{{ ques_id }}" class="form-check-input" required="" id="id_answer_{{ forloop.counter0 }}" />
+                          <label class="form-check-label">
+                            {{ variant_txt }}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+                <small><span class="text-muted">{{ field.help_text }}</span></small>
+                {% for error in field.errors %}
+                  <div class="alert alert-danger" role="alert">
+                    {{ error|safe }}
+                  </div>
+                {% endfor %}
+              </p>
+            {% endfor %}
             <button type="sumbit" class="btn btn-primary">Ответить</button>
           </form>
         </div>

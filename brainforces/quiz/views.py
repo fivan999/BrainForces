@@ -1,5 +1,6 @@
 import typing
 
+import django.contrib.auth.mixins
 import django.contrib.messages
 import django.db.models
 import django.http
@@ -20,9 +21,40 @@ class QuizListView(django.views.generic.ListView):
     template_name = 'quiz/list.html'
     context_object_name = 'quizzes'
     paginate_by = 5
-    queryset = quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
-        is_private=False
-    )
+
+    def get_queryset(self) -> django.db.models.QuerySet:
+        """
+        получение объектов и поиск
+        либо по всем критериям,
+        либо по имени, описанию и организации квиза
+        """
+        queryset = (
+            quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
+                is_private=False
+            )
+        )
+        searched = self.request.GET.get('searched')
+        search_criteria = self.request.GET.get('search_critery', 'all')
+        if searched:
+            if search_criteria == 'all':
+                queryset = (
+                    queryset.filter(
+                        django.db.models.Q(name__icontains=searched)
+                        | django.db.models.Q(description__icontains=searched)
+                        | django.db.models.Q(
+                            organized_by__name__icontains=searched
+                        )
+                    )
+                ).distinct()
+            elif search_criteria == 'name':
+                queryset = queryset.filter(name__icontains=searched)
+            elif search_criteria == 'description':
+                queryset = queryset.filter(description__icontains=searched)
+            elif search_criteria == 'organized_by':
+                queryset = queryset.filter(
+                    organized_by__name__icontains=searched
+                )
+        return queryset
 
 
 class QuizDetailView(django.views.generic.DetailView):
@@ -33,7 +65,11 @@ class QuizDetailView(django.views.generic.DetailView):
     context_object_name = 'quiz'
 
     def get_context_data(self, *args, **kwargs) -> dict:
-        """право доступа"""
+        """
+        право доступа к викторине для пользователя
+        может ли пользователь войти в эту викторину,
+        может ли он решать задания на данный момент
+        """
         context = super().get_context_data(*args, **kwargs)
         quiz_obj = context['object']
         can_access_quiz = quiz.services.user_can_access_quiz(
@@ -71,7 +107,12 @@ class MakeQuizResultsView(django.views.generic.View):
     def get(
         self, request: django.http.HttpRequest, pk: int
     ) -> django.http.HttpResponse:
-        print(True)
+        """
+        обновляется рейтинг пользователя,
+        определяется место в топе участников викторины
+        проверки: существует ли квиз,
+        является ли пользователь его создаталем
+        """
         quiz_obj = django.shortcuts.get_object_or_404(
             quiz.models.Quiz, pk=pk, is_ended=False
         )
@@ -93,6 +134,10 @@ class QuestionsView(
     context_object_name = 'questions'
 
     def get_queryset(self) -> django.db.models.QuerySet:
+        """
+        получаем все вопросы в викторине
+        и количество ответов всего и только правильных
+        """
         return (
             quiz.models.Question.objects.filter(quiz__pk=self.kwargs['pk'])
             .annotate(
@@ -115,7 +160,9 @@ class QuestionsView(
 
 
 class QuestionDetailView(
-    quiz.mixins.AccessToQuizMixin, django.views.generic.DetailView
+    django.contrib.auth.mixins.LoginRequiredMixin,
+    quiz.mixins.AccessToQuizMixin,
+    django.views.generic.DetailView,
 ):
     """детальная информация о вопросе"""
 
@@ -125,7 +172,10 @@ class QuestionDetailView(
     pk_url_kwarg = 'question_pk'
 
     def get_context_data(self, *args, **kwargs) -> typing.Dict:
-        """варианты ответа"""
+        """
+        рендерим вопрос, отдаем форму
+        с вариантами ответа
+        """
         context = super().get_context_data(*args, **kwargs)
         variants = quiz.models.Variant.objects.filter(
             question__id=self.kwargs['question_pk']
@@ -140,13 +190,31 @@ class QuestionDetailView(
     def post(
         self, request: django.http.HttpRequest, pk: int, question_pk: int
     ) -> django.http.HttpResponse:
-        """сохраняем ответ пользователя"""
-        quiz_obj = django.shortcuts.get_object_or_404(quiz.models.Quiz, pk=pk)
+        """
+        сохраняем ответ пользователя
+        квиз должен существовать
+        вопрос должен существовать
+        создаем объект ответа пользователя
+        обновляем результат решенных задач
+        и обновляем рейтинг, если викторина рейтинговая
+        """
+        question_obj = django.shortcuts.get_object_or_404(
+            quiz.models.Question.objects.select_related('quiz').only(
+                'quiz__is_rated',
+                'quiz__is_private',
+                'id',
+                'quiz__start_time',
+                'quiz__duration',
+            ),
+            pk=question_pk,
+            quiz__pk=pk,
+        )
+        quiz_obj = question_obj.quiz
         if quiz.services.user_can_access_quiz(quiz_obj, request.user):
             is_correct = quiz.models.Variant.objects.filter(
                 pk=request.POST['answer'], is_correct=True
             ).exists()
-            question_obj = quiz.models.Question.objects.get(pk=question_pk)
+
             quiz.models.UserAnswer.objects.create(
                 user=request.user,
                 question=question_obj,
@@ -176,14 +244,14 @@ class QuestionDetailView(
 class UserAnswersList(
     quiz.mixins.AccessToQuizMixin, django.views.generic.ListView
 ):
-    """`мои посылки`"""
+    """мои посылки"""
 
     template_name = 'quiz/user_answers_list.html'
     context_object_name = 'answers'
     paginate_by = 40
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        """получаем queryset"""
+        """получаем свои послыки в данной викторине"""
         useful_answer_fields = (
             quiz.models.UserAnswer.objects.get_only_useful_list_fields()
             .filter(
@@ -205,7 +273,10 @@ class StandingsList(
     paginate_by = 40
 
     def get_queryset(self, *args, **kwargs) -> django.db.models.QuerySet:
-        """получаем queryset"""
+        """
+        получаем информацию о других пользователях,
+        участвующих в викторине
+        """
         return (
             quiz.models.QuizResults.objects.select_related('user')
             .filter(quiz__pk=self.kwargs['pk'])
@@ -214,13 +285,19 @@ class StandingsList(
         )
 
 
-class QuizRegistrationView(django.views.generic.View):
+class QuizRegistrationView(
+    django.contrib.auth.mixins.LoginRequiredMixin, django.views.generic.View
+):
     """регистрация на викторину"""
 
     def get(
         self, request: django.http.HttpRequest, pk: int
     ) -> django.http.HttpResponse:
-        """регистрируем пользователя на викторину"""
+        """
+        регистрируем пользователя на викторину
+        проверка: квиз существует
+        пользователь может в нем участвовать
+        """
         quiz_obj = django.shortcuts.get_object_or_404(quiz.models.Quiz, pk=pk)
         if (
             quiz.services.user_can_access_quiz(quiz_obj, request.user)

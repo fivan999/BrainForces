@@ -18,7 +18,7 @@
           {% for result in results %}
             <tr>
               <td>{{ forloop.revcounter }}</td>
-              <td>{{ result.quiz.name }}</td>
+              <td><a class="nav-link" href="{{ result.quiz.get_absolute_url }}">{{ result.quiz.name }}</a></td>
               <td>{{ result.quiz.start_time|date:'Y.m.d H:m:s' }}</td>
               <td>{{ result.place }}</td>
               <td>{{ result.solved }}</td>

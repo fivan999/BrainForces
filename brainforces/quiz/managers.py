@@ -35,10 +35,10 @@ class UserAnswerManager(django.db.models.Manager):
             .select_related('user', 'question')
             .only(
                 'user__username',
-                'question__id',
-                'question__name',
+                'question',
                 'is_correct',
                 'time_answered',
+                'question__name',
             )
         )
 

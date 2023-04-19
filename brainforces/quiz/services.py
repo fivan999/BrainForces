@@ -6,7 +6,11 @@ import users.models
 def user_can_access_quiz(
     quiz_obj: quiz.models.Quiz, user_obj: users.models.User
 ) -> bool:
-    """может ли пользователь зайти в викторину"""
+    """
+    может ли пользователь зайти в викторину
+    она не приватная или пользователь участник
+    проводящей организации
+    """
     org_to_user_manager = organization.models.OrganizationToUser.objects
     return not quiz_obj.is_private or (
         quiz_obj.is_private
@@ -21,7 +25,8 @@ def user_can_access_quiz(
 def make_quiz_results(quiz_obj: quiz.models.Quiz) -> None:
     """
     подводим итоги викторины
-    изменяем рейтинг и место пользователя в викторине
+    изменяем рейтинг пользователя,
+    его место в топе участников викторины
     """
     quiz_results = list(
         quiz.models.QuizResults.objects.filter(quiz__pk=quiz_obj.pk)

@@ -9,7 +9,11 @@ class OrganizationManager(django.db.models.Manager):
         return self.get_queryset().only('name', 'description')
 
     def filter_user_access(self, user_pk: int) -> django.db.models.QuerySet:
-        """доступ пользователя к группе"""
+        """
+        доступ пользователя к группе
+        либо группа не приватная,
+        либо пользователь в ней состоит
+        """
         return (
             self.get_queryset()
             .filter(
@@ -34,7 +38,11 @@ class OrganizationPostManager(django.db.models.Manager):
     def filter_user_access(
         self, user_pk: int, org_pk: int = None
     ) -> django.db.models.QuerySet:
-        """доступ пользователя к посту"""
+        """
+        доступ пользователя к посту
+        либо оргация не приватная,
+        либо пользователь ее участник
+        """
         posts_queryset = self.get_queryset().filter(
             django.db.models.Q(posted_by__users__user__pk=user_pk)
             | django.db.models.Q(is_private=False)

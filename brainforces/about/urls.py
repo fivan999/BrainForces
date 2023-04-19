@@ -1,6 +1,6 @@
-import about.views
-
 import django.urls
+
+import about.views
 
 
 app_name = 'about'

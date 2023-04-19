@@ -26,7 +26,7 @@
           <a class="nav-link {% if view_name == 'users:quizzes' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:quizzes' %}aria-current="page"{% endif %} href="{% url 'users:quizzes' pk=request.resolver_match.kwargs.pk %}">Соревнования</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if view_name == 'users:answers' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:answers' %}aria-current="page"{% endif %} href="{% url 'users:answers' pk=request.resolver_match.kwargs.pk %}">Полылки</a>
+          <a class="nav-link {% if view_name == 'users:answers' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:answers' %}aria-current="page"{% endif %} href="{% url 'users:answers' pk=request.resolver_match.kwargs.pk %}">Посылки</a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if view_name == 'users:organizations' %}active{% else %}text-dark{% endif %}" {% if view_name == 'users:organizations' %}aria-current="page"{% endif %} href="{% url 'users:organizations' pk=request.resolver_match.kwargs.pk %}">Организации</a>

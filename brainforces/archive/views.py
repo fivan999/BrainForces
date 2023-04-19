@@ -14,7 +14,11 @@ class ArchiveQuestionsView(django.views.generic.ListView):
     paginate_by = 70
 
     def get_queryset(self) -> django.db.models.QuerySet:
-        """обрабатываем поисковый запрос от пользователя"""
+        """
+        обрабатываем поисковый запрос от пользователя:
+        пользователь может искать по всем критериям,
+        по имени вопроса, по тексту или названиям тегов
+        """
         queryset = quiz.models.Question.objects.get_only_useful_list_fields()
         searched = self.request.GET.get('searched')
         search_criteria = self.request.GET.get('search_critery', 'all')
