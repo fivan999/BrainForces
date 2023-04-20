@@ -18,7 +18,6 @@ class OrganizationManager(django.db.models.Manager):
             self.get_queryset()
             .filter(
                 django.db.models.Q(
-                    is_private=True,
                     users__user__pk=user_pk,
                     users__role__in=(1, 2, 3),
                 )
@@ -36,7 +35,7 @@ class OrganizationPostManager(django.db.models.Manager):
         return self.get_queryset().only('name', 'text')
 
     def filter_user_access(
-        self, user_pk: int, org_pk: int = None
+        self, user_pk: int, org_pk: int = -1
     ) -> django.db.models.QuerySet:
         """
         доступ пользователя к посту
@@ -47,7 +46,7 @@ class OrganizationPostManager(django.db.models.Manager):
             django.db.models.Q(posted_by__users__user__pk=user_pk)
             | django.db.models.Q(is_private=False)
         )
-        if org_pk:
+        if org_pk != -1:
             posts_queryset.filter(posted_by__pk=org_pk)
         return posts_queryset.distinct()
 
@@ -55,10 +54,20 @@ class OrganizationPostManager(django.db.models.Manager):
 class OrganizationToUserManager(django.db.models.Manager):
     """менеджер модели OrganizationToUSer"""
 
-    def get_organization_member(self, pk: int, user_pk: int) -> bool:
+    def get_organization_member(
+        self, pk: int, user_pk: int
+    ) -> django.db.models.QuerySet:
         """пользователь - участник организации"""
         return self.get_queryset().filter(
             organization__pk=pk,
             user__pk=user_pk,
             role__in=(1, 2, 3),
+        )
+
+    def get_organization_admin(
+        self, pk: int, user_pk: int
+    ) -> django.db.models.QuerySet:
+        """пользователь - админ организации"""
+        return self.get_organization_member(pk, user_pk).filter(
+            role__in=(2, 3)
         )

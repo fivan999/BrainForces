@@ -12,3 +12,4 @@ sqlparse==0.4.3
 transliterate==1.10.2
 psycopg2==2.9.5
 django-widget-tweaks==1.4.12
+django_debug_toolbar==3.8.1

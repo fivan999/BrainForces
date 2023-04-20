@@ -1,4 +1,3 @@
-import django.contrib.auth.mixins
 import django.db.models
 import django.views.generic
 

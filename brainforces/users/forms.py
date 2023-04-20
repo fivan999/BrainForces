@@ -1,5 +1,4 @@
 import django.contrib.auth.forms
-import django.core.exceptions
 import django.forms
 
 import organization.models

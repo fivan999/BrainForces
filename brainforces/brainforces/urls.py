@@ -13,7 +13,7 @@ urlpatterns = [
     django.urls.path('auth/', django.urls.include('django.contrib.auth.urls')),
     django.urls.path('quiz/', django.urls.include('quiz.urls')),
     django.urls.path(
-        'ckeditor', django.urls.include('ckeditor_uploader.urls')
+        'ckeditor/', django.urls.include('ckeditor_uploader.urls')
     ),
     django.urls.path(
         'organizations/', django.urls.include('organization.urls')

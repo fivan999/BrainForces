@@ -12,7 +12,9 @@ BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 dotenv.load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY', default='default')
 
-DEBUG = os.getenv('DEBUG', default='True').lower() in ('true', 'y', '1', 'yes')
+YES_OPTIONS = ('true', 'y', '1', 'yes')
+
+DEBUG = os.getenv('DEBUG', default='True').lower() in YES_OPTIONS
 
 if DEBUG:
     ALLOWED_HOSTS = ['*']
@@ -80,9 +82,10 @@ WSGI_APPLICATION = 'brainforces.wsgi.application'
 
 DATABASES = dict()
 
-if 'test' in sys.argv or not os.getenv(
-    'USE_POSTGRES', default='False'
-).lower() in ('true', 'y', '1', 'yes'):
+if (
+    'test' in sys.argv
+    or not os.getenv('USE_POSTGRES', default='False').lower() in YES_OPTIONS
+):
     DATABASES['default'] = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'db.sqlite3',
@@ -121,11 +124,8 @@ LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/auth/login/'
 
-USER_IS_ACTIVE = os.getenv('USER_IS_ACTIVE', default='False').lower() in (
-    'true',
-    'y',
-    '1',
-    'yes',
+USER_IS_ACTIVE = (
+    os.getenv('USER_IS_ACTIVE', default='False').lower() in YES_OPTIONS
 )
 
 AUTHENTICATION_BACKENDS = ['users.backends.EmailBackend']

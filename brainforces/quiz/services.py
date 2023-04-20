@@ -31,18 +31,19 @@ def make_quiz_results(quiz_obj: quiz.models.Quiz) -> None:
     quiz_results = list(
         quiz.models.QuizResults.objects.filter(quiz__pk=quiz_obj.pk)
         .select_related('user')
-        .only('rating_before', 'rating_after', 'solved', 'user')
         .order_by('-solved')
     )
     add_rating = quiz_obj.is_rated and not quiz_obj.is_private
     cur_place = 1
+    to_update_profiles, quiz_results_objects = list(), list()
+    profile_objects = users.models.Profile.objects.filter(
+        user__pk__in=(quiz_result.user.pk for quiz_result in quiz_results)
+    )
     for result_ind in range(len(quiz_results)):
         if add_rating:
-            profile_obj = users.models.Profile.objects.get(
-                user__pk=quiz_results[result_ind].user.pk
-            )
+            profile_obj = profile_objects[result_ind]
             profile_obj.rating = quiz_results[result_ind].rating_after
-            profile_obj.save()
+            to_update_profiles.append(profile_obj)
         if (
             result_ind != 0
             and quiz_results[result_ind].solved
@@ -50,6 +51,10 @@ def make_quiz_results(quiz_obj: quiz.models.Quiz) -> None:
         ):
             cur_place += 1
         quiz_results[result_ind].place = cur_place
-        quiz_results[result_ind].save()
+        quiz_results_objects.append(quiz_results[result_ind])
     quiz_obj.is_ended = True
     quiz_obj.save()
+    users.models.Profile.objects.bulk_update(to_update_profiles, ('rating',))
+    quiz.models.QuizResults.objects.bulk_update(
+        quiz_results_objects, ('place',)
+    )

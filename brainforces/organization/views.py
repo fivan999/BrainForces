@@ -127,24 +127,19 @@ class OrganizationUsersView(
             request.POST or None
         )
         if form.is_valid():
-            org_obj = django.shortcuts.get_object_or_404(
-                organization.models.Organization,
-                pk=pk,
+            org_user_manager = organization.models.OrganizationToUser.objects
+            user_obj = (
+                org_user_manager.get_organization_admin(pk, request.user.pk)
+                .select_related('organization')
+                .only('id', 'organization__id')
+                .first()
             )
 
-            invitation_allowed = (
-                organization.models.OrganizationToUser.objects.filter(
-                    user__pk=request.user.pk,
-                    organization__pk=org_obj.pk,
-                    role__in=(2, 3),
-                )
-            ).exists()
-
-            if invitation_allowed:
+            if user_obj:
                 organization.models.OrganizationToUser.objects.create(
                     user=form.cleaned_data['user_obj'],
                     role=0,
-                    organization=org_obj,
+                    organization=user_obj.organization,
                 )
                 django.contrib.messages.success(
                     request, 'Приглашение отправлено'
@@ -435,17 +430,9 @@ class QuizCreateView(
         )(self.request.POST or None)
         if quiz_form.is_valid():
             quiz_obj = quiz_form.save(commit=False)
-            quiz_obj.organized_by = django.shortcuts.get_object_or_404(
-                organization.models.Organization, pk=self.kwargs['pk']
-            )
-            django.shortcuts.get_object_or_404(
-                organization.models.OrganizationToUser.filter(
-                    role__in=(2, 3), organization__pk=self.kwargs['pk']
-                ),
-                pk=request.user.pk,
-            )
-
+            quiz_obj.organized_by = context['organization']
             quiz_obj.creator = request.user
+
             question_objects = list()
             variants_objects = list()
             formset_valid = True
@@ -474,8 +461,9 @@ class QuizCreateView(
                     formset_valid = False
             if formset_valid:
                 quiz_obj.save()
-                for item in question_objects + variants_objects:
+                for item in question_objects:
                     item.save()
+                quiz.models.Variant.objects.bulk_create(variants_objects)
                 return django.shortcuts.redirect(
                     django.urls.reverse(
                         'organization:quizzes', kwargs={'pk': pk}
@@ -505,16 +493,14 @@ class CreatePostView(
         """
         form = self.form_class(request.POST or None)
         if form.is_valid():
-            if not organization.models.OrganizationToUser.objects.filter(
-                user__pk=self.request.user.pk,
-                organization__pk=pk,
-                role__in=(2, 3),
-            ).exists():
-                raise django.http.Http404()
-            post_obj = form.save(commit=False)
-            post_obj.posted_by = organization.models.Organization.objects.get(
-                pk=pk
+            org_user_manager = organization.models.OrganizationToUser.objects
+            user_obj = django.shortcuts.get_object_or_404(
+                org_user_manager.get_organization_admin(pk, request.user.pk)
+                .select_related('organization')
+                .only('id', 'organization__id')
             )
+            post_obj = form.save(commit=False)
+            post_obj.posted_by = user_obj.organization
             post_obj.save()
             return django.shortcuts.redirect(self.get_success_url())
         return django.shortcuts.render(

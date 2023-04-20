@@ -1,5 +1,3 @@
-import django.contrib.auth.models
-import django.core.exceptions
 import django.db.models
 
 

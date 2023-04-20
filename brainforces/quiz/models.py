@@ -1,8 +1,10 @@
 import ckeditor_uploader.fields
 
+import django.core.validators
 import django.db.models
 import django.shortcuts
 import django.urls
+import django.utils.encoding
 import django.utils.timezone
 
 import organization.models
@@ -64,11 +66,12 @@ class Quiz(django.db.models.Model):
         verbose_name='стартовое время',
     )
 
-    duration = django.db.models.IntegerField(
+    duration = django.db.models.PositiveIntegerField(
         help_text='Укажите продолжительность викторины в минутах',
         null=True,
         blank=True,
         verbose_name='продолжительность',
+        validators=[django.core.validators.MinValueValidator(10)],
     )
 
     is_rated = django.db.models.BooleanField(
