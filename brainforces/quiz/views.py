@@ -197,6 +197,9 @@ class QuestionDetailView(
         создаем объект ответа пользователя
         обновляем результат решенных задач
         и обновляем рейтинг, если викторина рейтинговая
+
+        если викторина идет, пользователь не может
+        дать ответ на тот же вопрос дважды
         """
         question_obj = django.shortcuts.get_object_or_404(
             quiz.models.Question.objects.select_related('quiz').only(
@@ -215,6 +218,24 @@ class QuestionDetailView(
                 pk=request.POST['answer'], is_correct=True
             ).exists()
 
+            quiz_status = quiz_obj.get_quiz_status()
+            if quiz_status == 2:
+                if quiz.models.UserAnswer.objects.filter(
+                    user__pk=request.user.pk,
+                    question__pk=question_pk
+                ).exists():
+                    django.contrib.messages.error(
+                        request,
+                        'Вы уже отправляли ответ на этот вопрос'
+                        ' в течение викторины'
+                    )
+                    return django.shortcuts.redirect(
+                        django.urls.reverse(
+                            'quiz:question_detail',
+                            kwargs={'pk': pk, 'question_pk': question_pk}
+                        )
+                    )
+
             quiz.models.UserAnswer.objects.create(
                 user=request.user,
                 question=question_obj,
@@ -224,7 +245,7 @@ class QuestionDetailView(
                 quiz__pk=pk, user__pk=request.user.pk
             ).first()
             if (
-                quiz_obj.get_quiz_status() == 2
+                quiz_status == 2
                 and quiz_result
                 and is_correct
                 and quiz.models.UserAnswer.objects.filter(
