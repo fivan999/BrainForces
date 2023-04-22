@@ -6,8 +6,7 @@ services:
       - "8000:8000"
     volumes:
       - ./brainforces:/brainforces
-    env_file:
-      - brainforces/.env
+    
     environment:
       - DB_HOST=database
       - DB_NAME=${DB_NAME}

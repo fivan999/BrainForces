@@ -33,13 +33,13 @@ git clone https://github.com/fivan999/BrainForces
 Если вы используете опцию USE_POSTGRES=True, то DB_HOST и DB_PORT можно не указывать<br>
 В терминале:
 ```
-docker-compose build
+docker-compose --env-file brainforces/.env build
 ```
 ```
-docker-compose run --rm web-app sh -c "python manage.py migrate"
+docker-compose --env-file brainforces/.env run --rm web-app sh -c "python manage.py migrate"
 ```
 ```
-docker-compose up
+docker-compose --env-file brainforces/.env up 
 ```
 ## Запуск без Docker
 ### Установка зависимостей
