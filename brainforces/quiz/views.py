@@ -318,7 +318,9 @@ class QuizRegistrationView(
         проверка: квиз существует
         пользователь может в нем участвовать
         """
-        quiz_obj = django.shortcuts.get_object_or_404(quiz.models.Quiz, pk=pk)
+        quiz_obj = django.shortcuts.get_object_or_404(
+            quiz.models.Quiz, pk=pk, is_published=True
+        )
         if (
             quiz.services.user_can_access_quiz(quiz_obj, request.user)
             and not quiz.models.QuizResults.objects.filter(

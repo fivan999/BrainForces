@@ -464,6 +464,9 @@ class QuizCreateView(
                 for item in question_objects:
                     item.save()
                 quiz.models.Variant.objects.bulk_create(variants_objects)
+                django.contrib.messages.success(
+                    request, 'Викторина отправлена на модерацию'
+                )
                 return django.shortcuts.redirect(
                     django.urls.reverse(
                         'organization:quizzes', kwargs={'pk': pk}

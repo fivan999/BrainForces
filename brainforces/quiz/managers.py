@@ -8,6 +8,7 @@ class QuizManager(django.db.models.Manager):
         """только нужные поля для списка викторин на главной"""
         return (
             self.get_queryset()
+            .filter(is_published=True)
             .select_related('creator', 'organized_by')
             .only(
                 'name',
@@ -30,6 +31,7 @@ class UserAnswerManager(django.db.models.Manager):
         """поля для отображения посылок пользователя"""
         return (
             self.get_queryset()
+            .filter(question__quiz__is_published=True)
             .select_related('user', 'question')
             .only(
                 'user__username',
@@ -51,6 +53,7 @@ class QuizResultsManager(django.db.models.Manager):
         """
         return (
             self.get_queryset()
+            .filter(quiz__is_published=True)
             .select_related('user', 'quiz')
             .only(
                 'rating_before',
@@ -72,7 +75,11 @@ class QuestionManager(django.db.models.Manager):
         return (
             self.get_queryset()
             .select_related('quiz')
-            .filter(quiz__is_ended=True, quiz__is_private=False)
+            .filter(
+                quiz__is_ended=True,
+                quiz__is_private=False,
+                quiz__is_published=True,
+            )
             .only(
                 'id',
                 'name',

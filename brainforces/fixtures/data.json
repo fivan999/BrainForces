@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$260000$WRTeCOOzklEZyuaaAIpQZD$sW57qEDcYrcbKPNIi1gBlYqxv4gQ2y/0IPpesYKtq24=",
-        "last_login": "2023-04-19T20:16:04.510Z",
+        "last_login": "2023-04-20T22:18:48.260Z",
         "is_superuser": false,
         "username": "bebradev",
         "first_name": "",
@@ -23,7 +23,7 @@
     "pk": 2,
     "fields": {
         "password": "pbkdf2_sha256$260000$tbOLlj7ho3l7ocDpJxhqQ1$jHbuysWXk5MkyE7Q3f6HYbR9zcJ7dxdiMl4D6R3U/EM=",
-        "last_login": "2023-04-19T20:17:13.144Z",
+        "last_login": "2023-04-22T12:00:22.798Z",
         "is_superuser": true,
         "username": "fivan",
         "first_name": "Олег",
@@ -62,7 +62,7 @@
     "fields": {
         "user": 1,
         "image": "users/1/login_img_72Y7OFF.jpeg",
-        "rating": 2
+        "rating": 3
     }
 },
 {
@@ -71,7 +71,7 @@
     "fields": {
         "user": 2,
         "image": "",
-        "rating": 6
+        "rating": 7
     }
 },
 {
@@ -95,7 +95,8 @@
         "is_rated": false,
         "organized_by": 1,
         "is_private": false,
-        "is_ended": false
+        "is_ended": false,
+        "is_published": true
     }
 },
 {
@@ -110,7 +111,8 @@
         "is_rated": false,
         "organized_by": 1,
         "is_private": false,
-        "is_ended": false
+        "is_ended": false,
+        "is_published": true
     }
 },
 {
@@ -125,7 +127,8 @@
         "is_rated": false,
         "organized_by": 2,
         "is_private": false,
-        "is_ended": false
+        "is_ended": false,
+        "is_published": true
     }
 },
 {
@@ -140,7 +143,8 @@
         "is_rated": false,
         "organized_by": 2,
         "is_private": false,
-        "is_ended": false
+        "is_ended": false,
+        "is_published": true
     }
 },
 {
@@ -155,7 +159,8 @@
         "is_rated": true,
         "organized_by": 1,
         "is_private": false,
-        "is_ended": true
+        "is_ended": true,
+        "is_published": true
     }
 },
 {
@@ -170,7 +175,8 @@
         "is_rated": true,
         "organized_by": 1,
         "is_private": false,
-        "is_ended": true
+        "is_ended": true,
+        "is_published": true
     }
 },
 {
@@ -185,7 +191,56 @@
         "is_rated": true,
         "organized_by": 1,
         "is_private": false,
-        "is_ended": true
+        "is_ended": true,
+        "is_published": true
+    }
+},
+{
+    "model": "quiz.quiz",
+    "pk": 19,
+    "fields": {
+        "creator": 2,
+        "name": "sbvdfb",
+        "description": "<p>sdbgdsb</p>",
+        "start_time": "2023-12-31T21:00:00Z",
+        "duration": 44,
+        "is_rated": true,
+        "organized_by": 1,
+        "is_private": false,
+        "is_ended": false,
+        "is_published": true
+    }
+},
+{
+    "model": "quiz.quiz",
+    "pk": 20,
+    "fields": {
+        "creator": 2,
+        "name": "sfv",
+        "description": "<p>asfv</p>",
+        "start_time": "2023-04-20T23:09:00Z",
+        "duration": 1000,
+        "is_rated": true,
+        "organized_by": 1,
+        "is_private": false,
+        "is_ended": false,
+        "is_published": true
+    }
+},
+{
+    "model": "quiz.quiz",
+    "pk": 22,
+    "fields": {
+        "creator": 2,
+        "name": "sdfv",
+        "description": "<p>sdfv</p>",
+        "start_time": "2024-12-31T21:00:00Z",
+        "duration": 12,
+        "is_rated": true,
+        "organized_by": 1,
+        "is_private": false,
+        "is_ended": false,
+        "is_published": false
     }
 },
 {
@@ -258,6 +313,42 @@
         "rating_after": 6,
         "solved": 0,
         "place": 0
+    }
+},
+{
+    "model": "quiz.quizresults",
+    "pk": 14,
+    "fields": {
+        "user": 2,
+        "quiz": 19,
+        "rating_before": 6,
+        "rating_after": 6,
+        "solved": 0,
+        "place": 0
+    }
+},
+{
+    "model": "quiz.quizresults",
+    "pk": 15,
+    "fields": {
+        "user": 1,
+        "quiz": 20,
+        "rating_before": 2,
+        "rating_after": 3,
+        "solved": 1,
+        "place": 1
+    }
+},
+{
+    "model": "quiz.quizresults",
+    "pk": 16,
+    "fields": {
+        "user": 2,
+        "quiz": 20,
+        "rating_before": 6,
+        "rating_after": 7,
+        "solved": 1,
+        "place": 1
     }
 },
 {
@@ -355,6 +446,61 @@
         "name": "песня",
         "text": "<h2 style=\"font-style:italic\">Продолжите песню из мультфильма Летучий корабль</h2>\r\n\r\n<p>шла лесною стороной</p>\r\n\r\n<p>увязался ...</p>",
         "quiz": 12,
+        "difficulty": 1,
+        "tags": []
+    }
+},
+{
+    "model": "quiz.question",
+    "pk": 31,
+    "fields": {
+        "name": "sfvbsfgb",
+        "text": "<p>sfgbsgb</p>",
+        "quiz": 19,
+        "difficulty": 1,
+        "tags": []
+    }
+},
+{
+    "model": "quiz.question",
+    "pk": 32,
+    "fields": {
+        "name": "afg",
+        "text": "<p>afg</p>",
+        "quiz": 19,
+        "difficulty": 1,
+        "tags": []
+    }
+},
+{
+    "model": "quiz.question",
+    "pk": 33,
+    "fields": {
+        "name": "sfcv",
+        "text": "<p>asfv</p>",
+        "quiz": 20,
+        "difficulty": 1,
+        "tags": []
+    }
+},
+{
+    "model": "quiz.question",
+    "pk": 36,
+    "fields": {
+        "name": "dsgv",
+        "text": "<p>sdfv</p>",
+        "quiz": 22,
+        "difficulty": 1,
+        "tags": []
+    }
+},
+{
+    "model": "quiz.question",
+    "pk": 37,
+    "fields": {
+        "name": "wer",
+        "text": "<p>erf</p>",
+        "quiz": 22,
         "difficulty": 1,
         "tags": []
     }
@@ -617,6 +763,96 @@
     "fields": {
         "text": "adfgadfgb",
         "question": 18,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 41,
+    "fields": {
+        "text": "sgbsgb ",
+        "question": 31,
+        "is_correct": true
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 42,
+    "fields": {
+        "text": "sfaefg",
+        "question": 31,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 43,
+    "fields": {
+        "text": "agfg ",
+        "question": 32,
+        "is_correct": true
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 44,
+    "fields": {
+        "text": "afdg",
+        "question": 32,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 45,
+    "fields": {
+        "text": "rr ",
+        "question": 33,
+        "is_correct": true
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 46,
+    "fields": {
+        "text": "gdgth",
+        "question": 33,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 51,
+    "fields": {
+        "text": "sdfv ",
+        "question": 36,
+        "is_correct": true
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 52,
+    "fields": {
+        "text": "werf",
+        "question": 36,
+        "is_correct": false
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 53,
+    "fields": {
+        "text": "werfv ",
+        "question": 37,
+        "is_correct": true
+    }
+},
+{
+    "model": "quiz.variant",
+    "pk": 54,
+    "fields": {
+        "text": "ewffv",
+        "question": 37,
         "is_correct": false
     }
 },
@@ -901,6 +1137,66 @@
     }
 },
 {
+    "model": "quiz.useranswer",
+    "pk": 59,
+    "fields": {
+        "user": 1,
+        "question": 33,
+        "is_correct": true,
+        "time_answered": "2023-04-20T23:09:09.431Z"
+    }
+},
+{
+    "model": "quiz.useranswer",
+    "pk": 60,
+    "fields": {
+        "user": 2,
+        "question": 33,
+        "is_correct": false,
+        "time_answered": "2023-04-20T23:09:32.347Z"
+    }
+},
+{
+    "model": "quiz.useranswer",
+    "pk": 61,
+    "fields": {
+        "user": 2,
+        "question": 33,
+        "is_correct": true,
+        "time_answered": "2023-04-20T23:09:38.374Z"
+    }
+},
+{
+    "model": "quiz.useranswer",
+    "pk": 62,
+    "fields": {
+        "user": 2,
+        "question": 33,
+        "is_correct": true,
+        "time_answered": "2023-04-20T23:59:53.851Z"
+    }
+},
+{
+    "model": "quiz.useranswer",
+    "pk": 63,
+    "fields": {
+        "user": 2,
+        "question": 33,
+        "is_correct": true,
+        "time_answered": "2023-04-21T00:00:13.479Z"
+    }
+},
+{
+    "model": "quiz.useranswer",
+    "pk": 64,
+    "fields": {
+        "user": 2,
+        "question": 33,
+        "is_correct": false,
+        "time_answered": "2023-04-21T00:00:19.802Z"
+    }
+},
+{
     "model": "organization.organization",
     "pk": 1,
     "fields": {
@@ -964,6 +1260,15 @@
     }
 },
 {
+    "model": "organization.organizationtouser",
+    "pk": 27,
+    "fields": {
+        "organization": 1,
+        "user": 2,
+        "role": 3
+    }
+},
+{
     "model": "organization.organizationpost",
     "pk": 1,
     "fields": {
@@ -981,6 +1286,16 @@
         "text": "<h2 style=\"font-style:italic\">qrgqqrgqregqrgtfqtgqagt</h2>",
         "is_private": true,
         "posted_by": 4
+    }
+},
+{
+    "model": "organization.organizationpost",
+    "pk": 3,
+    "fields": {
+        "name": "Иван",
+        "text": "<p>asfgasfg</p>",
+        "is_private": false,
+        "posted_by": 1
     }
 },
 {
@@ -1061,6 +1376,24 @@
     "fields": {
         "text": "нафига это все надо ",
         "user": 2,
+        "post": 1
+    }
+},
+{
+    "model": "organization.commenttoorganizationpost",
+    "pk": 10,
+    "fields": {
+        "text": "ffd",
+        "user": 2,
+        "post": 1
+    }
+},
+{
+    "model": "organization.commenttoorganizationpost",
+    "pk": 11,
+    "fields": {
+        "text": "xdgf",
+        "user": 1,
         "post": 1
     }
 }
