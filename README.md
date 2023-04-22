@@ -52,7 +52,7 @@ pip install -r requirements/test.txt
 - DB_HOST (хост базы данных)
 - DB_PORT (порт базы данных)
 - DB_USER (имя пользователя на сервере)
-- DB_PASSWORD (пароль от пользователя)
+- DB_PASS (пароль от пользователя)
 Пример .env файла - .env.example
 
 Сделать миграции:

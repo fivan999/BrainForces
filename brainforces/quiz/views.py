@@ -221,18 +221,17 @@ class QuestionDetailView(
             quiz_status = quiz_obj.get_quiz_status()
             if quiz_status == 2:
                 if quiz.models.UserAnswer.objects.filter(
-                    user__pk=request.user.pk,
-                    question__pk=question_pk
+                    user__pk=request.user.pk, question__pk=question_pk
                 ).exists():
                     django.contrib.messages.error(
                         request,
                         'Вы уже отправляли ответ на этот вопрос'
-                        ' в течение викторины'
+                        ' в течение викторины',
                     )
                     return django.shortcuts.redirect(
                         django.urls.reverse(
                             'quiz:question_detail',
-                            kwargs={'pk': pk, 'question_pk': question_pk}
+                            kwargs={'pk': pk, 'question_pk': question_pk},
                         )
                     )
 
