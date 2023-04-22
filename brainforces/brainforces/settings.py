@@ -97,8 +97,9 @@ else:
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASS'),
         'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
     }
+    if os.getenv('DB_PORT', default=''):
+        DATABASES['default']['PORT'] = os.getenv('DB_PORT')
 
 
 AUTH_PASSWORD_VALIDATORS = [

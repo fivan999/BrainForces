@@ -8,6 +8,40 @@
 ```
 git clone https://github.com/fivan999/BrainForces
 ```
+### Конфигурация
+Создайте .env файл в папке brainforces.<br>
+
+В нем нужно указать значения:<br>
+- SECRET_KEY (ваш секретный ключ, по умолчанию - default)<br>
+- DEBUG (включать ли режим дебага, по умолчанию - True)<br>
+- ALLOWED_HOSTS (если включен DEBUG, он ['*'], иначе по умолчанию - 127.0.0.1)<br>
+- INTERNAL_IPS (для debug_toolbar, по умолчанию - 127.0.0.1) <br>
+- EMAIL (с какой почты вы будете отправлять письмо пользователю) <br>
+- LOGIN_ATTEMPTS (количество попыток входа, после которого аккаунт становится неактивным) <br>
+- USER_IS_ACTIVE (активный ли пользователь сразу после регистрации) <br>
+- USE_POSTGRES (использовать ли базу данных PostgreSQL, по умолчанию - False)
+Также нужно настроить базу данных PostgreSQL, если вы ее используете
+- DB_NAME (имя базы данных)
+- DB_HOST (хост базы данных)
+- DB_PORT (порт базы данных)
+- DB_USER (имя пользователя на сервере)
+- DB_PASS (пароль от пользователя)
+Пример .env файла - .env.example
+## Запуск с помощью Docker
+Скачайте Docker: https://www.docker.com/<br>
+Запустите Docker<br>
+Если вы используете опцию USE_POSTGRES=True, то DB_HOST и DB_PORT можно не указывать<br>
+В терминале:
+```
+docker-compose build
+```
+```
+docker-compose run --rm web-app sh -c "python manage.py migrate"
+```
+```
+docker-compose up
+```
+## Запуск без Docker
 ### Установка зависимостей
 Создайте виртуальное окружение и активируйте его<br>
 Для Windows:
@@ -36,26 +70,7 @@ pip install -r requirements/dev.txt
 pip install -r requirements/test.txt
 ```
 ### Запуск
-Создайте .env файл в папке brainforces.<br>
-
-В нем нужно указать значения:<br>
-- SECRET_KEY (ваш секретный ключ, по умолчанию - default)<br>
-- DEBUG (включать ли режим дебага, по умолчанию - True)<br>
-- ALLOWED_HOSTS (если включен DEBUG, он ['*'], иначе по умолчанию - 127.0.0.1)<br>
-- INTERNAL_IPS (для debug_toolbar, по умолчанию - 127.0.0.1) <br>
-- EMAIL (с какой почты вы будете отправлять письмо пользователю) <br>
-- LOGIN_ATTEMPTS (количество попыток входа, после которого аккаунт становится неактивным) <br>
-- USER_IS_ACTIVE (активный ли пользователь сразу после регистрации) <br>
-- USE_POSTGRES (использовать ли базу данных PostgreSQL, по умолчанию - False)
-Также нужно настроить базу данных PostgreSQL, если вы ее используете
-- DB_NAME (имя базы данных)
-- DB_HOST (хост базы данных)
-- DB_PORT (порт базы данных)
-- DB_USER (имя пользователя на сервере)
-- DB_PASS (пароль от пользователя)
-Пример .env файла - .env.example
-
-Сделать миграции:
+Сделайте миграции:
 ```
 python brainforces/manage.py migrate
 ```

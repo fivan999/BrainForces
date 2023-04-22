@@ -6,11 +6,14 @@ services:
       - "8000:8000"
     volumes:
       - ./brainforces:/brainforces
+    env_file:
+      - brainforces/.env
     environment:
-      - DB_HOST=${DB_HOST}
+      - DB_HOST=database
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
+      - PYTHONUNBUFFERED=1
 
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
