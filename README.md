@@ -16,7 +16,6 @@ git clone https://github.com/fivan999/BrainForces
 - DEBUG (включать ли режим дебага, по умолчанию - True)<br>
 - ALLOWED_HOSTS (если включен DEBUG, он ['*'], иначе по умолчанию - 127.0.0.1)<br>
 - INTERNAL_IPS (для debug_toolbar, по умолчанию - 127.0.0.1) <br>
-- EMAIL (с какой почты вы будете отправлять письмо пользователю) <br>
 - LOGIN_ATTEMPTS (количество попыток входа, после которого аккаунт становится неактивным) <br>
 - USER_IS_ACTIVE (активный ли пользователь сразу после регистрации) <br>
 - USE_POSTGRES (использовать ли базу данных PostgreSQL, по умолчанию - False)
@@ -26,6 +25,14 @@ git clone https://github.com/fivan999/BrainForces
 - DB_PORT (порт базы данных)
 - DB_USER (имя пользователя на сервере)
 - DB_PASS (пароль от пользователя)
+#### Настройка отправки почты
+Если вы хотите, чтобы письма только сохранялись в папке sent_emails, в .env файле укажите USE_SMTP=false<br>
+Иначе нужно указать несколько значений:
+- USE_SMTP=True
+- EMAIL_HOST - смтп, которое вы используете
+- EMAIL_PORT - порт нужного смтп
+- EMAIL_HOST_USER - почта
+- EMAIL_HOST_PASSWORD - пароль от почты
 Пример .env файла - .env.example
 ## Запуск с помощью Docker
 Скачайте Docker: https://www.docker.com/<br>
