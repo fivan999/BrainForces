@@ -105,7 +105,7 @@ class Quiz(django.db.models.Model):
     is_published = django.db.models.BooleanField(
         verbose_name='опубликована',
         help_text='Опубликована или нет',
-        default=False,
+        default=True,
     )
 
     class Meta:
