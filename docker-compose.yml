@@ -1,24 +1,35 @@
 services:
-  web-app:
+  brainforces:
     build:
       context: .
+    volumes:
+      - static_volume:/brainforces/static
+      - media_volume:/brainforces/media
+    command: >
+      sh -c "python3 manage.py collectstatic --noinput && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
-    volumes:
-      - ./brainforces:/brainforces
-    
+    restart: unless-stopped
     environment:
       - DB_HOST=database
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - PYTHONUNBUFFERED=1
-
-    command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
-
+      - PYTHONDONTWRITEBYTECODE=1
     depends_on:
       - database
+
+  nginx:
+    image: nginx:1.23.4-alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/brainforces/static
+      - media_volume:/brainforces/media
+    network_mode: host
+    depends_on:
+      - brainforces
+    restart: unless-stopped
 
   database:
     image: postgres:15.2-alpine
@@ -26,3 +37,7 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
+
+volumes:
+  static_volume:
+  media_volume:

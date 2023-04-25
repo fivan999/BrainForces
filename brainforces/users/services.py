@@ -39,9 +39,9 @@ def activation_email(
         },
     )
     django.core.mail.send_mail(
-        'Activate your account',
-        message,
-        django.conf.settings.EMAIL,
-        [user.email],
+        subject='Activate your account',
+        message=message,
+        from_email=None,
+        recipient_list=[user.email],
         fail_silently=False,
     )

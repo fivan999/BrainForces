@@ -43,9 +43,6 @@ git clone https://github.com/fivan999/BrainForces
 docker-compose --env-file brainforces/.env build
 ```
 ```
-docker-compose --env-file brainforces/.env run --rm web-app sh -c "python manage.py migrate"
-```
-```
 docker-compose --env-file brainforces/.env up 
 ```
 ## Запуск без Docker

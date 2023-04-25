@@ -21,7 +21,6 @@ if DEBUG:
 else:
     ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='127.0.0.1').split()
 
-
 INSTALLED_APPS = [
     'quiz.apps.QuizConfig',
     'homepage.apps.HomepageConfig',
@@ -145,6 +144,7 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static_dev',
