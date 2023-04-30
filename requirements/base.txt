@@ -14,3 +14,4 @@ psycopg2==2.9.5
 django-widget-tweaks==1.4.12
 django_debug_toolbar==3.8.1
 django-dump-load-utf8==0.0.4
+gunicorn==20.1.0

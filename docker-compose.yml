@@ -1,15 +1,13 @@
 services:
   brainforces:
-    build:
-      context: .
+    build: .
     volumes:
       - static_volume:/brainforces/static
       - media_volume:/brainforces/media
     command: >
-      sh -c "python3 manage.py collectstatic --noinput && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
-    ports:
-      - "8000:8000"
-    restart: unless-stopped
+      sh -c "python3 manage.py collectstatic --noinput && python3 manage.py migrate && gunicorn --bind 0.0.0.0:8000 brainforces.wsgi"
+    expose:
+      - 8000
     environment:
       - DB_HOST=database
       - DB_NAME=${DB_NAME}
@@ -26,10 +24,10 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - static_volume:/brainforces/static
       - media_volume:/brainforces/media
-    network_mode: host
     depends_on:
       - brainforces
-    restart: unless-stopped
+    ports:
+      - "80:80"
 
   database:
     image: postgres:15.2-alpine
@@ -37,6 +35,8 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
+    expose:
+      - 5432
 
 volumes:
   static_volume:
