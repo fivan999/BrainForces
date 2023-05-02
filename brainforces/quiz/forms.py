@@ -1,5 +1,7 @@
+import django.contrib.admin.widgets
 import django.core.exceptions
 import django.forms
+import django.utils.timezone
 
 import quiz.models
 
@@ -38,6 +40,29 @@ class QuizForm(django.forms.ModelForm):
             'is_rated',
             'is_private',
         )
+        widgets = {
+            'start_time': django.forms.DateTimeInput(
+                attrs={
+                    'class': 'form-control datetimepicker-input',
+                    'data-target': '#datetimepicker1',
+                }
+            )
+        }
+
+    def clean_start_time(self):
+        """
+        валидируем время начала викторины
+        она должна начинаться как минимум через 5 минут
+        """
+        start_time = self.cleaned_data['start_time']
+        if (
+            not start_time - django.utils.timezone.now()
+            >= django.utils.timezone.timedelta(minutes=5)
+        ):
+            raise django.core.exceptions.ValidationError(
+                'Минимальное время начала - через 5 минут'
+            )
+        return start_time
 
 
 class QuestionForm(django.forms.ModelForm):

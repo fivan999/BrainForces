@@ -162,6 +162,7 @@ AUTH_USER_MODEL = 'users.User'
 
 CKEDITOR_CONFIGS = {
     'default': {
+        'width': '100%',
         'skin': 'moono-lisa',
         'toolbar_Basic': [['Source', '-', 'Bold', 'Italic']],
         'toolbar_YourCustomToolbarConfig': [

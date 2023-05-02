@@ -21,6 +21,7 @@
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
     <title>{% block title %}BrainForces{% endblock title %}</title>
+    {% block styles %}{% endblock styles %}
   </head>
   <body class="d-flex flex-column min-vh-100">
     {% include "includes/header.html" %}

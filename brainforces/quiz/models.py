@@ -51,6 +51,7 @@ class Quiz(django.db.models.Model):
         max_length=50,
         help_text='Напишите название викторины',
         verbose_name='название викторины',
+        null=False,
     )
 
     description = ckeditor_uploader.fields.RichTextUploadingField(
@@ -59,8 +60,7 @@ class Quiz(django.db.models.Model):
     )
 
     start_time = django.db.models.DateTimeField(
-        help_text='Время начала викторины в формате день.месяц.год'
-        ' часы:минуты:секунды',
+        help_text='Выберите время начала викторины. Часовой пояс - UTC+03:00',
         null=True,
         blank=True,
         verbose_name='стартовое время',
@@ -68,10 +68,9 @@ class Quiz(django.db.models.Model):
 
     duration = django.db.models.PositiveIntegerField(
         help_text='Укажите продолжительность викторины в минутах',
-        null=True,
-        blank=True,
         verbose_name='продолжительность',
         validators=[django.core.validators.MinValueValidator(10)],
+        default=10,
     )
 
     is_rated = django.db.models.BooleanField(
