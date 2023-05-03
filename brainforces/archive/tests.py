@@ -2,9 +2,13 @@ import django.test
 
 import quiz.models
 
+import parameterized
+
 
 class ArchiveTests(django.test.TestCase):
     """тестируем архив"""
+
+    fixtures = ['fixtures/archive/test.json']
 
     def test_archive_questions_status_code(self) -> None:
         """тестируем статус код главной страницы архива"""
@@ -33,3 +37,27 @@ class ArchiveTests(django.test.TestCase):
                 )
             )
         )
+
+    @parameterized.parameterized.expand(
+        [
+            ['all', '', 7],
+            ['all', 'Имя', 2],
+            ['all', 'льва', 1],
+            ['name', 'фиван', 1],
+            ['text', 'фиван', 2],
+            ['all', 'la,rwfhkierjh,f', 0],
+            ['name', 'dFQWED', 0],
+            ['text', 'lwkerf', 0],
+            ['tags', 'ergf', 0]
+        ]
+    )
+    def test_question_search(
+        self, criteria: str, text: str, expected_num: int
+    ) -> None:
+        """тестируем количество записей приходящих по определенному запросу"""
+        client = django.test.Client()
+        response = client.get(
+            django.urls.reverse('archive:archive'),
+            data={'search_critery': criteria, 'searched': text},
+        )
+        self.assertEqual(len(response.context['questions']), expected_num)

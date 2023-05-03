@@ -9,6 +9,8 @@ import django.utils
 import quiz.models
 import users.models
 
+import organization.models
+
 
 class UserProfileTests(django.test.TestCase):
     """тестируем профиль пользователя"""
@@ -133,7 +135,65 @@ class UserProfileTests(django.test.TestCase):
             )
         )
 
+    @parameterized.parameterized.expand([[1, 200], [2, 200], [3, 404]])
+    def test_user_profile_organizations_status_code(
+        self, pk: int, expected: int
+    ) -> None:
+        """тестируем статус код страницы с организациями пользователя"""
+        response = django.test.Client().get(
+            django.urls.reverse('users:organizations', kwargs={'pk': pk})
+        )
+        self.assertEqual(response.status_code, expected)
+
+    def test_user_profile_organizations_context(self) -> None:
+        """теcтируем контекст страницы с организациями пользователя"""
+        response = django.test.Client().get(
+            django.urls.reverse('users:organizations', kwargs={'pk': 1})
+        )
+        self.assertIn('organizations', response.context)
+
+    def test_user_profile_organizations_correct_model(self) -> None:
+        """тестируем правильный объект модели на странице с организациями"""
+        response = django.test.Client().get(
+            django.urls.reverse('users:organizations', kwargs={'pk': 1})
+        )
+        self.assertTrue(
+            all(
+                map(
+                    lambda x: isinstance(x, organization.models.Organization),
+                    response.context['organizations'],
+                )
+            )
+        )
+
+    def test_organization_creation(self) -> None:
+        """тестируем возможность пользователя создать организацию"""
+        client = django.test.Client()
+        client.post(
+            django.urls.reverse('users:login'),
+            {'username': 'testuser2', 'password': 'password'},
+        )
+        count_orgs_before = organization.models.Organization.objects.count()
+        client.post(
+            django.urls.reverse('users:create_organization', kwargs={'pk': 2}),
+            data={
+                'name': 'testname',
+                'description': 'testdesc',
+                'is_private': False
+            }
+        )
+        count_orgs_after = organization.models.Organization.objects.count()
+        self.assertEqual(count_orgs_before + 1, count_orgs_after)
+
+    def test_user_can_not_cretae_organization_from_other_user(self) -> None:
+        """пользователь не может создать организацию с чужого профиля"""
+        response = django.test.Client().get(
+            django.urls.reverse('users:create_organization', kwargs={'pk': 1})
+        )
+        self.assertEqual(response.status_code, 404)
+
     def tearDown(self) -> None:
         """удаление тестовых данных"""
         users.models.User.objects.all().delete()
+        organization.models.Organization.objects.all().delete()
         super().tearDown()

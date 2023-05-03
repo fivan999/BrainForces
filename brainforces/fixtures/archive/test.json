@@ -1,0 +1,149 @@
+[
+    {
+        "model": "users.user",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$260000$WRTeCOOzklEZyuaaAIpQZD$sW57qEDcYrcbKPNIi1gBlYqxv4gQ2y/0IPpesYKtq24=",
+            "last_login": "2023-04-20T22:18:48.260Z",
+            "is_superuser": false,
+            "username": "bebradev",
+            "first_name": "",
+            "last_name": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-06T22:12:12.110Z",
+            "email": "bebradev@gmail.com",
+            "login_attempts": 0,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.profile",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "image": "users/1/login_img_72Y7OFF.jpeg",
+            "rating": 3
+        }
+    },
+    {
+        "model": "quiz.quiz",
+        "pk": 1,
+        "fields": {
+            "creator": 1,
+            "name": "Тестовая викторина 1",
+            "description": "<p>крутая викторина</p>",
+            "start_time": "2023-04-17T19:00:00Z",
+            "duration": 100,
+            "is_rated": false,
+            "organized_by": 1,
+            "is_private": false,
+            "is_ended": true,
+            "is_published": true
+        }
+    },
+    {
+        "model": "quiz.quiz",
+        "pk": 2,
+        "fields": {
+            "creator": 1,
+            "name": "Герои мультфильмов",
+            "description": "<h2 style=\"font-style:italic\">ДОРОГИЕ УЧАТНИКИ</h2>\r\n\r\n<p>Для вас мы подготовили викторину по теме: &quot;Герои мультфильмов&quot;</p>\r\n\r\n<p><img alt=\"\" src=\"/media/uploads/2023/04/19/login_img.jpeg\" style=\"height:299px; width:200px\" /></p>\r\n\r\n<p><strong>ENJOY!</strong></p>",
+            "start_time": "2023-04-19T20:05:00Z",
+            "duration": 1,
+            "is_rated": true,
+            "organized_by": 1,
+            "is_private": false,
+            "is_ended": true,
+            "is_published": true
+        }
+    },
+    {
+        "model": "quiz.question",
+        "pk": 1,
+        "fields": {
+            "name": "Имя фивана",
+            "text": "<p>как зовут фивана???</p>",
+            "quiz": 1,
+            "difficulty": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "quiz.question",
+        "pk": 2,
+        "fields": {
+            "name": "Имя",
+            "text": "<p>Имя фивана</p>",
+            "quiz": 1,
+            "difficulty": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "quiz.question",
+        "pk": 18,
+        "fields": {
+            "name": "Песня льва и черепахи",
+            "text": "<p>О чем пели львенок и черепаха?</p>",
+            "quiz": 2,
+            "difficulty": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "quiz.question",
+        "pk": 19,
+        "fields": {
+            "name": "Рыжий конопатый",
+            "text": "<h2 style=\"font-style:italic\">как звали героя мультфильма рыжий рыжий конопатый?</h2>",
+            "quiz": 2,
+            "difficulty": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "quiz.question",
+        "pk": 20,
+        "fields": {
+            "name": "фиксики",
+            "text": "<p><strong>Кто такие фиксики???</strong></p>",
+            "quiz": 2,
+            "difficulty": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "quiz.question",
+        "pk": 21,
+        "fields": {
+            "name": "Гусеницы",
+            "text": "<p>как звали гусениц из мультфильма лунтик?</p>",
+            "quiz": 2,
+            "difficulty": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "quiz.question",
+        "pk": 22,
+        "fields": {
+            "name": "песня",
+            "text": "<h2 style=\"font-style:italic\">Продолжите песню из мультфильма Летучий корабль</h2>\r\n\r\n<p>шла лесною стороной</p>\r\n\r\n<p>увязался ...</p>",
+            "quiz": 2,
+            "difficulty": 1,
+            "tags": []
+        }
+    },
+    {
+        "model": "organization.organization",
+        "pk": 1,
+        "fields": {
+            "name": "Bebra developers",
+            "description": "<h2 style=\"font-style:italic\">BEBRA DEVS</h2>\r\n\r\n<p><strong>Правила</strong>: читы-бан, кемперство-бан, оскробление-бан, оскорбление администрации-расстрел, потом-бан</p>\r\n\r\n<p>Символ:</p>\r\n\r\n<p><img alt=\"\" src=\"/media/uploads/2023/04/09/brain.svg\" style=\"height:205px; width:200px\" /></p>\r\n\r\n<p><em><strong>Всем удачи!</strong></em></p>",
+            "is_private": false
+        }
+    }
+]
+    
