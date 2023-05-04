@@ -6,10 +6,9 @@ import django.test
 import django.urls
 import django.utils
 
+import organization.models
 import quiz.models
 import users.models
-
-import organization.models
 
 
 class UserProfileTests(django.test.TestCase):
@@ -179,8 +178,8 @@ class UserProfileTests(django.test.TestCase):
             data={
                 'name': 'testname',
                 'description': 'testdesc',
-                'is_private': False
-            }
+                'is_private': False,
+            },
         )
         count_orgs_after = organization.models.Organization.objects.count()
         self.assertEqual(count_orgs_before + 1, count_orgs_after)

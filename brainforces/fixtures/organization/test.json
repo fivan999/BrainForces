@@ -2,17 +2,17 @@
     {
         "model": "users.user",
         "pk": 1,
-        "fields": {
-            "password": "pbkdf2_sha256$260000$WRTeCOOzklEZyuaaAIpQZD$sW57qEDcYrcbKPNIi1gBlYqxv4gQ2y/0IPpesYKtq24=",
+            "fields": {
+            "password": "pbkdf2_sha256$260000$4GyVZJUGUEXUsaZCkWKKpa$4URAJedoUuevNIF6be2SV58ViXY2E8F0rBT1pRccEo0=",
             "last_login": "2023-04-20T22:18:48.260Z",
             "is_superuser": false,
-            "username": "bebradev",
+            "username": "user1",
             "first_name": "",
             "last_name": "",
             "is_staff": false,
             "is_active": true,
             "date_joined": "2023-04-06T22:12:12.110Z",
-            "email": "bebradev@gmail.com",
+            "email": "example1@gmail.com",
             "login_attempts": 0,
             "groups": [],
             "user_permissions": []
@@ -21,75 +21,177 @@
     {
         "model": "users.user",
         "pk": 2,
-        "fields": {
-            "password": "pbkdf2_sha256$260000$tbOLlj7ho3l7ocDpJxhqQ1$jHbuysWXk5MkyE7Q3f6HYbR9zcJ7dxdiMl4D6R3U/EM=",
-            "last_login": "2023-04-22T12:00:22.798Z",
-            "is_superuser": true,
-            "username": "fivan",
-            "first_name": "Олег",
-            "last_name": "Олегов",
-            "is_staff": true,
-            "is_active": true,
-            "date_joined": "2023-04-06T22:13:07Z",
-            "email": "fivan999@yandex.ru",
-            "login_attempts": 0,
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "users.user",
-        "pk": 3,
-        "fields": {
-            "password": "pbkdf2_sha256$260000$hcj7GLUUinFE56Sz2qdHAH$p2e+iCukQT8xdk41+hbjPtvPHPJgKMWIFsWgyUFeKIQ=",
-            "last_login": "2023-04-19T23:14:22.593Z",
-            "is_superuser": true,
-            "username": "aboba",
+            "fields": {
+            "password": "pbkdf2_sha256$260000$4GyVZJUGUEXUsaZCkWKKpa$4URAJedoUuevNIF6be2SV58ViXY2E8F0rBT1pRccEo0=",
+            "last_login": "2023-04-20T22:18:48.260Z",
+            "is_superuser": false,
+            "username": "user2",
             "first_name": "",
             "last_name": "",
-            "is_staff": true,
+            "is_staff": false,
             "is_active": true,
-            "date_joined": "2023-04-19T23:13:35.282Z",
-            "email": "aboba@yadex.ru",
+            "date_joined": "2023-04-06T22:12:12.110Z",
+            "email": "example2@gmail.com",
             "login_attempts": 0,
             "groups": [],
             "user_permissions": []
         }
     },
     {
-        "model": "users.profile",
+        "model": "users.user",
+        "pk": 3,
+            "fields": {
+            "password": "pbkdf2_sha256$260000$4GyVZJUGUEXUsaZCkWKKpa$4URAJedoUuevNIF6be2SV58ViXY2E8F0rBT1pRccEo0=",
+            "last_login": "2023-04-20T22:18:48.260Z",
+            "is_superuser": false,
+            "username": "user3",
+            "first_name": "",
+            "last_name": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-06T22:12:12.110Z",
+            "email": "example3@gmail.com",
+            "login_attempts": 0,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 4,
+            "fields": {
+            "password": "pbkdf2_sha256$260000$4GyVZJUGUEXUsaZCkWKKpa$4URAJedoUuevNIF6be2SV58ViXY2E8F0rBT1pRccEo0=",
+            "last_login": "2023-04-20T22:18:48.260Z",
+            "is_superuser": false,
+            "username": "user4",
+            "first_name": "",
+            "last_name": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-06T22:12:12.110Z",
+            "email": "example4@gmail.com",
+            "login_attempts": 0,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 5,
+            "fields": {
+            "password": "pbkdf2_sha256$260000$4GyVZJUGUEXUsaZCkWKKpa$4URAJedoUuevNIF6be2SV58ViXY2E8F0rBT1pRccEo0=",
+            "last_login": "2023-04-20T22:18:48.260Z",
+            "is_superuser": false,
+            "username": "user5",
+            "first_name": "",
+            "last_name": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-06T22:12:12.110Z",
+            "email": "example5@gmail.com",
+            "login_attempts": 0,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "users.user",
+        "pk": 6,
+            "fields": {
+            "password": "pbkdf2_sha256$260000$4GyVZJUGUEXUsaZCkWKKpa$4URAJedoUuevNIF6be2SV58ViXY2E8F0rBT1pRccEo0=",
+            "last_login": "2023-04-20T22:18:48.260Z",
+            "is_superuser": false,
+            "username": "user6",
+            "first_name": "",
+            "last_name": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2023-04-06T22:12:12.110Z",
+            "email": "example6@gmail.com",
+            "login_attempts": 0,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "organization.organization",
         "pk": 1,
         "fields": {
-            "user": 1,
-            "image": "users/1/login_img_72Y7OFF.jpeg",
-            "rating": 3
+            "name": "organization1",
+            "description": "description1",
+            "is_private": false
         }
     },
     {
-        "model": "users.profile",
+        "model": "organization.organization",
         "pk": 2,
         "fields": {
-            "user": 2,
-            "image": "",
-            "rating": 7
+            "name": "organization2",
+            "description": "description2",
+            "is_private": true
         }
     },
     {
-        "model": "users.profile",
+        "model": "organization.organizationtouser",
+        "pk": 1,
+        "fields": {
+            "organization": 2,
+            "user": 1,
+            "role": 3
+        }
+    },
+    {
+        "model": "organization.organizationtouser",
+        "pk": 2,
+        "fields": {
+            "organization": 1,
+            "user": 2,
+            "role": 1
+        }
+    },
+    {
+        "model": "organization.organizationtouser",
         "pk": 3,
         "fields": {
+            "organization": 2,
             "user": 3,
-            "image": "",
-            "rating": 0
+            "role": 1
+        }
+    },
+    {
+        "model": "organization.organizationtouser",
+        "pk": 4,
+        "fields": {
+            "organization": 2,
+            "user": 4,
+            "role": 2
+        }
+    },
+    {
+        "model": "organization.organizationtouser",
+        "pk": 5,
+        "fields": {
+            "organization": 2,
+            "user": 5,
+            "role": 0
+        }
+    },
+    {
+        "model": "organization.organizationtouser",
+        "pk": 6,
+        "fields": {
+            "organization": 1,
+            "user": 6,
+            "role": 3
         }
     },
     {
         "model": "quiz.quiz",
         "pk": 1,
         "fields": {
-            "creator": 2,
-            "name": "Тестовая викторина 1",
-            "description": "<p>крутая викторина</p>",
+            "creator": 6,
+            "name": "quiz1",
+            "description": "descquiz1",
             "start_time": "2023-04-17T19:00:00Z",
             "duration": 100,
             "is_rated": false,
@@ -100,1302 +202,23 @@
         }
     },
     {
-        "model": "quiz.quiz",
-        "pk": 2,
-        "fields": {
-            "creator": 2,
-            "name": "Тестовая викторина 2",
-            "description": "<p>викторина 2</p>",
-            "start_time": "2023-04-21T12:00:00Z",
-            "duration": 50,
-            "is_rated": false,
-            "organized_by": 1,
-            "is_private": false,
-            "is_ended": false,
-            "is_published": true
-        }
-    },
-    {
-        "model": "quiz.quiz",
-        "pk": 7,
-        "fields": {
-            "creator": 1,
-            "name": "as",
-            "description": "<p>as</p>",
-            "start_time": "2023-04-17T20:51:00Z",
-            "duration": 12,
-            "is_rated": false,
-            "organized_by": 2,
-            "is_private": false,
-            "is_ended": false,
-            "is_published": true
-        }
-    },
-    {
-        "model": "quiz.quiz",
-        "pk": 8,
-        "fields": {
-            "creator": 1,
-            "name": "asfd",
-            "description": "<p>asf</p>",
-            "start_time": "2023-04-29T00:00:00Z",
-            "duration": 45,
-            "is_rated": false,
-            "organized_by": 2,
-            "is_private": false,
-            "is_ended": false,
-            "is_published": true
-        }
-    },
-    {
-        "model": "quiz.quiz",
-        "pk": 9,
-        "fields": {
-            "creator": 2,
-            "name": "КРУТАЯ ВИКТОРИНА",
-            "description": "<h1>крутая викторина!</h1>\r\n\r\n<p><img alt=\"\" src=\"/media/uploads/2023/04/09/login_img.jpeg\" style=\"height:299px; width:200px\" /></p>\r\n\r\n<h1>&nbsp;</h1>",
-            "start_time": "2023-04-18T14:20:00Z",
-            "duration": 100,
-            "is_rated": true,
-            "organized_by": 1,
-            "is_private": false,
-            "is_ended": true,
-            "is_published": true
-        }
-    },
-    {
-        "model": "quiz.quiz",
-        "pk": 11,
-        "fields": {
-            "creator": 2,
-            "name": "Новая новейшая",
-            "description": "<p>Новая новейшая</p>",
-            "start_time": "2023-04-17T13:00:00Z",
-            "duration": 67,
-            "is_rated": true,
-            "organized_by": 1,
-            "is_private": false,
-            "is_ended": true,
-            "is_published": true
-        }
-    },
-    {
-        "model": "quiz.quiz",
-        "pk": 12,
-        "fields": {
-            "creator": 2,
-            "name": "Герои мультфильмов",
-            "description": "<h2 style=\"font-style:italic\">ДОРОГИЕ УЧАТНИКИ</h2>\r\n\r\n<p>Для вас мы подготовили викторину по теме: &quot;Герои мультфильмов&quot;</p>\r\n\r\n<p><img alt=\"\" src=\"/media/uploads/2023/04/19/login_img.jpeg\" style=\"height:299px; width:200px\" /></p>\r\n\r\n<p><strong>ENJOY!</strong></p>",
-            "start_time": "2023-04-19T20:05:00Z",
-            "duration": 1,
-            "is_rated": true,
-            "organized_by": 1,
-            "is_private": false,
-            "is_ended": true,
-            "is_published": true
-        }
-    },
-    {
-        "model": "quiz.quiz",
-        "pk": 19,
-        "fields": {
-            "creator": 2,
-            "name": "sbvdfb",
-            "description": "<p>sdbgdsb</p>",
-            "start_time": "2023-12-31T21:00:00Z",
-            "duration": 44,
-            "is_rated": true,
-            "organized_by": 1,
-            "is_private": false,
-            "is_ended": false,
-            "is_published": true
-        }
-    },
-    {
-        "model": "quiz.quiz",
-        "pk": 20,
-        "fields": {
-            "creator": 2,
-            "name": "sfv",
-            "description": "<p>asfv</p>",
-            "start_time": "2023-04-20T23:09:00Z",
-            "duration": 1000,
-            "is_rated": true,
-            "organized_by": 1,
-            "is_private": false,
-            "is_ended": false,
-            "is_published": true
-        }
-    },
-    {
-        "model": "quiz.quiz",
-        "pk": 22,
-        "fields": {
-            "creator": 2,
-            "name": "sdfv",
-            "description": "<p>sdfv</p>",
-            "start_time": "2024-12-31T21:00:00Z",
-            "duration": 12,
-            "is_rated": true,
-            "organized_by": 1,
-            "is_private": false,
-            "is_ended": false,
-            "is_published": false
-        }
-    },
-    {
-        "model": "quiz.quizresults",
-        "pk": 7,
-        "fields": {
-            "user": 2,
-            "quiz": 9,
-            "rating_before": 0,
-            "rating_after": 1,
-            "solved": 1,
-            "place": 1
-        }
-    },
-    {
-        "model": "quiz.quizresults",
-        "pk": 8,
-        "fields": {
-            "user": 1,
-            "quiz": 9,
-            "rating_before": 0,
-            "rating_after": 1,
-            "solved": 1,
-            "place": 1
-        }
-    },
-    {
-        "model": "quiz.quizresults",
-        "pk": 9,
-        "fields": {
-            "user": 2,
-            "quiz": 2,
-            "rating_before": 1,
-            "rating_after": 1,
-            "solved": 0,
-            "place": 0
-        }
-    },
-    {
-        "model": "quiz.quizresults",
-        "pk": 11,
-        "fields": {
-            "user": 2,
-            "quiz": 12,
-            "rating_before": 1,
-            "rating_after": 6,
-            "solved": 5,
-            "place": 1
-        }
-    },
-    {
-        "model": "quiz.quizresults",
-        "pk": 12,
-        "fields": {
-            "user": 1,
-            "quiz": 12,
-            "rating_before": 1,
-            "rating_after": 2,
-            "solved": 2,
-            "place": 2
-        }
-    },
-    {
-        "model": "quiz.quizresults",
-        "pk": 13,
-        "fields": {
-            "user": 2,
-            "quiz": 8,
-            "rating_before": 6,
-            "rating_after": 6,
-            "solved": 0,
-            "place": 0
-        }
-    },
-    {
-        "model": "quiz.quizresults",
-        "pk": 14,
-        "fields": {
-            "user": 2,
-            "quiz": 19,
-            "rating_before": 6,
-            "rating_after": 6,
-            "solved": 0,
-            "place": 0
-        }
-    },
-    {
-        "model": "quiz.quizresults",
-        "pk": 15,
-        "fields": {
-            "user": 1,
-            "quiz": 20,
-            "rating_before": 2,
-            "rating_after": 3,
-            "solved": 1,
-            "place": 1
-        }
-    },
-    {
-        "model": "quiz.quizresults",
-        "pk": 16,
-        "fields": {
-            "user": 2,
-            "quiz": 20,
-            "rating_before": 6,
-            "rating_after": 7,
-            "solved": 1,
-            "place": 1
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 1,
-        "fields": {
-            "name": "Имя Фивана",
-            "text": "<p>как зовут фивана???</p>",
-            "quiz": 1,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 2,
-        "fields": {
-            "name": "Имя",
-            "text": "<p>Имя Фивана</p>",
-            "quiz": 1,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 4,
-        "fields": {
-            "name": "Новая новейшая",
-            "text": "<p>Новая новейшая</p>",
-            "quiz": 11,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 17,
-        "fields": {
-            "name": "вопрос крутой викторины",
-            "text": "<p>цупаиуапри</p>",
-            "quiz": 9,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 18,
-        "fields": {
-            "name": "Песня льва и черепахи",
-            "text": "<p>О чем пели львенок и черепаха?</p>",
-            "quiz": 12,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 19,
-        "fields": {
-            "name": "Рыжий конопатый",
-            "text": "<h2 style=\"font-style:italic\">как звали героя мультфильма рыжий рыжий конопатый?</h2>",
-            "quiz": 12,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 20,
-        "fields": {
-            "name": "фиксики",
-            "text": "<p><strong>Кто такие фиксики???</strong></p>",
-            "quiz": 12,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 21,
-        "fields": {
-            "name": "Гусеницы",
-            "text": "<p>как звали гусениц из мультфильма лунтик?</p>",
-            "quiz": 12,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 22,
-        "fields": {
-            "name": "песня",
-            "text": "<h2 style=\"font-style:italic\">Продолжите песню из мультфильма Летучий корабль</h2>\r\n\r\n<p>шла лесною стороной</p>\r\n\r\n<p>увязался ...</p>",
-            "quiz": 12,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 31,
-        "fields": {
-            "name": "sfvbsfgb",
-            "text": "<p>sfgbsgb</p>",
-            "quiz": 19,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 32,
-        "fields": {
-            "name": "afg",
-            "text": "<p>afg</p>",
-            "quiz": 19,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 33,
-        "fields": {
-            "name": "sfcv",
-            "text": "<p>asfv</p>",
-            "quiz": 20,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 36,
-        "fields": {
-            "name": "dsgv",
-            "text": "<p>sdfv</p>",
-            "quiz": 22,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.question",
-        "pk": 37,
-        "fields": {
-            "name": "wer",
-            "text": "<p>erf</p>",
-            "quiz": 22,
-            "difficulty": 1,
-            "tags": []
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 1,
-        "fields": {
-            "text": "Бебра",
-            "question": 1,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 2,
-        "fields": {
-            "text": "Фиван",
-            "question": 1,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 3,
-        "fields": {
-            "text": "Иван",
-            "question": 1,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 4,
-        "fields": {
-            "text": "Гений",
-            "question": 1,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 6,
-        "fields": {
-            "text": "Новая новейшая",
-            "question": 4,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 7,
-        "fields": {
-            "text": "да",
-            "question": 17,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 8,
-        "fields": {
-            "text": "нет",
-            "question": 17,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 9,
-        "fields": {
-            "text": "да",
-            "question": 2,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 10,
-        "fields": {
-            "text": "нет",
-            "question": 2,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 11,
-        "fields": {
-            "text": "lf",
-            "question": 2,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 14,
-        "fields": {
-            "text": "нет",
-            "question": 4,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 15,
-        "fields": {
-            "text": "я на солнышке лежу",
-            "question": 18,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 16,
-        "fields": {
-            "text": "я на солнышке сижу",
-            "question": 18,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 17,
-        "fields": {
-            "text": "я под солнышком лежу",
-            "question": 18,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 18,
-        "fields": {
-            "text": "Андрей",
-            "question": 19,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 19,
-        "fields": {
-            "text": "Антошка ",
-            "question": 19,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 20,
-        "fields": {
-            "text": "Мартышка",
-            "question": 19,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 21,
-        "fields": {
-            "text": "не знаю",
-            "question": 20,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 22,
-        "fields": {
-            "text": "большой большой секрет ",
-            "question": 20,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 23,
-        "fields": {
-            "text": "бред шизофреника",
-            "question": 20,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 24,
-        "fields": {
-            "text": "вупсень и пупсень ",
-            "question": 21,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 25,
-        "fields": {
-            "text": "гупсень и бубсень",
-            "question": 21,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 26,
-        "fields": {
-            "text": "чижик и пыжик",
-            "question": 21,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 27,
-        "fields": {
-            "text": "черт за мной ",
-            "question": 22,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 28,
-        "fields": {
-            "text": "пес за мной",
-            "question": 22,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 29,
-        "fields": {
-            "text": "бобр за мной",
-            "question": 22,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 30,
-        "fields": {
-            "text": "asfgafsgvb",
-            "question": 18,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 31,
-        "fields": {
-            "text": "asfgasfg",
-            "question": 18,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 32,
-        "fields": {
-            "text": "adfgadfgb",
-            "question": 18,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 41,
-        "fields": {
-            "text": "sgbsgb ",
-            "question": 31,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 42,
-        "fields": {
-            "text": "sfaefg",
-            "question": 31,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 43,
-        "fields": {
-            "text": "agfg ",
-            "question": 32,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 44,
-        "fields": {
-            "text": "afdg",
-            "question": 32,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 45,
-        "fields": {
-            "text": "rr ",
-            "question": 33,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 46,
-        "fields": {
-            "text": "gdgth",
-            "question": 33,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 51,
-        "fields": {
-            "text": "sdfv ",
-            "question": 36,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 52,
-        "fields": {
-            "text": "werf",
-            "question": 36,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 53,
-        "fields": {
-            "text": "werfv ",
-            "question": 37,
-            "is_correct": true
-        }
-    },
-    {
-        "model": "quiz.variant",
-        "pk": 54,
-        "fields": {
-            "text": "ewffv",
-            "question": 37,
-            "is_correct": false
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 31,
-        "fields": {
-            "user": 2,
-            "question": 17,
-            "is_correct": true,
-            "time_answered": "2023-04-18T16:11:43.314Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 32,
-        "fields": {
-            "user": 1,
-            "question": 17,
-            "is_correct": false,
-            "time_answered": "2023-04-18T16:12:13.837Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 33,
-        "fields": {
-            "user": 1,
-            "question": 17,
-            "is_correct": true,
-            "time_answered": "2023-04-18T16:12:19.011Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 34,
-        "fields": {
-            "user": 2,
-            "question": 18,
-            "is_correct": false,
-            "time_answered": "2023-04-19T20:07:32.084Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 35,
-        "fields": {
-            "user": 2,
-            "question": 18,
-            "is_correct": true,
-            "time_answered": "2023-04-19T20:07:44.440Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 36,
-        "fields": {
-            "user": 2,
-            "question": 21,
-            "is_correct": false,
-            "time_answered": "2023-04-19T20:08:00.667Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 37,
-        "fields": {
-            "user": 2,
-            "question": 21,
-            "is_correct": true,
-            "time_answered": "2023-04-19T20:08:09.018Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 38,
-        "fields": {
-            "user": 2,
-            "question": 19,
-            "is_correct": true,
-            "time_answered": "2023-04-19T20:08:48.082Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 39,
-        "fields": {
-            "user": 2,
-            "question": 21,
-            "is_correct": false,
-            "time_answered": "2023-04-19T20:08:57.712Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 40,
-        "fields": {
-            "user": 2,
-            "question": 22,
-            "is_correct": true,
-            "time_answered": "2023-04-19T20:09:08.911Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 41,
-        "fields": {
-            "user": 2,
-            "question": 20,
-            "is_correct": true,
-            "time_answered": "2023-04-19T20:09:15.363Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 42,
-        "fields": {
-            "user": 1,
-            "question": 19,
-            "is_correct": true,
-            "time_answered": "2023-04-19T20:10:50.491Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 43,
-        "fields": {
-            "user": 1,
-            "question": 22,
-            "is_correct": false,
-            "time_answered": "2023-04-19T20:10:56.200Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 44,
-        "fields": {
-            "user": 1,
-            "question": 20,
-            "is_correct": true,
-            "time_answered": "2023-04-19T20:11:01.692Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 45,
-        "fields": {
-            "user": 1,
-            "question": 18,
-            "is_correct": true,
-            "time_answered": "2023-04-19T20:14:11.168Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 46,
-        "fields": {
-            "user": 2,
-            "question": 20,
-            "is_correct": true,
-            "time_answered": "2023-04-19T20:47:59.764Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 47,
-        "fields": {
-            "user": 2,
-            "question": 20,
-            "is_correct": false,
-            "time_answered": "2023-04-19T20:48:07.819Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 48,
-        "fields": {
-            "user": 2,
-            "question": 20,
-            "is_correct": false,
-            "time_answered": "2023-04-19T20:48:14.454Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 49,
-        "fields": {
-            "user": 2,
-            "question": 18,
-            "is_correct": false,
-            "time_answered": "2023-04-19T21:08:26.361Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 50,
-        "fields": {
-            "user": 2,
-            "question": 18,
-            "is_correct": false,
-            "time_answered": "2023-04-19T21:08:33.820Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 51,
-        "fields": {
-            "user": 2,
-            "question": 18,
-            "is_correct": true,
-            "time_answered": "2023-04-19T21:08:40.187Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 52,
-        "fields": {
-            "user": 2,
-            "question": 19,
-            "is_correct": false,
-            "time_answered": "2023-04-19T22:37:31.539Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 53,
-        "fields": {
-            "user": 2,
-            "question": 18,
-            "is_correct": true,
-            "time_answered": "2023-04-19T22:41:03.219Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 54,
-        "fields": {
-            "user": 2,
-            "question": 18,
-            "is_correct": true,
-            "time_answered": "2023-04-19T22:45:50.558Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 55,
-        "fields": {
-            "user": 2,
-            "question": 19,
-            "is_correct": false,
-            "time_answered": "2023-04-19T22:50:31.351Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 56,
-        "fields": {
-            "user": 2,
-            "question": 19,
-            "is_correct": false,
-            "time_answered": "2023-04-19T22:51:26.213Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 57,
-        "fields": {
-            "user": 2,
-            "question": 18,
-            "is_correct": true,
-            "time_answered": "2023-04-19T23:02:41.140Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 58,
-        "fields": {
-            "user": 2,
-            "question": 4,
-            "is_correct": true,
-            "time_answered": "2023-04-19T23:07:16.962Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 59,
-        "fields": {
-            "user": 1,
-            "question": 33,
-            "is_correct": true,
-            "time_answered": "2023-04-20T23:09:09.431Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 60,
-        "fields": {
-            "user": 2,
-            "question": 33,
-            "is_correct": false,
-            "time_answered": "2023-04-20T23:09:32.347Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 61,
-        "fields": {
-            "user": 2,
-            "question": 33,
-            "is_correct": true,
-            "time_answered": "2023-04-20T23:09:38.374Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 62,
-        "fields": {
-            "user": 2,
-            "question": 33,
-            "is_correct": true,
-            "time_answered": "2023-04-20T23:59:53.851Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 63,
-        "fields": {
-            "user": 2,
-            "question": 33,
-            "is_correct": true,
-            "time_answered": "2023-04-21T00:00:13.479Z"
-        }
-    },
-    {
-        "model": "quiz.useranswer",
-        "pk": 64,
-        "fields": {
-            "user": 2,
-            "question": 33,
-            "is_correct": false,
-            "time_answered": "2023-04-21T00:00:19.802Z"
-        }
-    },
-    {
-        "model": "organization.organization",
-        "pk": 1,
-        "fields": {
-            "name": "Bebra developers",
-            "description": "<h2 style=\"font-style:italic\">BEBRA DEVS</h2>\r\n\r\n<p><strong>Правила</strong>: читы-бан, кемперство-бан, оскробление-бан, оскорбление администрации-расстрел, потом-бан</p>\r\n\r\n<p>Символ:</p>\r\n\r\n<p><img alt=\"\" src=\"/media/uploads/2023/04/09/brain.svg\" style=\"height:205px; width:200px\" /></p>\r\n\r\n<p><em><strong>Всем удачи!</strong></em></p>",
-            "is_private": false
-        }
-    },
-    {
-        "model": "organization.organization",
-        "pk": 2,
-        "fields": {
-            "name": "Новые решалы",
-            "description": "<p><strong>еееееееееееее</strong></p>",
-            "is_private": false
-        }
-    },
-    {
-        "model": "organization.organization",
-        "pk": 3,
-        "fields": {
-            "name": "Новая орга",
-            "description": "<p>уйакпыкап</p>",
-            "is_private": true
-        }
-    },
-    {
-        "model": "organization.organization",
-        "pk": 4,
-        "fields": {
-            "name": "Кастомная организация бебры дев",
-            "description": "<h2 style=\"font-style:italic\"><strong>фйкупукепуепм</strong></h2>\r\n\r\n<p><strong>Это мы</strong></p>",
-            "is_private": false
-        }
-    },
-    {
-        "model": "organization.organizationtouser",
-        "pk": 16,
-        "fields": {
-            "organization": 2,
-            "user": 1,
-            "role": 3
-        }
-    },
-    {
-        "model": "organization.organizationtouser",
-        "pk": 25,
-        "fields": {
-            "organization": 3,
-            "user": 1,
-            "role": 3
-        }
-    },
-    {
-        "model": "organization.organizationtouser",
-        "pk": 26,
-        "fields": {
-            "organization": 4,
-            "user": 1,
-            "role": 3
-        }
-    },
-    {
-        "model": "organization.organizationtouser",
-        "pk": 27,
-        "fields": {
-            "organization": 1,
-            "user": 2,
-            "role": 3
-        }
-    },
-    {
         "model": "organization.organizationpost",
         "pk": 1,
         "fields": {
-            "name": "Мы открылись!",
-            "text": "<p>Привет мы организовались</p>\r\n\r\n<p><img alt=\"\" src=\"/media/uploads/2023/04/09/login_img.jpeg\" style=\"height:449px; width:300px\" /></p>\r\n\r\n<p><strong>УРААААААААААА</strong></p>",
-            "is_private": false,
-            "posted_by": 2
-        }
-    },
-    {
-        "model": "organization.organizationpost",
-        "pk": 2,
-        "fields": {
-            "name": "Vs  wrgfaqergt",
-            "text": "<h2 style=\"font-style:italic\">qrgqqrgqregqrgtfqtgqagt</h2>",
-            "is_private": true,
-            "posted_by": 4
-        }
-    },
-    {
-        "model": "organization.organizationpost",
-        "pk": 3,
-        "fields": {
-            "name": "Иван",
-            "text": "<p>asfgasfg</p>",
+            "name": "post1",
+            "text": "posttext1",
             "is_private": false,
             "posted_by": 1
         }
     },
     {
-        "model": "organization.commenttoorganizationpost",
-        "pk": 1,
-        "fields": {
-            "text": "Ура наконец то будут викторины",
-            "user": 1,
-            "post": 1
-        }
-    },
-    {
-        "model": "organization.commenttoorganizationpost",
+        "model": "organization.organizationpost",
         "pk": 2,
         "fields": {
-            "text": "победа",
-            "user": 1,
-            "post": 1
-        }
-    },
-    {
-        "model": "organization.commenttoorganizationpost",
-        "pk": 3,
-        "fields": {
-            "text": "Я фиван",
-            "user": 1,
-            "post": 1
-        }
-    },
-    {
-        "model": "organization.commenttoorganizationpost",
-        "pk": 4,
-        "fields": {
-            "text": "я новенький",
-            "user": 2,
-            "post": 1
-        }
-    },
-    {
-        "model": "organization.commenttoorganizationpost",
-        "pk": 5,
-        "fields": {
-            "text": "asfg",
-            "user": 2,
-            "post": 1
-        }
-    },
-    {
-        "model": "organization.commenttoorganizationpost",
-        "pk": 6,
-        "fields": {
-            "text": "мдемс",
-            "user": 1,
-            "post": 2
-        }
-    },
-    {
-        "model": "organization.commenttoorganizationpost",
-        "pk": 7,
-        "fields": {
-            "text": "нафига это все надо ",
-            "user": 2,
-            "post": 2
-        }
-    },
-    {
-        "model": "organization.commenttoorganizationpost",
-        "pk": 8,
-        "fields": {
-            "text": "Я фиван",
-            "user": 2,
-            "post": 2
-        }
-    },
-    {
-        "model": "organization.commenttoorganizationpost",
-        "pk": 9,
-        "fields": {
-            "text": "нафига это все надо ",
-            "user": 2,
-            "post": 1
-        }
-    },
-    {
-        "model": "organization.commenttoorganizationpost",
-        "pk": 10,
-        "fields": {
-            "text": "ffd",
-            "user": 2,
-            "post": 1
-        }
-    },
-    {
-        "model": "organization.commenttoorganizationpost",
-        "pk": 11,
-        "fields": {
-            "text": "xdgf",
-            "user": 1,
-            "post": 1
+            "name": "post2",
+            "text": "posttext2",
+            "is_private": false,
+            "posted_by": 2
         }
     }
-    ]
-    
+]

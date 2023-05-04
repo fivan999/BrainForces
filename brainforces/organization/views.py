@@ -136,14 +136,17 @@ class OrganizationUsersView(
             )
 
             if user_obj:
-                organization.models.OrganizationToUser.objects.create(
-                    user=form.cleaned_data['user_obj'],
-                    role=0,
-                    organization=user_obj.organization,
-                )
-                django.contrib.messages.success(
-                    request, 'Приглашение отправлено'
-                )
+                try:
+                    organization.models.OrganizationToUser.objects.create(
+                        user=form.cleaned_data['user_obj'],
+                        role=0,
+                        organization=user_obj.organization,
+                    )
+                    django.contrib.messages.success(
+                        request, 'Приглашение отправлено'
+                    )
+                except django.db.utils.IntegrityError:
+                    django.contrib.messages.error(request, 'Ошибка')
             else:
                 raise django.http.Http404()
         else:
@@ -256,7 +259,8 @@ class UpdateUserOrganizationRoleView(ActionWithUserView):
         или пользователь принимает приглашение (с 0 до 1)
         """
         if (
-            self.self_user
+            new_role in (1, 2)
+            and self.self_user
             and self.target_user
             and (
                 self.self_user.role > self.target_user.role

@@ -1,8 +1,8 @@
+import parameterized
+
 import django.test
 
 import quiz.models
-
-import parameterized
 
 
 class ArchiveTests(django.test.TestCase):
@@ -48,7 +48,7 @@ class ArchiveTests(django.test.TestCase):
             ['all', 'la,rwfhkierjh,f', 0],
             ['name', 'dFQWED', 0],
             ['text', 'lwkerf', 0],
-            ['tags', 'ergf', 0]
+            ['tags', 'ergf', 0],
         ]
     )
     def test_question_search(
