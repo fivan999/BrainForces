@@ -335,7 +335,7 @@ class OrganizationTest(django.test.TestCase):
                     lambda x: isinstance(
                         x, organization.models.OrganizationPost
                     ),
-                    response.context['posts']
+                    response.context['posts'],
                 )
             )
         )
