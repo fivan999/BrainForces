@@ -22,6 +22,7 @@ class QuizQuestionsNumberForm(django.forms.Form):
 
     num_questions = django.forms.IntegerField(
         min_value=1,
+        max_value=50,
         label='Количество вопросов',
         help_text='Введите количество вопросов в викторине',
     )

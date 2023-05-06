@@ -172,15 +172,10 @@ class OrganizationQuizzesView(
         они могут быть приватными, поэтому нужно фильтровать
         """
         return (
-            quiz.models.Quiz.objects.get_only_useful_list_fields()
-            .filter(
-                django.db.models.Q(is_private=False)
-                | django.db.models.Q(
-                    organized_by__users__user__pk=self.request.user.pk
-                ),
-                organized_by__pk=self.kwargs['pk'],
+            quiz.models.Quiz.objects.filter_user_access(
+                user_pk=self.request.user.pk,
+                org_pk=self.kwargs['pk']
             )
-            .distinct()
         )
 
 
@@ -326,15 +321,14 @@ class PostCommentsView(
 
     def get_queryset(self) -> django.db.models.QuerySet:
         """
-        посты, к которым пользователь имеет доступ
-        (не приватные или пользователь состоит в организации этого поста)
+        комментарии пользователей к посту
         """
         return (
             organization.models.CommentToOrganizationPost.objects.filter(
                 post__pk=self.kwargs['post_pk']
             )
             .select_related('user')
-            .only('user__username', 'text')
+            .only('user__username', 'text').order_by('id')
         )
 
     def post(

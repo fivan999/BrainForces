@@ -23,6 +23,23 @@ class QuizManager(django.db.models.Manager):
             .order_by('-start_time')
         )
 
+    def filter_user_access(
+        self, user_pk: int, org_pk: int = -1
+    ) -> django.db.models.QuerySet:
+        """
+        доступ пользователя к квизу
+        либо оргация не приватная,
+        либо пользователь ее участник
+        """
+        posts_queryset = self.get_only_useful_list_fields().filter(
+            django.db.models.Q(organized_by__is_private=False)
+            & django.db.models.Q(is_private=False)
+            | django.db.models.Q(organized_by__users__user__pk=user_pk)
+        )
+        if org_pk != -1:
+            posts_queryset = posts_queryset.filter(organized_by__pk=org_pk)
+        return posts_queryset.distinct()
+
 
 class UserAnswerManager(django.db.models.Manager):
     """менеджер модели UserAnswer"""

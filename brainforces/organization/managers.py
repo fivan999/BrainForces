@@ -15,7 +15,7 @@ class OrganizationManager(django.db.models.Manager):
         либо пользователь в ней состоит
         """
         return (
-            self.get_queryset()
+            self.get_only_useful_fields()
             .filter(
                 django.db.models.Q(
                     users__user__pk=user_pk,
@@ -42,12 +42,13 @@ class OrganizationPostManager(django.db.models.Manager):
         либо оргация не приватная,
         либо пользователь ее участник
         """
-        posts_queryset = self.get_queryset().filter(
-            django.db.models.Q(posted_by__users__user__pk=user_pk)
-            | django.db.models.Q(is_private=False)
+        posts_queryset = self.get_only_useful_fields().filter(
+            django.db.models.Q(posted_by__is_private=False)
+            & django.db.models.Q(is_private=False)
+            | django.db.models.Q(posted_by__users__user__pk=user_pk)
         )
         if org_pk != -1:
-            posts_queryset.filter(posted_by__pk=org_pk)
+            posts_queryset = posts_queryset.filter(posted_by__pk=org_pk)
         return posts_queryset.distinct()
 
 

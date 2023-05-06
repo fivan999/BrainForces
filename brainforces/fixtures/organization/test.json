@@ -213,11 +213,31 @@
     },
     {
         "model": "organization.organizationpost",
+        "pk": 3,
+        "fields": {
+            "name": "post3",
+            "text": "posttext3",
+            "is_private": true,
+            "posted_by": 1
+        }
+    },
+    {
+        "model": "organization.organizationpost",
         "pk": 2,
         "fields": {
             "name": "post2",
             "text": "posttext2",
             "is_private": false,
+            "posted_by": 2
+        }
+    },
+    {
+        "model": "organization.organizationpost",
+        "pk": 4,
+        "fields": {
+            "name": "post4",
+            "text": "posttext4",
+            "is_private": true,
             "posted_by": 2
         }
     }

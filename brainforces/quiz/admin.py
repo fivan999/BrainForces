@@ -17,7 +17,7 @@ class QuizAdmin(django.contrib.admin.ModelAdmin):
         'is_published',
     )
     list_display_links = ('id',)
-    list_editable = ('is_rated', 'is_ended', 'is_published')
+    list_editable = ('is_rated', 'is_ended', 'is_published', 'is_private')
     list_filter = ('is_published',)
 
 

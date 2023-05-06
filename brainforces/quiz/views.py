@@ -16,7 +16,7 @@ import quiz.services
 
 
 class QuizListView(django.views.generic.ListView):
-    """список викторин на главной странице"""
+    """список викторин"""
 
     template_name = 'quiz/list.html'
     context_object_name = 'quizzes'
@@ -29,8 +29,8 @@ class QuizListView(django.views.generic.ListView):
         либо по имени, описанию и организации квиза
         """
         queryset = (
-            quiz.models.Quiz.objects.get_only_useful_list_fields().filter(
-                is_private=False
+            quiz.models.Quiz.objects.filter_user_access(
+                user_pk=self.request.user.pk
             )
         )
         searched = self.request.GET.get('searched')
@@ -60,9 +60,14 @@ class QuizListView(django.views.generic.ListView):
 class QuizDetailView(django.views.generic.DetailView):
     """детальная информация о викторине"""
 
-    queryset = quiz.models.Quiz.objects.get_only_useful_list_fields()
     template_name = 'quiz/quiz_detail.html'
     context_object_name = 'quiz'
+
+    def get_queryset(self) -> django.db.models.QuerySet:
+        """список викторин, проверка доступа пользователя"""
+        return quiz.models.Quiz.objects.filter_user_access(
+            user_pk=self.request.user.pk
+        )
 
     def get_context_data(self, *args, **kwargs) -> dict:
         """
@@ -72,11 +77,6 @@ class QuizDetailView(django.views.generic.DetailView):
         """
         context = super().get_context_data(*args, **kwargs)
         quiz_obj = context['object']
-        can_access_quiz = quiz.services.user_can_access_quiz(
-            quiz_obj, self.request.user
-        )
-        if not can_access_quiz:
-            raise django.http.Http404()
         context['can_participate'] = quiz.models.QuizResults.objects.filter(
             quiz__pk=self.kwargs['pk'], user__pk=self.request.user.pk
         ).exists()
@@ -292,7 +292,7 @@ class StandingsList(
     context_object_name = 'results'
     paginate_by = 40
 
-    def get_queryset(self, *args, **kwargs) -> django.db.models.QuerySet:
+    def get_queryset(self) -> django.db.models.QuerySet:
         """
         получаем информацию о других пользователях,
         участвующих в викторине
@@ -319,11 +319,12 @@ class QuizRegistrationView(
         пользователь может в нем участвовать
         """
         quiz_obj = django.shortcuts.get_object_or_404(
-            quiz.models.Quiz, pk=pk, is_published=True
+            quiz.models.Quiz.objects.filter_user_access(
+                user_pk=self.request.user.pk
+            ), pk=pk
         )
         if (
-            quiz.services.user_can_access_quiz(quiz_obj, request.user)
-            and not quiz.models.QuizResults.objects.filter(
+            not quiz.models.QuizResults.objects.filter(
                 quiz__pk=pk, user__pk=request.user.pk
             ).exists()
         ):

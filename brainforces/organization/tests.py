@@ -41,12 +41,30 @@ class OrganizationTest(django.test.TestCase):
             )
         )
 
-    def test_organization_main_page_status_code(self) -> None:
-        """тестируем статус код главной страницы организации"""
-        response = django.test.Client().get(
-            django.urls.reverse('organization:profile', kwargs={'pk': 1})
+    @parameterized.parameterized.expand(
+        [
+            ['', 2, 404],
+            ['', 1, 200],
+            ['user1', 1, 200],
+            ['user1', 2, 200],
+            ['user2', 1, 200],
+            ['user2', 2, 404],
+        ]
+    )
+    def test_organization_main_page_user_access(
+        self, username: str, org_pk: int, expected: int
+    ) -> None:
+        """тестируем вход на страницу с описанием организации"""
+        client = django.test.Client()
+        if username:
+            client.post(
+                django.urls.reverse('users:login'),
+                data={'username': username, 'password': 'password'},
+            )
+        response = client.get(
+            django.urls.reverse('organization:profile', kwargs={'pk': org_pk})
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, expected)
 
     def test_organization_main_page_context(self) -> None:
         """тестируем контекст главной страницы организации"""
@@ -67,32 +85,28 @@ class OrganizationTest(django.test.TestCase):
 
     @parameterized.parameterized.expand(
         [
-            ['user1', 1, True],
-            ['user1', 2, True],
-            ['user2', 1, True],
-            ['user2', 2, False],
+            ['', 2, 404],
+            ['', 1, 200],
+            ['user1', 1, 200],
+            ['user1', 2, 200],
+            ['user2', 1, 200],
+            ['user2', 2, 404],
         ]
     )
-    def test_organization_main_page_user_access(
-        self, username: str, org_pk: int, expected: bool
+    def test_organization_participants_user_access(
+        self, username: str, org_pk: int, expected: int
     ) -> None:
-        """тестируем вход на страницу с описанием организации"""
+        """тестируем вход на страницу со списком пользователей"""
         client = django.test.Client()
-        client.post(
-            django.urls.reverse('users:login'),
-            data={'username': username, 'password': 'password'},
-        )
+        if username:
+            client.post(
+                django.urls.reverse('users:login'),
+                data={'username': username, 'password': 'password'},
+            )
         response = client.get(
-            django.urls.reverse('organization:profile', kwargs={'pk': org_pk})
+            django.urls.reverse('organization:users', kwargs={'pk': org_pk})
         )
-        self.assertEqual(response.status_code == 200, expected)
-
-    def test_organization_participants_status_code(self) -> None:
-        """тестируем статус код страницы с участниками"""
-        response = django.test.Client().get(
-            django.urls.reverse('organization:users', kwargs={'pk': 1})
-        )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, expected)
 
     def test_organization_participants_context(self) -> None:
         """тестируем контекст страницы с участниками организации"""
@@ -116,28 +130,6 @@ class OrganizationTest(django.test.TestCase):
                 )
             )
         )
-
-    @parameterized.parameterized.expand(
-        [
-            ['user1', 1, True],
-            ['user1', 2, True],
-            ['user2', 1, True],
-            ['user2', 2, False],
-        ]
-    )
-    def test_organization_participants_user_access(
-        self, username: str, org_pk: int, expected: bool
-    ) -> None:
-        """тестируем вход на страницу со списком пользователей"""
-        client = django.test.Client()
-        client.post(
-            django.urls.reverse('users:login'),
-            data={'username': username, 'password': 'password'},
-        )
-        response = client.get(
-            django.urls.reverse('organization:users', kwargs={'pk': org_pk})
-        )
-        self.assertEqual(response.status_code == 200, expected)
 
     @parameterized.parameterized.expand(
         [
@@ -260,12 +252,30 @@ class OrganizationTest(django.test.TestCase):
         )
         self.assertEqual(user_after.role == new_role, expected)
 
-    def test_organization_quizzes_status_code(self) -> None:
-        """тестируем статус код страницы с викторинами организации"""
-        response = django.test.Client().get(
-            django.urls.reverse('organization:quizzes', kwargs={'pk': 1})
+    @parameterized.parameterized.expand(
+        [
+            ['', 2, 404],
+            ['', 1, 200],
+            ['user1', 1, 200],
+            ['user1', 2, 200],
+            ['user2', 1, 200],
+            ['user2', 2, 404],
+        ]
+    )
+    def test_organization_quizzes_user_access(
+        self, username: str, org_pk: int, expected: int
+    ) -> None:
+        """тестируем вход на страницу с викторинами организации"""
+        client = django.test.Client()
+        if username:
+            client.post(
+                django.urls.reverse('users:login'),
+                data={'username': username, 'password': 'password'},
+            )
+        response = client.get(
+            django.urls.reverse('organization:quizzes', kwargs={'pk': org_pk})
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, expected)
 
     def test_organization_quizzes_context(self) -> None:
         """тестируем контекст страницы с викторинами организации"""
@@ -290,32 +300,28 @@ class OrganizationTest(django.test.TestCase):
 
     @parameterized.parameterized.expand(
         [
-            ['user1', 1, True],
-            ['user1', 2, True],
-            ['user2', 1, True],
-            ['user2', 2, False],
+            ['', 2, 404],
+            ['', 1, 200],
+            ['user1', 1, 200],
+            ['user1', 2, 200],
+            ['user2', 1, 200],
+            ['user2', 2, 404],
         ]
     )
-    def test_organization_quizzes_user_access(
-        self, username: str, org_pk: int, expected: bool
+    def test_organization_posts_user_access(
+        self, username: str, org_pk: int, expected: int
     ) -> None:
-        """тестируем вход на страницу с викторинами организации"""
+        """тестируем вход на страницу с постами организации"""
         client = django.test.Client()
-        client.post(
-            django.urls.reverse('users:login'),
-            data={'username': username, 'password': 'password'},
-        )
+        if username:
+            client.post(
+                django.urls.reverse('users:login'),
+                data={'username': username, 'password': 'password'},
+            )
         response = client.get(
-            django.urls.reverse('organization:quizzes', kwargs={'pk': org_pk})
+            django.urls.reverse('organization:posts', kwargs={'pk': org_pk})
         )
-        self.assertEqual(response.status_code == 200, expected)
-
-    def test_organization_posts_status_code(self) -> None:
-        """тестируем статус код страницы с постами организации"""
-        response = django.test.Client().get(
-            django.urls.reverse('organization:posts', kwargs={'pk': 1})
-        )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, expected)
 
     def test_organization_posts_context(self) -> None:
         """тестируем контекст страницы с постами"""
@@ -342,52 +348,189 @@ class OrganizationTest(django.test.TestCase):
 
     @parameterized.parameterized.expand(
         [
-            ['user1', 1, True],
-            ['user1', 2, True],
-            ['user2', 1, True],
-            ['user2', 2, False],
+            # редирект анонимусов на авторизацию
+            ['', 1, 1, 302],
+            # организация и пост открытые
+            ['user1', 1, 1, 200],
+            # организация открыта, пост закрыт
+            ['user1', 1, 3, 404],
+            ['user2', 1, 1, 200],
+            # организация закрыта, пост открыт
+            ['user2', 2, 2, 404],
+            # организация и пост закрыт
+            ['user1', 2, 4, 200],
+            ['user2', 2, 4, 404],
         ]
     )
-    def test_organization_posts_user_access(
-        self, username: str, org_pk: int, expected: bool
+    def test_organization_post_user_access(
+        self, username: str, org_pk: int, post_pk: int, expected: int
     ) -> None:
-        """тестируем вход на страницу с постами организации"""
+        """тестируем статус код страницы с детальным описанием поста"""
+        client = django.test.Client()
+        if username:
+            client.post(
+                django.urls.reverse('users:login'),
+                data={'username': username, 'password': 'password'},
+            )
+        response = client.get(
+            django.urls.reverse(
+                'organization:post_detail',
+                kwargs={'pk': org_pk, 'post_pk': post_pk}
+            )
+        )
+        self.assertEqual(response.status_code, expected)
+
+    def test_organization_post_detail_context(self) -> None:
+        """тестируем контекст страницы с детальным описанием поста"""
         client = django.test.Client()
         client.post(
             django.urls.reverse('users:login'),
-            data={'username': username, 'password': 'password'},
+            data={'username': 'user1', 'password': 'password'},
         )
         response = client.get(
-            django.urls.reverse('organization:posts', kwargs={'pk': org_pk})
+            django.urls.reverse(
+                'organization:post_detail',
+                kwargs={'pk': 1, 'post_pk': 1}
+            )
         )
-        self.assertEqual(response.status_code == 200, expected)
+        self.assertIn('post', response.context)
+        self.assertIn('comments', response.context)
 
-    # @parameterized.parameterized.expand(
-    #     [
-    #         ['user1', 1, True],
-    #         ['user1', 2, True],
-    #         ['user2', 1, True],
-    #         ['user2', 2, False],
-    #     ]
-    # )
-    # def test_organization_post_detail_status_code(self) -> None:
-    #     """тестируем статус код страницы с детальным описанием поста"""
-    #     response = django.test.Client().get(
-    #         django.urls.reverse(
-    #             'organization:post_detail', kwargs={'pk': 1, 'post_pk': 1}
-    #         )
-    #     )
-    #     self.assertEqual(response.status_code, 200)
+    @parameterized.parameterized.expand(
+        [
+            # редирект анонимусов на авторизацию
+            ['', 1, 1, False],
+            # организация и пост открытые
+            ['user1', 1, 1, True],
+            # организация открыта, пост закрыт
+            ['user1', 1, 3, False],
+            ['user2', 1, 1, True],
+            # организация закрыта, пост открыт
+            ['user2', 2, 2, False],
+            # организация и пост закрыт
+            ['user1', 2, 4, True],
+            ['user2', 2, 4, False],
+        ]
+    )
+    def test_create_comment_to_post(
+        self, username: str, org_pk: int, post_pk: int, expected: bool
+    ) -> None:
+        """тестируем создание комментария к посту"""
+        client = django.test.Client()
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': username, 'password': 'password'}
+        )
+        comments_before = (
+            organization.models.CommentToOrganizationPost.objects.count()
+        )
+        client.post(
+            django.urls.reverse(
+                'organization:post_detail',
+                kwargs={'pk': org_pk, 'post_pk': post_pk}
+            ),
+            data={'comment_text': 'test text'}
+        )
+        comments_after = (
+            organization.models.CommentToOrganizationPost.objects.count()
+        )
+        self.assertEqual(comments_before + 1 == comments_after, expected)
 
-    # def test_organization_post_detail_context(self) -> None:
-    #     """тестируем контекст страницы с детальным описанием поста"""
-    #     response = django.test.Client().get(
-    #         django.urls.reverse(
-    #             'organization:post_detail', kwargs={'pk': 1, 'post_pk': 1}
-    #         )
-    #     )
-    #     self.assertIn('post', response.context)
-    #     self.assertIn('comments', response.context)
+    @parameterized.parameterized.expand(
+        [
+            # админы создают пост
+            ['user1', 2, True],
+            ['user4', 2, True],
+            ['user6', 1, True],
+            # не админы создают пост
+            ['', 2, False],
+            ['', 1, False],
+            ['user3', 1, False],
+            ['user3', 2, False]
+        ]
+    )
+    def test_create_organization_post(
+        self, username: str, org_pk: int, expected: bool
+    ) -> None:
+        """тестируем создание поста в организации"""
+        client = django.test.Client()
+        if username:
+            client.post(
+                django.urls.reverse('users:login'),
+                data={
+                    'username': username,
+                    'password': 'password'
+                }
+            )
+        posts_before = organization.models.OrganizationPost.objects.count()
+        client.post(
+            django.urls.reverse(
+                'organization:create_post', kwargs={'pk': org_pk}
+            ),
+            data={'name': 'test', 'text': 'test'}
+        )
+        posts_after = organization.models.OrganizationPost.objects.count()
+        self.assertEqual(posts_before + 1 == posts_after, expected)
+
+    @parameterized.parameterized.expand(
+        [
+            # админы
+            ['user1', 2, 200],
+            ['user4', 2, 200],
+            ['user6', 1, 200],
+            # не админы
+            ['', 2, 404],
+            ['', 1, 404],
+            ['user3', 1, 404],
+            ['user3', 2, 404]
+        ]
+    )
+    def test_organization_create_quiz_with_number_user_access(
+        self, username: str, org_pk: int, expected: int
+    ) -> None:
+        """
+        тестируем возможность попасть на страницу с
+        выбором количества вопросов при создании викторины
+        """
+        client = django.test.Client()
+        if username:
+            client.post(
+                django.urls.reverse('users:login'),
+                data={
+                    'username': username,
+                    'password': 'password'
+                }
+            )
+        response = client.get(
+            django.urls.reverse(
+                'organization:choose_questions_number',
+                kwargs={'pk': org_pk}
+            )
+        )
+        self.assertEqual(response.status_code, expected)
+
+    @parameterized.parameterized.expand(
+        [
+            # админы
+            ['user1', 2, 1, True],
+            ['user4', 2, 15, True],
+            ['user6', 1, 5, False],
+            ['user6', 1, 8, False],
+            # не админы
+            ['', 2, 43, False],
+            ['', 1, 1, False],
+            ['user3', 1, 2, False],
+            ['user3', 2, 3, False]
+        ]
+    )
+    def test_organization_redirect_after_choosing_questions_num(
+        self, username: str, org_pk: int, questions_num: int, expected: bool
+    ) -> None:
+        """
+        тестируем редирект на страницу с формой викторины
+        после выбора количества вопросов
+        """
+        ...
 
     def tearDown(self) -> None:
         """удаление тестовых данных"""
