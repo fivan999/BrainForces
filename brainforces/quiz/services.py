@@ -12,11 +12,15 @@ def user_can_access_quiz(
     проводящей организации
     """
     org_to_user_manager = organization.models.OrganizationToUser.objects
-    return not quiz_obj.is_private or (
-        quiz_obj.is_private
-        and (
-            org_to_user_manager.get_organization_member(
-                org_pk=quiz_obj.organized_by.pk, user_pk=user_obj.pk
+    return (
+        not quiz_obj.is_private
+        or quiz_obj.creator.pk == user_obj.pk
+        or (
+            quiz_obj.is_private
+            and (
+                org_to_user_manager.get_organization_member(
+                    org_pk=quiz_obj.organized_by.pk, user_pk=user_obj.pk
+                )
             )
         )
     )

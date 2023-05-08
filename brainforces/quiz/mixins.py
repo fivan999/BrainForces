@@ -14,13 +14,17 @@ class QuizMixin(django.views.generic.View):
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
         quiz_obj = django.shortcuts.get_object_or_404(
-            quiz.models.Quiz.objects.filter(
-                django.db.models.Q(organized_by__is_private=False)
-                & django.db.models.Q(is_private=False)
+            quiz.models.Quiz.objects.get_active_and_published_quizzes()
+            .filter(
+                django.db.models.Q(
+                    organized_by__is_private=False, is_private=False
+                )
                 | django.db.models.Q(
                     organized_by__users__user__pk=self.request.user.pk
                 )
-            ).only('is_private', 'start_time', 'duration'),
+            )
+            .select_related('creator')
+            .only('is_private', 'start_time', 'duration', 'creator__id'),
             pk=self.kwargs['pk'],
         )
         context['quiz'] = quiz_obj

@@ -28,6 +28,12 @@ class Organization(django.db.models.Model):
         help_text='Приватная организация или нет',
     )
 
+    is_active = django.db.models.BooleanField(
+        default=False,
+        verbose_name='активная',
+        help_text='активная организация или нет',
+    )
+
     class Meta:
         verbose_name = 'организация'
         verbose_name_plural = 'организации'

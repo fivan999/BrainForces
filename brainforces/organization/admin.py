@@ -7,9 +7,10 @@ import organization.models
 class OrganizationAdmin(django.contrib.admin.ModelAdmin):
     """отображение модели Organization в админке"""
 
-    list_display = ('id', 'name', 'is_private')
+    list_display = ('id', 'name', 'is_private', 'is_active')
     list_display_links = ('id',)
-    list_editable = ('is_private',)
+    list_editable = ('is_private', 'is_active')
+    list_filter = ('is_active',)
 
 
 @django.contrib.admin.register(organization.models.OrganizationToUser)

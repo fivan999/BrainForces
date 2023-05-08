@@ -4,9 +4,13 @@ import django.db.models
 class OrganizationManager(django.db.models.Manager):
     """менеджер модели Organization"""
 
+    def get_active_organizations(self) -> django.db.models.QuerySet:
+        """только активные организации"""
+        return self.get_queryset().filter(is_active=True)
+
     def get_only_useful_fields(self) -> django.db.models.QuerySet:
         """только нужные поля для одной организации"""
-        return self.get_queryset().only('name', 'description')
+        return self.get_active_organizations().only('name', 'description')
 
     def filter_user_access(self, user_pk: int) -> django.db.models.QuerySet:
         """
@@ -30,9 +34,13 @@ class OrganizationManager(django.db.models.Manager):
 class OrganizationPostManager(django.db.models.Manager):
     """менеджер модели OrganizationPost"""
 
+    def get_posts_with_active_organizations(self) -> django.db.models.QuerySet:
+        """посты только активных организаций"""
+        return self.get_queryset().filter(posted_by__is_active=True)
+
     def get_only_useful_fields(self) -> django.db.models.QuerySet:
         """только нужные поля для поста"""
-        return self.get_queryset().only('name', 'text')
+        return self.get_posts_with_active_organizations().only('name', 'text')
 
     def filter_user_access(
         self, user_pk: int, org_pk: int = -1
@@ -63,6 +71,7 @@ class OrganizationToUserManager(django.db.models.Manager):
             organization__pk=org_pk,
             user__pk=user_pk,
             role__in=(1, 2, 3),
+            organization__is_active=True,
         )
 
     def get_organization_admin(

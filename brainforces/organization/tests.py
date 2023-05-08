@@ -80,6 +80,7 @@ class OrganizationTest(django.test.TestCase):
             ['user1', 2, 200],
             ['user2', 1, 200],
             ['user2', 2, 404],
+            ['user1', 3, 404],
         ]
     )
     def test_organization_main_page_user_access(
@@ -122,6 +123,7 @@ class OrganizationTest(django.test.TestCase):
             ['user1', 2, 200],
             ['user2', 1, 200],
             ['user2', 2, 404],
+            ['user1', 3, 404],
         ]
     )
     def test_organization_participants_user_access(
@@ -166,6 +168,8 @@ class OrganizationTest(django.test.TestCase):
         [
             # админ добавляет пользователя
             ['user1', 2, 'user2', True],
+            # админ добавляет пользователя в неактивную оргу
+            ['user1', 3, 'user3', False],
             # не админ добавляет пользователя
             ['user2', 1, 'user1', False],
             # админ добавляет несуществующего пользователя
@@ -202,10 +206,13 @@ class OrganizationTest(django.test.TestCase):
         [
             # админ удаляет участника
             ['user1', 2, 3, True],
+            # админ удаляет участника из неактивной орги
+            ['user1', 3, 2, False],
             # выход из группы
             ['user1', 2, 1, True],
-            # выход из группы
             ['user3', 2, 3, True],
+            # выход из неактивной группы
+            ['user2', 3, 2, False],
             # пользователь из другой организации удаляет пользователя
             ['user3', 1, 2, False],
             # пользователь из другой организации удаляет пользователя
@@ -245,6 +252,8 @@ class OrganizationTest(django.test.TestCase):
             ['user3', 2, 1, 1, False],
             # админ повышает пользователя
             ['user4', 2, 3, 2, True],
+            # админ повышает пользователя в неактивной орге
+            ['user1', 3, 2, 2, False],
             # пользователь повышает сам себя
             ['user3', 2, 3, 2, False],
             # пользователь принимает приглашение в оргу (с 0 до 1)
@@ -291,6 +300,7 @@ class OrganizationTest(django.test.TestCase):
             ['user1', 2, 200],
             ['user2', 1, 200],
             ['user2', 2, 404],
+            ['user2', 3, 404],
         ]
     )
     def test_organization_quizzes_user_access(
@@ -337,6 +347,7 @@ class OrganizationTest(django.test.TestCase):
             ['user1', 2, 200],
             ['user2', 1, 200],
             ['user2', 2, 404],
+            ['user1', 3, 404],
         ]
     )
     def test_organization_posts_user_access(
@@ -391,6 +402,8 @@ class OrganizationTest(django.test.TestCase):
             # организация и пост закрыт
             ['user1', 2, 4, 200],
             ['user2', 2, 4, 404],
+            # и то и то открыто, орга неактивная
+            ['user1', 3, 5, 404],
         ]
     )
     def test_organization_post_user_access(
@@ -440,6 +453,8 @@ class OrganizationTest(django.test.TestCase):
             # организация и пост закрыт
             ['user1', 2, 4, True],
             ['user2', 2, 4, False],
+            # и то и то открыто, орга неактивная
+            ['user2', 3, 5, False],
         ]
     )
     def test_create_comment_to_post(
@@ -469,9 +484,12 @@ class OrganizationTest(django.test.TestCase):
     @parameterized.parameterized.expand(
         [
             # админы создают пост
+            # орга активная
             ['user1', 2, True],
             ['user4', 2, True],
             ['user6', 1, True],
+            # орга неактивная
+            ['user1', 3, False],
             # не админы создают пост
             ['', 2, False],
             ['', 1, False],
@@ -502,9 +520,12 @@ class OrganizationTest(django.test.TestCase):
     @parameterized.parameterized.expand(
         [
             # админы
+            # орга активная
             ['user1', 2, 200],
             ['user4', 2, 200],
             ['user6', 1, 200],
+            # орга неактивная
+            ['user1', 3, 404],
             # не админы
             ['', 2, 404],
             ['', 1, 404],
@@ -535,10 +556,13 @@ class OrganizationTest(django.test.TestCase):
     @parameterized.parameterized.expand(
         [
             # админы
+            # орга активная
             ['user1', 2, 1, True],
             ['user4', 2, 15, True],
             ['user6', 1, 5, True],
             ['user6', 1, 50, True],
+            # орга неактивная
+            ['user1', 3, 5, False],
             # не админы
             ['', 2, 43, False],
             ['', 1, 1, False],
@@ -623,10 +647,13 @@ class OrganizationTest(django.test.TestCase):
         [
             # админы
             # правильное число вопросов
+            # орга активная
             ['user1', 2, 1, 200],
             ['user4', 2, 15, 200],
             ['user6', 1, 5, 200],
             ['user6', 1, 50, 200],
+            # орга неактивная
+            ['user1', 3, 1, 404],
             # неправильное число вопросов
             ['user1', 2, 51, 404],
             ['user4', 2, 0, 404],
@@ -657,16 +684,22 @@ class OrganizationTest(django.test.TestCase):
 
     @parameterized.parameterized.expand(
         [
-            [NAME_ERROR, False],
-            [DESCRIPTION_ERROR, False],
-            [START_TIME_ERROR, False],
-            [DURATION_ERROR, False],
-            [QUESTION_NAME_ERROR, False],
-            [QUESTION_TEXT_ERROR, False],
-            [QUESTION_DIFFICULTY_ERROR, False],
-            [QUESTION_VARIANTS_ERROR_1, False],
-            [QUESTION_VARIANTS_ERROR_2, False],
-            [{}, True],
+            # ошибки формы
+            ['user1', 2, NAME_ERROR, False],
+            ['user1', 2, DESCRIPTION_ERROR, False],
+            ['user1', 2, START_TIME_ERROR, False],
+            ['user1', 2, DURATION_ERROR, False],
+            ['user1', 2, QUESTION_NAME_ERROR, False],
+            ['user1', 2, QUESTION_TEXT_ERROR, False],
+            ['user1', 2, QUESTION_DIFFICULTY_ERROR, False],
+            ['user1', 2, QUESTION_VARIANTS_ERROR_1, False],
+            ['user1', 2, QUESTION_VARIANTS_ERROR_2, False],
+            # все хорошо
+            ['user1', 2, {}, True],
+            # не админ
+            ['user3', 2, {}, False],
+            # орга неактивная
+            ['user1', 3, {}, False],
         ]
     )
     @mock.patch(
@@ -679,13 +712,13 @@ class OrganizationTest(django.test.TestCase):
         ),
     )
     def test_organization_create_quiz(
-        self, form_data: dict, expected: bool
+        self, username: str, org_pk: int, form_data: dict, expected: bool
     ) -> None:
         """тестируем создание квиза"""
         client = django.test.Client()
         client.post(
             django.urls.reverse('users:login'),
-            data={'username': 'user1', 'password': 'password'},
+            data={'username': username, 'password': 'password'},
         )
         quizzes_before = quiz.models.Quiz.objects.count()
         questions_before = quiz.models.Question.objects.count()
@@ -693,7 +726,7 @@ class OrganizationTest(django.test.TestCase):
         client.post(
             django.urls.reverse(
                 'organization:create_quiz',
-                kwargs={'pk': 2, 'num_questions': 1},
+                kwargs={'pk': org_pk, 'num_questions': 1},
             ),
             data=self.QUIZ_RIGHT_DATA | form_data,
         )

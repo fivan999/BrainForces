@@ -4,11 +4,16 @@ import django.db.models
 class QuizManager(django.db.models.Manager):
     """менеджер модели Quiz"""
 
+    def get_active_and_published_quizzes(self) -> None:
+        """получаем викторины, к=организации которых активные"""
+        return self.get_queryset().filter(
+            organized_by__is_active=True, is_published=True
+        )
+
     def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
         """только нужные поля для списка викторин на главной"""
         return (
-            self.get_queryset()
-            .filter(is_published=True)
+            self.get_active_and_published_quizzes()
             .select_related('creator', 'organized_by')
             .only(
                 'name',

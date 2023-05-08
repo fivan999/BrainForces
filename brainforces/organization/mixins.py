@@ -32,6 +32,7 @@ class UserIsOrganizationMemberMixin(OrganizationMixin):
         org_user_obj = organization.models.OrganizationToUser.objects.filter(
             user__pk=self.request.user.pk,
             organization__pk=self.kwargs['pk'],
+            organization__is_active=True,
         ).first()
         context['organization_to_user'] = org_user_obj
         context['is_group_member'] = org_user_obj is not None

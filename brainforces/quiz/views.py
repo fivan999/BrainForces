@@ -112,7 +112,9 @@ class MakeQuizResultsView(django.views.generic.View):
         является ли пользователь его создаталем
         """
         quiz_obj = django.shortcuts.get_object_or_404(
-            quiz.models.Quiz, pk=pk, is_ended=False
+            quiz.models.Quiz.objects.get_only_useful_list_fields(),
+            pk=pk,
+            is_ended=False,
         )
         if quiz_obj.creator.pk != request.user.pk:
             raise django.http.Http404()

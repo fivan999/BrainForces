@@ -62,8 +62,8 @@ class OrganizationListView(django.views.generic.ListView):
         либо по названию и описанию по отдельности
         """
         queryset = (
-            organization.models.Organization.objects.filter(is_private=False)
-            .only('name', 'description')
+            organization.models.Organization.objects.get_only_useful_fields()
+            .filter(is_private=False)
             .annotate(count_users=django.db.models.Count('users__id'))
             .order_by('-count_users')
         )
@@ -191,6 +191,7 @@ class ActionWithUserView(django.views.generic.View):
         self.self_user = (
             organization.models.OrganizationToUser.objects.filter(
                 organization__pk=pk,
+                organization__is_active=True,
                 user__pk=request.user.pk,
             )
             .only('role')
@@ -198,7 +199,9 @@ class ActionWithUserView(django.views.generic.View):
         )
         self.target_user = (
             organization.models.OrganizationToUser.objects.filter(
-                user__pk=user_pk, organization__pk=pk
+                user__pk=user_pk,
+                organization__pk=pk,
+                organization__is_active=True,
             )
             .only('role')
             .first()
@@ -486,10 +489,7 @@ class QuizCreateView(
         return django.shortcuts.render(request, self.template_name, context)
 
 
-class CreatePostView(
-    organization.mixins.IsAdminMixin,
-    django.views.generic.edit.FormView,
-):
+class CreatePostView(organization.mixins.IsAdminMixin):
     """создание публикации организации"""
 
     form_class = organization.forms.PostForm
