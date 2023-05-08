@@ -28,10 +28,8 @@ class QuizListView(django.views.generic.ListView):
         либо по всем критериям,
         либо по имени, описанию и организации квиза
         """
-        queryset = (
-            quiz.models.Quiz.objects.filter_user_access(
-                user_pk=self.request.user.pk
-            )
+        queryset = quiz.models.Quiz.objects.filter_user_access(
+            user_pk=self.request.user.pk
         )
         searched = self.request.GET.get('searched')
         search_criteria = self.request.GET.get('search_critery', 'all')
@@ -321,13 +319,12 @@ class QuizRegistrationView(
         quiz_obj = django.shortcuts.get_object_or_404(
             quiz.models.Quiz.objects.filter_user_access(
                 user_pk=self.request.user.pk
-            ), pk=pk
+            ),
+            pk=pk,
         )
-        if (
-            not quiz.models.QuizResults.objects.filter(
-                quiz__pk=pk, user__pk=request.user.pk
-            ).exists()
-        ):
+        if not quiz.models.QuizResults.objects.filter(
+            quiz__pk=pk, user__pk=request.user.pk
+        ).exists():
             quiz.models.QuizResults.objects.create(
                 quiz=quiz_obj,
                 user=request.user,

@@ -36,7 +36,7 @@ class OrganizationMainView(django.views.generic.DetailView):
         org_user_manager = organization.models.OrganizationToUser.objects
         user = (
             org_user_manager.get_organization_member(
-                pk=self.kwargs['pk'], user_pk=self.request.user.pk
+                org_pk=self.kwargs['pk'], user_pk=self.request.user.pk
             )
             .only('role')
             .first()
@@ -129,7 +129,9 @@ class OrganizationUsersView(
         if form.is_valid():
             org_user_manager = organization.models.OrganizationToUser.objects
             user_obj = (
-                org_user_manager.get_organization_admin(pk, request.user.pk)
+                org_user_manager.get_organization_admin(
+                    org_pk=pk, user_pk=request.user.pk
+                )
                 .select_related('organization')
                 .only('id', 'organization__id')
                 .first()
@@ -171,11 +173,8 @@ class OrganizationQuizzesView(
         соревнования организации
         они могут быть приватными, поэтому нужно фильтровать
         """
-        return (
-            quiz.models.Quiz.objects.filter_user_access(
-                user_pk=self.request.user.pk,
-                org_pk=self.kwargs['pk']
-            )
+        return quiz.models.Quiz.objects.filter_user_access(
+            user_pk=self.request.user.pk, org_pk=self.kwargs['pk']
         )
 
 
@@ -328,7 +327,8 @@ class PostCommentsView(
                 post__pk=self.kwargs['post_pk']
             )
             .select_related('user')
-            .only('user__username', 'text').order_by('id')
+            .only('user__username', 'text')
+            .order_by('id')
         )
 
     def post(
@@ -358,7 +358,7 @@ class PostCommentsView(
         )
 
 
-class ChooseQuizQuestionsNumber(
+class ChooseQuizQuestionsNumberView(
     organization.mixins.IsAdminMixin,
     django.views.generic.edit.FormView,
 ):
@@ -371,6 +371,12 @@ class ChooseQuizQuestionsNumber(
         self, form: quiz.forms.QuizQuestionsNumberForm
     ) -> django.http.HttpResponse:
         """редиректим на создание викторины"""
+        org_to_user_manager = organization.models.OrganizationToUser.objects
+        django.shortcuts.get_object_or_404(
+            org_to_user_manager.get_organization_admin(
+                org_pk=self.kwargs['pk'], user_pk=self.request.user.pk
+            )
+        )
         return django.shortcuts.redirect(
             django.urls.reverse(
                 'organization:create_quiz',
@@ -395,6 +401,10 @@ class QuizCreateView(
         """
         дополняем контекст формсетом из форм с добавлением вопроса
         """
+        self.kwargs['pk'] = int(self.kwargs['pk'])
+        self.kwargs['num_questions'] = int(self.kwargs['num_questions'])
+        if not 1 <= self.kwargs['num_questions'] <= 50:
+            raise django.http.Http404()
         context = super().get_context_data(*args, **kwargs)
         question_formset = django.forms.inlineformset_factory(
             quiz.models.Quiz,
@@ -497,7 +507,9 @@ class CreatePostView(
         if form.is_valid():
             org_user_manager = organization.models.OrganizationToUser.objects
             user_obj = django.shortcuts.get_object_or_404(
-                org_user_manager.get_organization_admin(pk, request.user.pk)
+                org_user_manager.get_organization_admin(
+                    org_pk=pk, user_pk=request.user.pk
+                )
                 .select_related('organization')
                 .only('id', 'organization__id')
             )

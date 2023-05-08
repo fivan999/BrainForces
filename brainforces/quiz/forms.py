@@ -21,11 +21,18 @@ class QuizQuestionsNumberForm(django.forms.Form):
     """форма выбора количества вопросов в викторине"""
 
     num_questions = django.forms.IntegerField(
-        min_value=1,
-        max_value=50,
         label='Количество вопросов',
         help_text='Введите количество вопросов в викторине',
     )
+
+    def clean_num_questions(self) -> int:
+        """валидируем количество вопросов"""
+        num_questions = self.cleaned_data['num_questions']
+        if not 1 <= num_questions <= 50:
+            raise django.core.exceptions.ValidationError(
+                'Значение должно находиться в интервале от 1 до 50'
+            )
+        return num_questions
 
 
 class QuizForm(django.forms.ModelForm):

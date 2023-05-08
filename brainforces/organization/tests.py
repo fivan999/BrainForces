@@ -1,8 +1,13 @@
+import zoneinfo
+
+import mock
 import parameterized
 
+import django.conf
 import django.db
 import django.test
 import django.urls
+import django.utils.timezone
 
 import organization.models
 import quiz.models
@@ -13,6 +18,32 @@ class OrganizationTest(django.test.TestCase):
     """тестируем организации"""
 
     fixtures = ['fixtures/organization/test.json']
+    QUIZ_RIGHT_DATA = {
+        'name': 'name',
+        'description': 'description',
+        'start_time': django.utils.timezone.datetime(2000, 1, 1, 0, 11),
+        'duration': 11,
+        'is_private': False,
+        'is_rated': False,
+        'quiz_question-0-name': 'name',
+        'quiz_question-0-text': 'text',
+        'quiz_question-0-difficulty': 1,
+        'quiz_question-0-variants': 'bebraright\r\nbebra',
+        'quiz_question-TOTAL_FORMS': 1,
+        'quiz_question-INITIAL_FORMS': 0,
+        'quiz_question-MAX_NUM_FORMS': 1000,
+    }
+    NAME_ERROR = {'name': ''}
+    DESCRIPTION_ERROR = {'description': ''}
+    START_TIME_ERROR = {
+        'start_time': django.utils.timezone.datetime(2000, 1, 1, 0, 4)
+    }
+    DURATION_ERROR = {'duration': 9}
+    QUESTION_NAME_ERROR = {'quiz_question-0-name': ''}
+    QUESTION_TEXT_ERROR = {'quiz_question-0-text': ''}
+    QUESTION_DIFFICULTY_ERROR = {'quiz_question-0-difficulty': -1}
+    QUESTION_VARIANTS_ERROR_1 = {'quiz_question-0-variants': 'bebra\nbebra'}
+    QUESTION_VARIANTS_ERROR_2 = {'quiz_question-0-variants': 'bebraright'}
 
     def test_organizations_list_status_code(self) -> None:
         """тестируем статус код страницы с организациями"""
@@ -375,7 +406,7 @@ class OrganizationTest(django.test.TestCase):
         response = client.get(
             django.urls.reverse(
                 'organization:post_detail',
-                kwargs={'pk': org_pk, 'post_pk': post_pk}
+                kwargs={'pk': org_pk, 'post_pk': post_pk},
             )
         )
         self.assertEqual(response.status_code, expected)
@@ -389,8 +420,7 @@ class OrganizationTest(django.test.TestCase):
         )
         response = client.get(
             django.urls.reverse(
-                'organization:post_detail',
-                kwargs={'pk': 1, 'post_pk': 1}
+                'organization:post_detail', kwargs={'pk': 1, 'post_pk': 1}
             )
         )
         self.assertIn('post', response.context)
@@ -419,7 +449,7 @@ class OrganizationTest(django.test.TestCase):
         client = django.test.Client()
         client.post(
             django.urls.reverse('users:login'),
-            data={'username': username, 'password': 'password'}
+            data={'username': username, 'password': 'password'},
         )
         comments_before = (
             organization.models.CommentToOrganizationPost.objects.count()
@@ -427,9 +457,9 @@ class OrganizationTest(django.test.TestCase):
         client.post(
             django.urls.reverse(
                 'organization:post_detail',
-                kwargs={'pk': org_pk, 'post_pk': post_pk}
+                kwargs={'pk': org_pk, 'post_pk': post_pk},
             ),
-            data={'comment_text': 'test text'}
+            data={'comment_text': 'test text'},
         )
         comments_after = (
             organization.models.CommentToOrganizationPost.objects.count()
@@ -446,7 +476,7 @@ class OrganizationTest(django.test.TestCase):
             ['', 2, False],
             ['', 1, False],
             ['user3', 1, False],
-            ['user3', 2, False]
+            ['user3', 2, False],
         ]
     )
     def test_create_organization_post(
@@ -457,17 +487,14 @@ class OrganizationTest(django.test.TestCase):
         if username:
             client.post(
                 django.urls.reverse('users:login'),
-                data={
-                    'username': username,
-                    'password': 'password'
-                }
+                data={'username': username, 'password': 'password'},
             )
         posts_before = organization.models.OrganizationPost.objects.count()
         client.post(
             django.urls.reverse(
                 'organization:create_post', kwargs={'pk': org_pk}
             ),
-            data={'name': 'test', 'text': 'test'}
+            data={'name': 'test', 'text': 'test'},
         )
         posts_after = organization.models.OrganizationPost.objects.count()
         self.assertEqual(posts_before + 1 == posts_after, expected)
@@ -482,7 +509,7 @@ class OrganizationTest(django.test.TestCase):
             ['', 2, 404],
             ['', 1, 404],
             ['user3', 1, 404],
-            ['user3', 2, 404]
+            ['user3', 2, 404],
         ]
     )
     def test_organization_create_quiz_with_number_user_access(
@@ -496,15 +523,11 @@ class OrganizationTest(django.test.TestCase):
         if username:
             client.post(
                 django.urls.reverse('users:login'),
-                data={
-                    'username': username,
-                    'password': 'password'
-                }
+                data={'username': username, 'password': 'password'},
             )
         response = client.get(
             django.urls.reverse(
-                'organization:choose_questions_number',
-                kwargs={'pk': org_pk}
+                'organization:choose_questions_number', kwargs={'pk': org_pk}
             )
         )
         self.assertEqual(response.status_code, expected)
@@ -514,23 +537,172 @@ class OrganizationTest(django.test.TestCase):
             # админы
             ['user1', 2, 1, True],
             ['user4', 2, 15, True],
-            ['user6', 1, 5, False],
-            ['user6', 1, 8, False],
+            ['user6', 1, 5, True],
+            ['user6', 1, 50, True],
             # не админы
             ['', 2, 43, False],
             ['', 1, 1, False],
             ['user3', 1, 2, False],
-            ['user3', 2, 3, False]
+            ['user3', 2, 3, False],
         ]
     )
-    def test_organization_redirect_after_choosing_questions_num(
-        self, username: str, org_pk: int, questions_num: int, expected: bool
+    def test_organization_redirect_after_create_quiz_with_number(
+        self, username: str, org_pk: int, num_questions: int, expected: bool
     ) -> None:
         """
         тестируем редирект на страницу с формой викторины
         после выбора количества вопросов
         """
-        ...
+        client = django.test.Client()
+        if username:
+            client.post(
+                django.urls.reverse('users:login'),
+                data={'username': username, 'password': 'password'},
+            )
+        response = client.post(
+            django.urls.reverse(
+                'organization:choose_questions_number', kwargs={'pk': org_pk}
+            ),
+            data={'num_questions': num_questions},
+            follow=True,
+        )
+        if expected:
+            self.assertRedirects(
+                response,
+                expected_url=django.urls.reverse_lazy(
+                    'organization:create_quiz',
+                    kwargs={'pk': org_pk, 'num_questions': num_questions},
+                ),
+            )
+        else:
+            self.assertEqual(response.status_code, 404)
+
+    @parameterized.parameterized.expand(
+        [
+            [0, False],
+            [1, True],
+            [30, True],
+            [50, True],
+            [51, False],
+            [-1, False],
+        ]
+    )
+    def test_organization_valid_num_in_create_quiz_with_number(
+        self, num_questions: int, expected: bool
+    ) -> None:
+        """тестируем валидное количество вопросов при создании викторины"""
+        client = django.test.Client()
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': 'user1', 'password': 'password'},
+        )
+        response = client.post(
+            django.urls.reverse(
+                'organization:choose_questions_number', kwargs={'pk': 2}
+            ),
+            data={'num_questions': num_questions},
+            follow=True,
+        )
+        if expected:
+            self.assertRedirects(
+                response,
+                expected_url=django.urls.reverse_lazy(
+                    'organization:create_quiz',
+                    kwargs={'pk': 2, 'num_questions': num_questions},
+                ),
+            )
+        else:
+            self.assertEqual(
+                response.request['PATH_INFO'],
+                django.urls.reverse_lazy(
+                    'organization:choose_questions_number', kwargs={'pk': 2}
+                ),
+            )
+
+    @parameterized.parameterized.expand(
+        [
+            # админы
+            # правильное число вопросов
+            ['user1', 2, 1, 200],
+            ['user4', 2, 15, 200],
+            ['user6', 1, 5, 200],
+            ['user6', 1, 50, 200],
+            # неправильное число вопросов
+            ['user1', 2, 51, 404],
+            ['user4', 2, 0, 404],
+            # не админы
+            ['', 2, 43, 404],
+            ['', 1, 1, 404],
+            ['user3', 1, 2, 404],
+            ['user3', 2, 3, 404],
+        ]
+    )
+    def test_organization_create_quiz_user_access(
+        self, username: str, org_pk: int, num_questions: int, expected: int
+    ) -> None:
+        """тестируем доступ к странице с созданием викторины"""
+        client = django.test.Client()
+        if username:
+            client.post(
+                django.urls.reverse('users:login'),
+                data={'username': username, 'password': 'password'},
+            )
+        response = client.get(
+            django.urls.reverse(
+                'organization:create_quiz',
+                kwargs={'pk': org_pk, 'num_questions': num_questions},
+            )
+        )
+        self.assertEqual(response.status_code, expected)
+
+    @parameterized.parameterized.expand(
+        [
+            [NAME_ERROR, False],
+            [DESCRIPTION_ERROR, False],
+            [START_TIME_ERROR, False],
+            [DURATION_ERROR, False],
+            [QUESTION_NAME_ERROR, False],
+            [QUESTION_TEXT_ERROR, False],
+            [QUESTION_DIFFICULTY_ERROR, False],
+            [QUESTION_VARIANTS_ERROR_1, False],
+            [QUESTION_VARIANTS_ERROR_2, False],
+            [{}, True],
+        ]
+    )
+    @mock.patch(
+        'django.utils.timezone.now',
+        lambda: django.utils.timezone.datetime(
+            2000,
+            1,
+            1,
+            tzinfo=zoneinfo.ZoneInfo(django.conf.settings.TIME_ZONE),
+        ),
+    )
+    def test_organization_create_quiz(
+        self, form_data: dict, expected: bool
+    ) -> None:
+        """тестируем создание квиза"""
+        client = django.test.Client()
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': 'user1', 'password': 'password'},
+        )
+        quizzes_before = quiz.models.Quiz.objects.count()
+        questions_before = quiz.models.Question.objects.count()
+        variants_before = quiz.models.Variant.objects.count()
+        client.post(
+            django.urls.reverse(
+                'organization:create_quiz',
+                kwargs={'pk': 2, 'num_questions': 1},
+            ),
+            data=self.QUIZ_RIGHT_DATA | form_data,
+        )
+        quizzes_after = quiz.models.Quiz.objects.count()
+        questions_after = quiz.models.Question.objects.count()
+        variants_after = quiz.models.Variant.objects.count()
+        self.assertEqual(quizzes_before + 1 == quizzes_after, expected)
+        self.assertEqual(questions_before + 1 == questions_after, expected)
+        self.assertEqual(variants_before + 2 == variants_after, expected)
 
     def tearDown(self) -> None:
         """удаление тестовых данных"""

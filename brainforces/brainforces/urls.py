@@ -3,6 +3,7 @@ import django.conf.urls.static
 import django.contrib.admin
 import django.contrib.staticfiles.urls
 import django.urls
+import django.utils.timezone
 
 
 urlpatterns = [

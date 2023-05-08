@@ -56,19 +56,19 @@ class OrganizationToUserManager(django.db.models.Manager):
     """менеджер модели OrganizationToUSer"""
 
     def get_organization_member(
-        self, pk: int, user_pk: int
+        self, org_pk: int, user_pk: int
     ) -> django.db.models.QuerySet:
         """пользователь - участник организации"""
         return self.get_queryset().filter(
-            organization__pk=pk,
+            organization__pk=org_pk,
             user__pk=user_pk,
             role__in=(1, 2, 3),
         )
 
     def get_organization_admin(
-        self, pk: int, user_pk: int
+        self, org_pk: int, user_pk: int
     ) -> django.db.models.QuerySet:
         """пользователь - админ организации"""
-        return self.get_organization_member(pk, user_pk).filter(
+        return self.get_organization_member(org_pk, user_pk).filter(
             role__in=(2, 3)
         )

@@ -48,7 +48,7 @@ urlpatterns = [
     ),
     django.urls.path(
         '<int:pk>/create_quiz/',
-        organization.views.ChooseQuizQuestionsNumber.as_view(),
+        organization.views.ChooseQuizQuestionsNumberView.as_view(),
         name='choose_questions_number',
     ),
     django.urls.path(

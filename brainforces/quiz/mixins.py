@@ -20,9 +20,7 @@ class QuizMixin(django.views.generic.View):
                 | django.db.models.Q(
                     organized_by__users__user__pk=self.request.user.pk
                 )
-            ).only(
-                'is_private', 'start_time', 'duration'
-            ),
+            ).only('is_private', 'start_time', 'duration'),
             pk=self.kwargs['pk'],
         )
         context['quiz'] = quiz_obj
