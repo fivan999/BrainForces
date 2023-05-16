@@ -239,14 +239,25 @@ CKEDITOR_CONFIGS = {
     }
 }
 
+
 if os.getenv('USE_SMTP', default='False').lower() in YES_OPTIONS:
-    EMAIL = os.getenv('EMAIL')
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.getenv('EMAIL_HOST')
     EMAIL_PORT = os.getenv('EMAIL_PORT')
+    EMAIL_USE_TLS = os.getenv(
+        'EMAIL_USE_TLS', default='true'
+    ).lower() in YES_OPTIONS
+    EMAIL_USE_SSL = os.getenv(
+        'EMAIL_USER_SSL', default='false'
+    ).lower() in YES_OPTIONS
+    if EMAIL_USE_TLS:
+        EMAIL_USE_SSL = False
+    if EMAIL_USE_SSL:
+        EMAIL_USE_TLS = False
     EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-    EMAIL_USE_TLS = True
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    SERVER_EMAIL = EMAIL_HOST_USER
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
     EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
