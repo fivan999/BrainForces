@@ -287,12 +287,8 @@ class OrganizationPostsView(
 
     def get_queryset(self) -> django.db.models.QuerySet:
         """объявления могут быть приватными, поэтому нужна проверка"""
-        return (
-            organization.models.OrganizationPost.objects.filter_user_access(
-                self.request.user.pk, org_pk=self.kwargs['pk']
-            )
-            .select_related('posted_by')
-            .only('name', 'text', 'posted_by__id')
+        return organization.models.OrganizationPost.objects.filter_user_access(
+            self.request.user.pk, org_pk=self.kwargs['pk']
         )
 
 
@@ -414,6 +410,7 @@ class QuizCreateView(
             quiz.models.Question,
             form=quiz.forms.QuestionForm,
             extra=self.kwargs['num_questions'],
+            max_num=50,
         )
         context['question_formset'] = question_formset()
         return context

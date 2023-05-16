@@ -13,10 +13,6 @@ class HomeView(django.views.generic.ListView):
 
     def get_queryset(self) -> django.db.models.QuerySet:
         """не показываем приватные викторины в общем списке"""
-        return (
-            organization.models.OrganizationPost.objects.filter(
-                is_private=False
-            )
-            .select_related('posted_by')
-            .only('name', 'text', 'posted_by__name')
+        return organization.models.OrganizationPost.objects.filter_user_access(
+            user_pk=self.request.user.pk
         )
