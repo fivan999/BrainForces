@@ -489,7 +489,9 @@ class QuizCreateView(
         return django.shortcuts.render(request, self.template_name, context)
 
 
-class CreatePostView(organization.mixins.IsAdminMixin):
+class CreatePostView(
+    organization.mixins.IsAdminMixin, django.views.generic.FormView
+):
     """создание публикации организации"""
 
     form_class = organization.forms.PostForm
