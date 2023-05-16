@@ -244,12 +244,12 @@ if os.getenv('USE_SMTP', default='False').lower() in YES_OPTIONS:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.getenv('EMAIL_HOST')
     EMAIL_PORT = os.getenv('EMAIL_PORT')
-    EMAIL_USE_TLS = os.getenv(
-        'EMAIL_USE_TLS', default='true'
-    ).lower() in YES_OPTIONS
-    EMAIL_USE_SSL = os.getenv(
-        'EMAIL_USER_SSL', default='false'
-    ).lower() in YES_OPTIONS
+    EMAIL_USE_TLS = (
+        os.getenv('EMAIL_USE_TLS', default='true').lower() in YES_OPTIONS
+    )
+    EMAIL_USE_SSL = (
+        os.getenv('EMAIL_USER_SSL', default='false').lower() in YES_OPTIONS
+    )
     if EMAIL_USE_TLS:
         EMAIL_USE_SSL = False
     if EMAIL_USE_SSL:
