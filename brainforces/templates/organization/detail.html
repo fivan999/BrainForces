@@ -21,7 +21,7 @@
         </li>
         {% if user_is_admin %}
           <li class="nav-item">
-            <a class="nav-link {% if view_name == 'organization:create_quiz' or view_name == 'organization:choose_questions_number' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:create_quiz' or view_name == 'organization:choose_questions_number' %}aria-current="page"{% endif %} href="{% url 'organization:choose_questions_number' pk=request.resolver_match.kwargs.pk %}">Создать викторину</a>
+            <a class="nav-link {% if view_name == 'organization:create_quiz' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:create_quiz' %}aria-current="page"{% endif %} href="{% url 'organization:create_quiz' pk=request.resolver_match.kwargs.pk %}">Создать викторину</a>
           </li>
           <li class="nav-item">
             <a class="nav-link {% if view_name == 'organization:create_post' %}active{% else %}text-dark{% endif %}" {% if view_name == 'organization:create_post' %}aria-current="page"{% endif %} href="{% url 'organization:create_post' pk=request.resolver_match.kwargs.pk %}">Создать пост</a>

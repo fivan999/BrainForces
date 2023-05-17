@@ -524,6 +524,7 @@ class OrganizationTest(django.test.TestCase):
             ['user1', 2, 200],
             ['user4', 2, 200],
             ['user6', 1, 200],
+            ['user6', 1, 200],
             # орга неактивная
             ['user1', 3, 404],
             # не админы
@@ -533,139 +534,8 @@ class OrganizationTest(django.test.TestCase):
             ['user3', 2, 404],
         ]
     )
-    def test_organization_create_quiz_with_number_user_access(
-        self, username: str, org_pk: int, expected: int
-    ) -> None:
-        """
-        тестируем возможность попасть на страницу с
-        выбором количества вопросов при создании викторины
-        """
-        client = django.test.Client()
-        if username:
-            client.post(
-                django.urls.reverse('users:login'),
-                data={'username': username, 'password': 'password'},
-            )
-        response = client.get(
-            django.urls.reverse(
-                'organization:choose_questions_number', kwargs={'pk': org_pk}
-            )
-        )
-        self.assertEqual(response.status_code, expected)
-
-    @parameterized.parameterized.expand(
-        [
-            # админы
-            # орга активная
-            ['user1', 2, 1, True],
-            ['user4', 2, 15, True],
-            ['user6', 1, 5, True],
-            ['user6', 1, 50, True],
-            # орга неактивная
-            ['user1', 3, 5, False],
-            # не админы
-            ['', 2, 43, False],
-            ['', 1, 1, False],
-            ['user3', 1, 2, False],
-            ['user3', 2, 3, False],
-        ]
-    )
-    def test_organization_redirect_after_create_quiz_with_number(
-        self, username: str, org_pk: int, num_questions: int, expected: bool
-    ) -> None:
-        """
-        тестируем редирект на страницу с формой викторины
-        после выбора количества вопросов
-        """
-        client = django.test.Client()
-        if username:
-            client.post(
-                django.urls.reverse('users:login'),
-                data={'username': username, 'password': 'password'},
-            )
-        response = client.post(
-            django.urls.reverse(
-                'organization:choose_questions_number', kwargs={'pk': org_pk}
-            ),
-            data={'num_questions': num_questions},
-            follow=True,
-        )
-        if expected:
-            self.assertRedirects(
-                response,
-                expected_url=django.urls.reverse_lazy(
-                    'organization:create_quiz',
-                    kwargs={'pk': org_pk, 'num_questions': num_questions},
-                ),
-            )
-        else:
-            self.assertEqual(response.status_code, 404)
-
-    @parameterized.parameterized.expand(
-        [
-            [0, False],
-            [1, True],
-            [30, True],
-            [50, True],
-            [51, False],
-            [-1, False],
-        ]
-    )
-    def test_organization_valid_num_in_create_quiz_with_number(
-        self, num_questions: int, expected: bool
-    ) -> None:
-        """тестируем валидное количество вопросов при создании викторины"""
-        client = django.test.Client()
-        client.post(
-            django.urls.reverse('users:login'),
-            data={'username': 'user1', 'password': 'password'},
-        )
-        response = client.post(
-            django.urls.reverse(
-                'organization:choose_questions_number', kwargs={'pk': 2}
-            ),
-            data={'num_questions': num_questions},
-            follow=True,
-        )
-        if expected:
-            self.assertRedirects(
-                response,
-                expected_url=django.urls.reverse_lazy(
-                    'organization:create_quiz',
-                    kwargs={'pk': 2, 'num_questions': num_questions},
-                ),
-            )
-        else:
-            self.assertEqual(
-                response.request['PATH_INFO'],
-                django.urls.reverse_lazy(
-                    'organization:choose_questions_number', kwargs={'pk': 2}
-                ),
-            )
-
-    @parameterized.parameterized.expand(
-        [
-            # админы
-            # правильное число вопросов
-            # орга активная
-            ['user1', 2, 1, 200],
-            ['user4', 2, 15, 200],
-            ['user6', 1, 5, 200],
-            ['user6', 1, 50, 200],
-            # орга неактивная
-            ['user1', 3, 1, 404],
-            # неправильное число вопросов
-            ['user1', 2, 51, 404],
-            ['user4', 2, 0, 404],
-            # не админы
-            ['', 2, 43, 404],
-            ['', 1, 1, 404],
-            ['user3', 1, 2, 404],
-            ['user3', 2, 3, 404],
-        ]
-    )
     def test_organization_create_quiz_user_access(
-        self, username: str, org_pk: int, num_questions: int, expected: int
+        self, username: str, org_pk: int, expected: int
     ) -> None:
         """тестируем доступ к странице с созданием викторины"""
         client = django.test.Client()
@@ -677,7 +547,7 @@ class OrganizationTest(django.test.TestCase):
         response = client.get(
             django.urls.reverse(
                 'organization:create_quiz',
-                kwargs={'pk': org_pk, 'num_questions': num_questions},
+                kwargs={'pk': org_pk},
             )
         )
         self.assertEqual(response.status_code, expected)
@@ -726,7 +596,7 @@ class OrganizationTest(django.test.TestCase):
         client.post(
             django.urls.reverse(
                 'organization:create_quiz',
-                kwargs={'pk': org_pk, 'num_questions': 1},
+                kwargs={'pk': org_pk},
             ),
             data=self.QUIZ_RIGHT_DATA | form_data,
         )

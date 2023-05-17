@@ -357,36 +357,6 @@ class PostCommentsView(
         )
 
 
-class ChooseQuizQuestionsNumberView(
-    organization.mixins.IsAdminMixin,
-    django.views.generic.edit.FormView,
-):
-    """выбор количества вопросов в викторине"""
-
-    template_name = 'organization/choose_questions_num.html'
-    form_class = quiz.forms.QuizQuestionsNumberForm
-
-    def form_valid(
-        self, form: quiz.forms.QuizQuestionsNumberForm
-    ) -> django.http.HttpResponse:
-        """редиректим на создание викторины"""
-        org_to_user_manager = organization.models.OrganizationToUser.objects
-        django.shortcuts.get_object_or_404(
-            org_to_user_manager.get_organization_admin(
-                org_pk=self.kwargs['pk'], user_pk=self.request.user.pk
-            )
-        )
-        return django.shortcuts.redirect(
-            django.urls.reverse(
-                'organization:create_quiz',
-                kwargs={
-                    'pk': self.kwargs['pk'],
-                    'num_questions': form.cleaned_data['num_questions'],
-                },
-            )
-        )
-
-
 class QuizCreateView(
     organization.mixins.IsAdminMixin,
     django.views.generic.edit.FormView,
@@ -401,22 +371,19 @@ class QuizCreateView(
         дополняем контекст формсетом из форм с добавлением вопроса
         """
         self.kwargs['pk'] = int(self.kwargs['pk'])
-        self.kwargs['num_questions'] = int(self.kwargs['num_questions'])
-        if not 1 <= self.kwargs['num_questions'] <= 50:
-            raise django.http.Http404()
         context = super().get_context_data(*args, **kwargs)
         question_formset = django.forms.inlineformset_factory(
             quiz.models.Quiz,
             quiz.models.Question,
             form=quiz.forms.QuestionForm,
-            extra=self.kwargs['num_questions'],
+            extra=50,
             max_num=50,
         )
         context['question_formset'] = question_formset()
         return context
 
     def post(
-        self, request: django.http.HttpRequest, pk: int, num_questions: int
+        self, request: django.http.HttpRequest, pk: int
     ) -> django.http.HttpResponse:
         """
         обрабатываем создание викторины
@@ -434,53 +401,46 @@ class QuizCreateView(
             quiz.models.Quiz,
             quiz.models.Question,
             form=quiz.forms.QuestionForm,
-            extra=self.kwargs['num_questions'],
+            extra=50,
         )(self.request.POST or None)
-        if quiz_form.is_valid():
+        if quiz_form.is_valid() and question_formset.is_valid():
             quiz_obj = quiz_form.save(commit=False)
             quiz_obj.organized_by = context['organization']
             quiz_obj.creator = request.user
 
             question_objects = list()
             variants_objects = list()
-            formset_valid = True
 
             for question in question_formset:
-                if question.is_valid():
-                    question_obj = question.save(commit=False)
-                    question_obj.quiz = quiz_obj
-                    question_objects.append(question_obj)
-                    variants = question.cleaned_data['variants']
-                    for variant in variants:
-                        if variant.endswith('right'):
-                            variant_obj = quiz.models.Variant(
-                                text=variant[: variant.rfind('right')],
-                                question=question_obj,
-                                is_correct=True,
-                            )
-                        else:
-                            variant_obj = quiz.models.Variant(
-                                text=variant,
-                                question=question_obj,
-                                is_correct=False,
-                            )
-                        variants_objects.append(variant_obj)
-                else:
-                    formset_valid = False
-            if formset_valid:
-                quiz_obj.save()
-                for item in question_objects:
-                    item.save()
-                quiz.models.Variant.objects.bulk_create(variants_objects)
-                message_text = 'Викторина отправлена на модерацию'
-                if quiz_obj.is_published:
-                    message_text = 'Викторина создана'
-                django.contrib.messages.success(request, message_text)
-                return django.shortcuts.redirect(
-                    django.urls.reverse(
-                        'organization:quizzes', kwargs={'pk': pk}
-                    )
-                )
+                question_obj = question.save(commit=False)
+                question_obj.quiz = quiz_obj
+                question_objects.append(question_obj)
+                variants = question.cleaned_data['variants']
+                for variant in variants:
+                    if variant.endswith('right'):
+                        variant_obj = quiz.models.Variant(
+                            text=variant[: variant.rfind('right')],
+                            question=question_obj,
+                            is_correct=True,
+                        )
+                    else:
+                        variant_obj = quiz.models.Variant(
+                            text=variant,
+                            question=question_obj,
+                            is_correct=False,
+                        )
+                    variants_objects.append(variant_obj)
+            quiz_obj.save()
+            for item in question_objects:
+                item.save()
+            quiz.models.Variant.objects.bulk_create(variants_objects)
+            message_text = 'Викторина отправлена на модерацию'
+            if quiz_obj.is_published:
+                message_text = 'Викторина создана'
+            django.contrib.messages.success(request, message_text)
+            return django.shortcuts.redirect(
+                django.urls.reverse('organization:quizzes', kwargs={'pk': pk})
+            )
         context['question_formset'] = question_formset
         context['form'] = quiz_form
         return django.shortcuts.render(request, self.template_name, context)
