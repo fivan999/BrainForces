@@ -441,6 +441,14 @@ class QuizCreateView(
             return django.shortcuts.redirect(
                 django.urls.reverse('organization:quizzes', kwargs={'pk': pk})
             )
+        django.contrib.messages.error(
+            request,
+            """
+            Форма заполнена неверно.
+            Если у вас было больше одного вопроса,
+            нажимайте Добавить вопрос, чтобы увидеть всее ошибки
+            """,
+        )
         context['question_formset'] = question_formset
         context['form'] = quiz_form
         return django.shortcuts.render(request, self.template_name, context)

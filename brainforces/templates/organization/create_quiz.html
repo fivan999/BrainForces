@@ -90,7 +90,7 @@
                 {% endif %}
               </p>
             {% endfor %}
-            {% comment %} <a class="btn btn-danger mb-3" name="delete-question">Удалить вопрос</a> {% endcomment %}
+            <a class="btn btn-danger mb-3" name="delete-question">Удалить вопрос</a>
           </div>
         </div>
       {% endfor %}
@@ -130,7 +130,7 @@
       }
     };
 
-    {% comment %} // удаляем форму с вопросом
+    // удаляем форму с вопросом
     var delete_btns = document.querySelectorAll('a[name="delete-question"]');
     delete_btns.forEach(btn => {
       btn.addEventListener('click', (event)=> {
@@ -145,14 +145,32 @@
           }
         }
       );
-    }); {% endcomment %}
+    });
 
-    // удаляем ненужные формы при отправке формы
+    // удаляем ненужные формы, обновляем атрибуты полей при отправке
     document.querySelector('button[type="submit"]').onclick = function delete_extra_forms() {
       var extra_forms = document.querySelectorAll('div.card.mb-4[name="question-form"][hidden]');
       extra_forms.forEach(form => {
         form.parentNode.removeChild(form);
       })
+      var useful_forms = document.querySelectorAll('div.card.mb-4[name="question-form"]');
+      for (var i = 0; i < useful_forms.length; i++){
+        var cur_form = useful_forms[i];
+        var name_input = cur_form.querySelector('input[name^="quiz_question-"][name$="-name"]');
+        var text_input = cur_form.querySelector('textarea[name^="quiz_question-"][name$="-text"]');
+        var difficulty_input = cur_form.querySelector('input[name^="quiz_question-"][name$="-difficulty"]');
+        var variants_input = cur_form.querySelector('textarea[name^="quiz_question-"][name$="-variants"]');
+        
+        name_input.id = `id_quiz_question-${i}-name`;
+        text_input.id = `id_quiz_question-${i}-text`;
+        difficulty_input.id = `id_quiz_question-${i}-difficulty`;
+        variants_input.id = `id_quiz_question-${i}-variants`;
+
+        name_input.name = `quiz_question-${i}-name`;
+        text_input.name = `quiz_question-${i}-text`;
+        difficulty_input.name = `quiz_question-${i}-difficulty`;
+        variants_input.name = `quiz_question-${i}-variants`;
+      }
     }
 
   </script>
