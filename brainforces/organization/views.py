@@ -13,6 +13,8 @@ import organization.models
 import quiz.forms
 import quiz.models
 
+import django.contrib.auth.decorators
+
 
 class OrganizationMainView(django.views.generic.DetailView):
     """главная страница организации"""
@@ -293,7 +295,6 @@ class OrganizationPostsView(
 
 
 class PostCommentsView(
-    django.contrib.auth.mixins.LoginRequiredMixin,
     organization.mixins.UserIsOrganizationMemberMixin,
     django.views.generic.ListView,
 ):
@@ -338,6 +339,8 @@ class PostCommentsView(
         проверки: существование поста
         доступ пользователя
         """
+        if not request.user.is_authenticated:
+            raise django.http.Http404()
         comment_text = request.POST.get('comment_text')
         post = django.shortcuts.get_object_or_404(
             organization.models.OrganizationPost.objects.filter_user_access(

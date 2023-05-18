@@ -15,7 +15,7 @@
   {% if quiz.organized_by.name %}
     <p class="lead">Организация: <span class="badge badge-pill text-bg-secondary">{{ quiz.organized_by.name }}</span></p>
   {% endif %}
-  {% if not can_participate and quiz_status == 1 %}
+  {% if quiz_status == 1 and not can_participate or quiz_status == 2 and not can_participate %}
     <div><a href="{% url 'quiz:register' pk=quiz.pk %}" class="btn btn-primary">Зарегистрироваться</a></div>
   {% endif %}
   {% if quiz_status == 3 and quiz.creator.pk == request.user.pk and not quiz.is_ended %}
