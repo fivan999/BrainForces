@@ -40,7 +40,11 @@ class OrganizationPostManager(django.db.models.Manager):
 
     def get_only_useful_fields(self) -> django.db.models.QuerySet:
         """только нужные поля для поста"""
-        return self.get_posts_with_active_organizations().only('name', 'text')
+        return (
+            self.get_posts_with_active_organizations()
+            .select_related('posted_by')
+            .only('name', 'text', 'posted_by__name')
+        )
 
     def filter_user_access(
         self, user_pk: int, org_pk: int = -1

@@ -20,85 +20,158 @@
 {% block organization_page %}
   <form enctype="multipart/form-data" method="post">
     {% csrf_token %}
-    <div class="card mb-4">
-      <div class="card-header card-header-secondary">
-        <h4 class="card-title">Создать викторину</h4>
-      </div>
-      <div class="card-body p-2">
-        {% for error in form.non_field_errors %}
-          <div class="alert alert-danger" role="alert">
-            {{ error|safe }}
-          </div>
-        {% endfor %}
-        {% for field in form.visible_fields %}
-          <p>
-            {{ field.label }}
-            {% if field.name == 'description' %}
-              {{ field }}<br/>
-            {% elif field.name == 'start_time' %}
-              <div class="input-group date gap-2" id="datetimepicker1" data-target-input="nearest">
-                {{ field }}
-                <div class="input-group-append d-flex" data-target="#datetimepicker1" data-toggle="datetimepicker">
-                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                </div>
-              </div>
-            {% elif field.name == 'is_private' or field.name == 'is_rated' %}
-              {{ field|add_class:'form-check-input' }}
-            {% else %}
-              {{ field|add_class:'form-control' }}
-            {% endif %}
-            <small><span class="text-muted">{{ field.help_text }}</span></small>
-            {% for error in field.errors %}
-              <div class="alert alert-danger" role="alert">
-                {{ error|safe }}
-              </div>
-            {% endfor %}
-          </p>
-        {% endfor %}
-      </div>
-    </div>
-    {{ question_formset.management_form }}
-    {% for error in question_formset.non_form_errors %}
-      <div class="alert alert-danger" role="alert">
-        {{ error|safe }}
-      </div>
-    {% endfor %}
-    {% for form in question_formset %}
+    <div id="forms-container">
       <div class="card mb-4">
         <div class="card-header card-header-secondary">
-          <h4 class="card-title">Добавить вопрос {{ forloop.counter }}</h4>
+          <h4 class="card-title">Создать викторину</h4>
         </div>
         <div class="card-body p-2">
+          {% for error in form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+              {{ error|safe }}
+            </div>
+          {% endfor %}
           {% for field in form.visible_fields %}
             <p>
-              {% if field.name != 'DELETE' %}
-                {{ field.label }}
-                {% if field.name == 'is_correct' %}
-                  {{ field|add_class:'form-check-input' }}
-                {% elif field.name == 'text' %}
-                  {{ field }}<br/>
-                {% else %}
-                  {{ field|add_class:'form-control' }}
-                {% endif %}
-                <small><span class="text-muted">{{ field.help_text }}</span></small>
-                {% for error in field.errors %}
-                  <div class="alert alert-danger" role="alert">
-                    {{ error|safe }}
+              {{ field.label }}
+              {% if field.name == 'description' %}
+                {{ field }}<br/>
+              {% elif field.name == 'start_time' %}
+                <div class="input-group date gap-2" id="datetimepicker1" data-target-input="nearest">
+                  {{ field }}
+                  <div class="input-group-append d-flex" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                   </div>
-                {% endfor %}
+                </div>
+              {% elif field.name == 'is_private' or field.name == 'is_rated' %}
+                {{ field|add_class:'form-check-input' }}
+              {% else %}
+                {{ field|add_class:'form-control' }}
               {% endif %}
+              <small><span class="text-muted">{{ field.help_text }}</span></small>
+              {% for error in field.errors %}
+                <div class="alert alert-danger" role="alert">
+                  {{ error|safe }}
+                </div>
+              {% endfor %}
             </p>
           {% endfor %}
         </div>
       </div>
-    {% endfor %}
+      {{ question_formset.management_form }}
+      {% for error in question_formset.non_form_errors %}
+        <div class="alert alert-danger" role="alert">
+          {{ error|safe }}
+        </div>
+      {% endfor %}
+      {% for form in question_formset %}
+        <div class="card mb-4" name="question-form">
+          <div class="card-header card-header-secondary">
+            <h4 class="card-title">Добавить вопрос {{ forloop.counter }}</h4>
+          </div>
+          <div class="card-body p-2">
+            {% for field in form.visible_fields %}
+              <p>
+                {% if field.name != 'DELETE' %}
+                  {{ field.label }}
+                  {% if field.name == 'is_correct' %}
+                    {{ field|add_class:'form-check-input' }}
+                  {% elif field.name == 'text' %}
+                    {{ field }}<br/>
+                  {% else %}
+                    {{ field|add_class:'form-control' }}
+                  {% endif %}
+                  <small><span class="text-muted">{{ field.help_text }}</span></small>
+                  {% for error in field.errors %}
+                    <div class="alert alert-danger" role="alert">
+                      {{ error|safe }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </p>
+            {% endfor %}
+            <a class="btn btn-danger mb-3" name="delete-question">Удалить вопрос</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <a class="btn btn-success mb-3" id="add-question">Добавить вопрос</a>
     <button type="submit" class="btn btn-primary mb-3">Создать</button>
   </form>
   <script>
-    $(function () {
+    // выбор даты и времени
+    $(function pick_quiz_datetime() { 
       $("#datetimepicker1").datetimepicker({
         format: 'DD.MM.YYYY HH:mm:ss',
       });
     });
+
+    // в самом начале оставляем только одну форму с вопросом, остальные прячем
+    window.addEventListener('DOMContentLoaded', function hide_question_forms() { 
+      var now_forms = document.getElementById("id_quiz_question-TOTAL_FORMS");
+      now_forms.value = 1;
+      var questions = document.querySelectorAll('div.card.mb-4[name="question-form"]');
+      for (let i = 1; i < 51; i++) {
+        questions[i].hidden = 1;
+      }
+    });
+
+    // добавляем форму с вопросом
+    document.getElementById("add-question").onclick = function show_question_form() {
+      var max_forms = document.getElementById("id_quiz_question-MAX_NUM_FORMS");
+      var now_forms = document.getElementById("id_quiz_question-TOTAL_FORMS");
+      if (parseInt(now_forms.value) < parseInt(max_forms.value)){
+        now_forms.value = parseInt(now_forms.value) + 1;
+        var question = document.querySelector('div.card.mb-4[name="question-form"][hidden]');
+        question.removeAttribute("hidden");
+      }
+      else{
+        alert("Слишком много вопросов");
+      }
+    };
+
+    // удаляем форму с вопросом
+    var delete_btns = document.querySelectorAll('a[name="delete-question"]');
+    delete_btns.forEach(btn => {
+      btn.addEventListener('click', (event)=> {
+          var now_forms = document.getElementById("id_quiz_question-TOTAL_FORMS");
+          if (parseInt(now_forms.value) > 1){
+            var question_to_hide = event.target.parentElement.parentElement;
+            question_to_hide.hidden = 1;
+            now_forms.value = parseInt(now_forms.value) - 1;
+          }
+          else{
+            alert("Слишком мало вопросов");
+          }
+        }
+      );
+    });
+
+    // удаляем ненужные формы, обновляем атрибуты полей при отправке
+    document.querySelector('button[type="submit"]').onclick = function delete_extra_forms() {
+      var extra_forms = document.querySelectorAll('div.card.mb-4[name="question-form"][hidden]');
+      extra_forms.forEach(form => {
+        form.parentNode.removeChild(form);
+      })
+      var useful_forms = document.querySelectorAll('div.card.mb-4[name="question-form"]');
+      for (var i = 0; i < useful_forms.length; i++){
+        var cur_form = useful_forms[i];
+        var name_input = cur_form.querySelector('input[name^="quiz_question-"][name$="-name"]');
+        var text_input = cur_form.querySelector('textarea[name^="quiz_question-"][name$="-text"]');
+        var difficulty_input = cur_form.querySelector('input[name^="quiz_question-"][name$="-difficulty"]');
+        var variants_input = cur_form.querySelector('textarea[name^="quiz_question-"][name$="-variants"]');
+        
+        name_input.id = `id_quiz_question-${i}-name`;
+        text_input.id = `id_quiz_question-${i}-text`;
+        difficulty_input.id = `id_quiz_question-${i}-difficulty`;
+        variants_input.id = `id_quiz_question-${i}-variants`;
+
+        name_input.name = `quiz_question-${i}-name`;
+        text_input.name = `quiz_question-${i}-text`;
+        difficulty_input.name = `quiz_question-${i}-difficulty`;
+        variants_input.name = `quiz_question-${i}-variants`;
+      }
+    }
+
   </script>
 {% endblock organization_page %}

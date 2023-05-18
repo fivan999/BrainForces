@@ -3,6 +3,7 @@ import django.contrib
 import django.contrib.auth
 import django.contrib.auth.mixins
 import django.contrib.auth.tokens
+import django.contrib.messages
 import django.db.models
 import django.http
 import django.shortcuts
@@ -315,8 +316,17 @@ class CreateOrganizationView(
         organization.models.OrganizationToUser.objects.create(
             organization=org_obj, user=self.request.user, role=3
         )
-        return django.shortcuts.redirect(
-            django.urls.reverse_lazy(
-                'organization:profile', kwargs={'pk': org_obj.pk}
+        if org_obj.is_active:
+            return django.shortcuts.redirect(
+                django.urls.reverse_lazy(
+                    'organization:profile', kwargs={'pk': org_obj.pk}
+                )
             )
-        )
+        else:
+            django.contrib.messages.success(
+                self.request,
+                'Организация создана, дождитесь одобрения администрации',
+            )
+            return django.shortcuts.redirect(
+                django.urls.reverse_lazy('homepage:homepage')
+            )
