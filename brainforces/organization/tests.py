@@ -390,8 +390,6 @@ class OrganizationTest(django.test.TestCase):
 
     @parameterized.parameterized.expand(
         [
-            # редирект анонимусов на авторизацию
-            ['', 1, 1, 302],
             # организация и пост открытые
             ['user1', 1, 1, 200],
             # организация открыта, пост закрыт

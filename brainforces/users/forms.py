@@ -1,10 +1,9 @@
 import django.contrib.auth.forms
+import django.core.exceptions
 import django.forms
 
 import organization.models
 import users.models
-
-import django.core.exceptions
 
 
 class SignUpForm(django.contrib.auth.forms.UserCreationForm):
@@ -76,9 +75,11 @@ class CustomPasswordResetForm(django.contrib.auth.forms.PasswordResetForm):
         email = users.models.User.objects.normalize_email(
             self.cleaned_data['email']
         )
-        user_obj = users.models.User.objects.filter(
-            email=email, is_active=True
-        ).only('email').first()
+        user_obj = (
+            users.models.User.objects.filter(email=email, is_active=True)
+            .only('email')
+            .first()
+        )
         if user_obj:
             return email
         raise django.core.exceptions.ValidationError(

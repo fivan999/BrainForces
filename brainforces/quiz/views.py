@@ -322,7 +322,7 @@ class QuizRegistrationView(
             quiz.models.Quiz.objects.filter_user_access(
                 user_pk=self.request.user.pk
             ),
-            pk=pk
+            pk=pk,
         )
         if not quiz_obj.get_quiz_status() in (1, 2):
             raise django.http.Http404()

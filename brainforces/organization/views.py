@@ -13,8 +13,6 @@ import organization.models
 import quiz.forms
 import quiz.models
 
-import django.contrib.auth.decorators
-
 
 class OrganizationMainView(django.views.generic.DetailView):
     """главная страница организации"""
