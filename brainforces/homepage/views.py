@@ -15,4 +15,4 @@ class HomeView(django.views.generic.ListView):
         """не показываем приватные викторины в общем списке"""
         return organization.models.OrganizationPost.objects.filter_user_access(
             user_pk=self.request.user.pk
-        )
+        ).order_by('-id')
