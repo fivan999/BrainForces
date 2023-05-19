@@ -1,4 +1,5 @@
 import django.contrib.auth.forms
+import django.core.exceptions
 import django.forms
 
 import organization.models
@@ -71,8 +72,19 @@ class CustomPasswordResetForm(django.contrib.auth.forms.PasswordResetForm):
 
     def clean_email(self) -> str:
         """нормализуем почту"""
-        email = self.cleaned_data['email']
-        return users.models.User.objects.normalize_email(email)
+        email = users.models.User.objects.normalize_email(
+            self.cleaned_data['email']
+        )
+        user_obj = (
+            users.models.User.objects.filter(email=email, is_active=True)
+            .only('email')
+            .first()
+        )
+        if user_obj:
+            return email
+        raise django.core.exceptions.ValidationError(
+            'Нет пользователя с такой почтой'
+        )
 
 
 class CustomSetPasswordForm(django.contrib.auth.forms.SetPasswordForm):

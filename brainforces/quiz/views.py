@@ -324,6 +324,8 @@ class QuizRegistrationView(
             ),
             pk=pk,
         )
+        if not quiz_obj.get_quiz_status() in (1, 2):
+            raise django.http.Http404()
         if not quiz.models.QuizResults.objects.filter(
             quiz__pk=pk, user__pk=request.user.pk
         ).exists():
