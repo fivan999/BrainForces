@@ -4,7 +4,7 @@
   <div class="container col-xxl-9">
     <form action="{% url 'archive:archive' %}" method="get" class="mb-2">
       {% csrf_token %}
-      <div class="gap-1 col-12 d-flex justify-content-between col-lg-auto mb-3 mb-lg-0 me-lg-3">
+      <div class="d-flex justify-content-between">
         <div class="col-4">
           <input type="text" name="searched" class="form-control" aria-label="Search" placeholder="Поиск" value="" />
         </div>
