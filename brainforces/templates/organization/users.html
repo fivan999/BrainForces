@@ -3,6 +3,7 @@
 {% load widget_tweaks %}
 
 {% block organization_page %}
+  {{ context }}
   {% if user_is_admin %}
     <form method="post" class="mb-2">
       {% csrf_token %}

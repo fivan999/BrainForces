@@ -6,5 +6,10 @@
     <a href="{% url 'organization:delete_user' pk=request.resolver_match.kwargs.pk user_pk=request.user.pk %}" class="nav-link p-2">
       <button class="btn btn-danger">Покинуть организацию</button>
     </a>
+  {% else %}
+    <a href="{% url 'organization:join' pk=request.resolver_match.kwargs.pk %}" class="nav-link p-2">
+      <button class="btn btn-primary">Вступить в организацию</button>
+    </a>
   {% endif %}
+  
 {% endblock organization_page %}

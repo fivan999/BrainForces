@@ -158,6 +158,35 @@ class OrganizationUsersView(
         )
 
 
+class JoinOrganizationView(
+    django.contrib.auth.mixins.LoginRequiredMixin,
+    organization.mixins.UserIsOrganizationMemberMixin,
+    django.views.generic.View,
+):
+    """юзер присоединяется к публичной орге"""
+
+    def get(
+        self, request: django.http.HttpRequest, pk: int
+    ) -> django.http.HttpResponsePermanentRedirect:
+        context = self.get_context_data()
+        if (
+            not context['organization'].is_private
+            and not context['is_group_member']
+        ):
+            organization.models.OrganizationToUser.objects.create(
+                user=request.user, organization=context['organization'], role=1
+            )
+            django.contrib.messages.success(
+                request, 'Вы успешно присоединились к организации!'
+            )
+            return django.shortcuts.redirect(
+                django.urls.reverse_lazy(
+                    'organization:profile', kwargs={'pk': pk}
+                ),
+            )
+        raise django.http.Http404()
+
+
 class OrganizationQuizzesView(
     organization.mixins.UserIsOrganizationMemberMixin,
     django.views.generic.ListView,
@@ -235,7 +264,7 @@ class DeleteUserFromOrganizationView(ActionWithUserView):
         else:
             django.contrib.messages.error(request, 'Ошибка')
         return django.shortcuts.redirect(
-            django.urls.reverse('organization:users', kwargs={'pk': pk})
+            django.urls.reverse('organization:profile', kwargs={'pk': pk})
         )
 
 

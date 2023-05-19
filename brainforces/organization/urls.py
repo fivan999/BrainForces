@@ -17,6 +17,11 @@ urlpatterns = [
         name='users',
     ),
     django.urls.path(
+        '<int:pk>/join/',
+        organization.views.JoinOrganizationView.as_view(),
+        name='join',
+    ),
+    django.urls.path(
         '<int:pk>/quizzes/',
         organization.views.OrganizationQuizzesView.as_view(),
         name='quizzes',

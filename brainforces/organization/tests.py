@@ -88,11 +88,10 @@ class OrganizationTest(django.test.TestCase):
     ) -> None:
         """тестируем вход на страницу с описанием организации"""
         client = django.test.Client()
-        if username:
-            client.post(
-                django.urls.reverse('users:login'),
-                data={'username': username, 'password': 'password'},
-            )
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': username, 'password': 'password'},
+        )
         response = client.get(
             django.urls.reverse('organization:profile', kwargs={'pk': org_pk})
         )
@@ -131,11 +130,10 @@ class OrganizationTest(django.test.TestCase):
     ) -> None:
         """тестируем вход на страницу со списком пользователей"""
         client = django.test.Client()
-        if username:
-            client.post(
-                django.urls.reverse('users:login'),
-                data={'username': username, 'password': 'password'},
-            )
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': username, 'password': 'password'},
+        )
         response = client.get(
             django.urls.reverse('organization:users', kwargs={'pk': org_pk})
         )
@@ -163,6 +161,40 @@ class OrganizationTest(django.test.TestCase):
                 )
             )
         )
+
+    @parameterized.parameterized.expand(
+        [
+            # пользователь вступает в публичную оргу
+            ['user1', 1, True],
+            ['user3', 1, True],
+            # орга неактивна
+            ['user4', 4, False],
+            ['user1', 4, False],
+            # орга приватная
+            ['user6', 2, False],
+            ['user2', 2, False],
+            # пользователь уже в орге
+            ['user6', 1, False],
+            ['user2', 1, False],
+        ]
+    )
+    def test_organization_join(
+        self, username: str, org_pk: int, expected: bool
+    ) -> None:
+        """тестируем возможность увступить в организацию"""
+        client = django.test.Client()
+        client.post(
+            django.urls.reverse_lazy('users:login'),
+            data={'username': username, 'password': 'password'},
+        )
+        members_before = organization.models.OrganizationToUser.objects.count()
+        client.get(
+            django.urls.reverse_lazy(
+                'organization:join', kwargs={'pk': org_pk}
+            )
+        )
+        members_after = organization.models.OrganizationToUser.objects.count()
+        self.assertEqual(members_before + 1 == members_after, expected)
 
     @parameterized.parameterized.expand(
         [
@@ -308,11 +340,10 @@ class OrganizationTest(django.test.TestCase):
     ) -> None:
         """тестируем вход на страницу с викторинами организации"""
         client = django.test.Client()
-        if username:
-            client.post(
-                django.urls.reverse('users:login'),
-                data={'username': username, 'password': 'password'},
-            )
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': username, 'password': 'password'},
+        )
         response = client.get(
             django.urls.reverse('organization:quizzes', kwargs={'pk': org_pk})
         )
@@ -355,11 +386,10 @@ class OrganizationTest(django.test.TestCase):
     ) -> None:
         """тестируем вход на страницу с постами организации"""
         client = django.test.Client()
-        if username:
-            client.post(
-                django.urls.reverse('users:login'),
-                data={'username': username, 'password': 'password'},
-            )
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': username, 'password': 'password'},
+        )
         response = client.get(
             django.urls.reverse('organization:posts', kwargs={'pk': org_pk})
         )
@@ -409,11 +439,10 @@ class OrganizationTest(django.test.TestCase):
     ) -> None:
         """тестируем статус код страницы с детальным описанием поста"""
         client = django.test.Client()
-        if username:
-            client.post(
-                django.urls.reverse('users:login'),
-                data={'username': username, 'password': 'password'},
-            )
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': username, 'password': 'password'},
+        )
         response = client.get(
             django.urls.reverse(
                 'organization:post_detail',
@@ -500,11 +529,10 @@ class OrganizationTest(django.test.TestCase):
     ) -> None:
         """тестируем создание поста в организации"""
         client = django.test.Client()
-        if username:
-            client.post(
-                django.urls.reverse('users:login'),
-                data={'username': username, 'password': 'password'},
-            )
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': username, 'password': 'password'},
+        )
         posts_before = organization.models.OrganizationPost.objects.count()
         client.post(
             django.urls.reverse(
@@ -537,11 +565,10 @@ class OrganizationTest(django.test.TestCase):
     ) -> None:
         """тестируем доступ к странице с созданием викторины"""
         client = django.test.Client()
-        if username:
-            client.post(
-                django.urls.reverse('users:login'),
-                data={'username': username, 'password': 'password'},
-            )
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': username, 'password': 'password'},
+        )
         response = client.get(
             django.urls.reverse(
                 'organization:create_quiz',

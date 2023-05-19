@@ -8,11 +8,13 @@ class OrganizationMixin(django.views.generic.View):
     """дополняем контекст именем организации и проверяем доступ пользователя"""
 
     def get_context_data(self, *args, **kwargs) -> dict:
-        context = super().get_context_data(*args, **kwargs)
+        context = dict()
+        if hasattr(super(), 'get_context_data'):
+            context = super().get_context_data(*args, **kwargs)
         organization_obj = django.shortcuts.get_object_or_404(
             organization.models.Organization.objects.filter_user_access(
                 user_pk=self.request.user.pk
-            ).only('name'),
+            ).only('name', 'is_private'),
             pk=self.kwargs['pk'],
         )
         context['organization'] = organization_obj
