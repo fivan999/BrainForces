@@ -67,6 +67,10 @@ class OrganizationPostManager(django.db.models.Manager):
 class OrganizationToUserManager(django.db.models.Manager):
     """менеджер модели OrganizationToUSer"""
 
+    def get_active_organization_to_user(self) -> django.db.models.QuerySet:
+        """только с активными огранизациями"""
+        return self.get_queryset().filter(organization__is_active=True)
+
     def get_organization_member(
         self, org_pk: int, user_pk: int
     ) -> django.db.models.QuerySet:
