@@ -7,6 +7,7 @@ import django.shortcuts
 import django.urls
 import django.views.generic
 
+import core.forms
 import organization.forms
 import organization.mixins
 import organization.models
@@ -62,26 +63,39 @@ class OrganizationListView(django.views.generic.ListView):
         либо по названию и описанию по отдельности
         """
         queryset = (
-            organization.models.Organization.objects.get_only_useful_fields()
-            .filter(is_private=False)
+            organization.models.Organization.objects.filter_user_access(
+                self.request.user.pk
+            )
             .annotate(count_users=django.db.models.Count('users__id'))
             .order_by('-count_users')
         )
-        searched = self.request.GET.get('searched')
-        search_criteria = self.request.GET.get('search_critery', 'all')
-        if searched:
-            if search_criteria == 'all':
+        query = self.request.GET.get('query')
+        search_by = int(self.request.GET.get('search_by', '1'))
+        if query:
+            if search_by == 1:
                 queryset = (
                     queryset.filter(
-                        django.db.models.Q(name__icontains=searched)
-                        | django.db.models.Q(description__icontains=searched)
+                        django.db.models.Q(name__search=query)
+                        | django.db.models.Q(description__search=query)
                     )
                 ).distinct()
-            elif search_criteria == 'name':
-                queryset = queryset.filter(name__icontains=searched)
-            elif search_criteria == 'description':
-                queryset = queryset.filter(description__icontains=searched)
+            elif search_by == 2:
+                queryset = queryset.filter(name__search=query)
+            elif search_by == 3:
+                queryset = queryset.filter(description__search=query)
         return queryset
+
+    def get_context_data(self, *args, **kwargs) -> dict:
+        """дополняем контекст формой поиска"""
+        context = super().get_context_data(*args, **kwargs)
+        form = core.forms.SearchForm()
+        form.fields['search_by'].choices = (
+            (1, 'Все'),
+            (2, 'Имя'),
+            (3, 'Описание'),
+        )
+        context['form'] = form
+        return context
 
 
 class OrganizationUsersView(

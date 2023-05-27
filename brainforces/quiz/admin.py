@@ -43,18 +43,6 @@ class QuestionAdmin(django.contrib.admin.ModelAdmin):
     list_display_links = ('id',)
 
 
-@django.contrib.admin.register(quiz.models.Tag)
-class TagAdmin(django.contrib.admin.ModelAdmin):
-    """отображение модели Tag в админке"""
-
-    list_display = (
-        'name',
-        'is_published',
-    )
-    list_editable = ('is_published',)
-    list_display_links = ('name',)
-
-
 @django.contrib.admin.register(quiz.models.UserAnswer)
 class UserAnswerAdmin(django.contrib.admin.ModelAdmin):
     """отображение ответа в админке"""

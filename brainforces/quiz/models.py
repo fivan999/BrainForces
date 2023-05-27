@@ -1,4 +1,6 @@
 import ckeditor_uploader.fields
+import taggit.managers
+import taggit.models
 
 import django.core.validators
 import django.db.models
@@ -10,27 +12,6 @@ import django.utils.timezone
 import organization.models
 import quiz.managers
 import users.models
-
-
-class Tag(django.db.models.Model):
-    """модель тега для викторины"""
-
-    is_published = django.db.models.BooleanField(
-        verbose_name='опубликован',
-        help_text='Опубликован тег или нет',
-        default=True,
-    )
-    name = django.db.models.CharField(
-        verbose_name='имя тега', help_text='Введите имя тега', max_length=150
-    )
-
-    class Meta:
-        verbose_name = 'тег'
-        verbose_name_plural = 'теги'
-
-    def __str__(self) -> str:
-        """строковое представление"""
-        return self.name[:20]
 
 
 class Quiz(django.db.models.Model):
@@ -220,15 +201,15 @@ class Question(django.db.models.Model):
     difficulty = django.db.models.PositiveSmallIntegerField(
         verbose_name='сложность',
         help_text='сложность вопроса',
-        default=1,
+        default=0,
+        validators=[django.core.validators.MaxValueValidator(10)],
     )
 
-    tags = django.db.models.ManyToManyField(
-        Tag,
+    tags = taggit.managers.TaggableManager(
+        verbose_name='теги',
+        help_text='список тегов, разделенных запятой',
         related_name='questions',
-        verbose_name='теги вопроса',
-        help_text='выберите теги вопроса',
-        blank=True,
+        to=taggit.models.Tag,
     )
 
     class Meta:

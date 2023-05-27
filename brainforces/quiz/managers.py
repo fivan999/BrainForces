@@ -1,4 +1,6 @@
 import django.db.models
+import django.db.models.expressions
+import django.utils.timezone
 
 
 class QuizManager(django.db.models.Manager):
@@ -105,15 +107,20 @@ class QuizResultsManager(django.db.models.Manager):
 class QuestionManager(django.db.models.Manager):
     """менеджер модели Question"""
 
+    def get_visible_questions(self) -> django.db.models.QuerySet:
+        """викторина закончена, квиз не приватный и опубликованный"""
+        return self.get_queryset().filter(
+            quiz__start_time__lte=django.utils.timezone.now()
+            - django.utils.timezone.timedelta(minutes=1)
+            * django.db.models.F('quiz__duration'),
+            quiz__is_private=False,
+            quiz__is_published=True,
+        )
+
     def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
         """только нужные поля для списка архивных вопросов"""
         return (
-            self.get_queryset()
-            .filter(
-                quiz__is_ended=True,
-                quiz__is_private=False,
-                quiz__is_published=True,
-            )
+            self.get_visible_questions()
             .select_related('quiz')
             .only(
                 'id',

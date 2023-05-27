@@ -1,28 +1,11 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
+
 
 {% block content %}
   <div class="container col-xxl-9">
-    <form action="{% url 'archive:archive' %}" method="get" class="mb-2">
-      {% csrf_token %}
-      <div class="d-flex justify-content-between">
-        <div class="col-4">
-          <input type="text" name="searched" class="form-control" aria-label="Search" placeholder="Поиск" value="" />
-        </div>
-        <div class="col-5">
-          <select class="form-select form-control" aria-label="Default select example" name="search_critery">
-            <option value="all">Всё</option>
-            <option value="name">Имя</option>
-            <option value="text">Текст</option>
-            <option value="tags">Теги</option>
-          </select>
-        </div>
-        <button class="btn btn-primary col-3" type="submit">Найти</button>
-      </div>
-    </form>
+    {% include "includes/search_form.html" %}
     {% if questions %}
-      <h1 class="display-6 fw-bold lh-1">
-        Архив вопросов
-      </h1>
       <div class="p-3">
         <table class="table">
           <thead>

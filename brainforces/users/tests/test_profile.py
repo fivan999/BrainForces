@@ -2,6 +2,7 @@ import parameterized
 
 import django.conf
 import django.core
+import django.db
 import django.test
 import django.urls
 import django.utils
@@ -34,7 +35,6 @@ class UserProfileTests(django.test.TestCase):
         )
         self.test_user2.set_password('password')
         self.test_user2.save()
-        users.models.Profile.objects.create(user=self.test_user2)
 
         super().setUp()
 
