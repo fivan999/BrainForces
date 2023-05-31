@@ -17,6 +17,7 @@ env:
   DB_PORT: 5432
   LOGIN_ATTEMPS: 5
   USE_SMTP: False
+  DATABASE_URL: postgres://user:password@localhost:5432/database
 
 jobs:
   build:
@@ -48,8 +49,5 @@ jobs:
         pip install -r requirements/test.txt
     - name: Run Tests
       run: |
-        env:
-          DATABASE_URL: postgres://user:password@localhost:5432/database
-        run: |
-          cd brainforces
-          python manage.py test
+        cd brainforces
+        python manage.py test
