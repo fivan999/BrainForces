@@ -29,7 +29,7 @@ class ArchiveQuestionsView(django.views.generic.ListView):
                     queryset.filter(
                         django.db.models.Q(name__search=query)
                         | django.db.models.Q(text__search=query)
-                        | django.db.models.Q(tags__name__search=query)
+                        | django.db.models.Q(tags__name__icontains=query)
                     )
                 ).distinct()
             elif search_by == 2:

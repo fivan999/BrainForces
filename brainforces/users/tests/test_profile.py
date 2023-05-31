@@ -12,8 +12,10 @@ import quiz.models
 import users.models
 
 
-class UserProfileTests(django.test.TestCase):
+class UserProfileTests(django.test.TransactionTestCase):
     """тестируем профиль пользователя"""
+
+    reset_sequences = True
 
     def setUp(self) -> None:
         """подготовка к тестированию, создание тестовых данных"""
@@ -35,7 +37,7 @@ class UserProfileTests(django.test.TestCase):
         )
         self.test_user2.set_password('password')
         self.test_user2.save()
-
+        users.models.Profile.objects.create(user=self.test_user2)
         super().setUp()
 
     @parameterized.parameterized.expand([[1, 200], [2, 200], [3, 404]])
@@ -190,9 +192,3 @@ class UserProfileTests(django.test.TestCase):
             django.urls.reverse('users:create_organization', kwargs={'pk': 1})
         )
         self.assertEqual(response.status_code, 404)
-
-    def tearDown(self) -> None:
-        """удаление тестовых данных"""
-        users.models.User.objects.all().delete()
-        organization.models.Organization.objects.all().delete()
-        super().tearDown()

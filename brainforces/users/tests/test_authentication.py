@@ -22,8 +22,10 @@ END_DATETIME_WEEK = pytz.UTC.localize(
 )
 
 
-class UserTests(django.test.TestCase):
+class UserTests(django.test.TransactionTestCase):
     """тестируем пользователя"""
+
+    reset_sequences = True
 
     register_data = {
         'username': 'aboba',
@@ -229,8 +231,3 @@ class UserTests(django.test.TestCase):
             text = text[text.find('http') :].strip('\n')
             client.get(text)
             self.assertFalse(users.models.User.objects.get(pk=1).is_active)
-
-    def tearDown(self) -> None:
-        """чистим бд после тестов"""
-        users.models.User.objects.all().delete()
-        super().tearDown()

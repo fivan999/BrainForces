@@ -40,15 +40,15 @@ class ArchiveTests(django.test.TestCase):
 
     @parameterized.parameterized.expand(
         [
-            ['all', '', 7],
-            ['all', 'Имя', 2],
-            ['all', 'льва', 1],
-            ['name', 'фиван', 1],
-            ['text', 'фиван', 2],
-            ['all', 'la,rwfhkierjh,f', 0],
-            ['name', 'dFQWED', 0],
-            ['text', 'lwkerf', 0],
-            ['tags', 'ergf', 0],
+            ['1', '', 7],
+            ['1', 'Имя', 2],
+            ['1', 'льва', 1],
+            ['2', 'фиван', 1],
+            ['3', 'фиван', 2],
+            ['1', 'la,rwfhkierjh,f', 0],
+            ['2', 'dFQWED', 0],
+            ['3', 'lwkerf', 0],
+            ['4', 'ergf', 0],
         ]
     )
     def test_question_search(
@@ -58,6 +58,6 @@ class ArchiveTests(django.test.TestCase):
         client = django.test.Client()
         response = client.get(
             django.urls.reverse('archive:archive'),
-            data={'search_critery': criteria, 'searched': text},
+            data={'search_by': criteria, 'query': text},
         )
         self.assertEqual(len(response.context['questions']), expected_num)

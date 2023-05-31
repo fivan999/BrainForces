@@ -1,10 +1,15 @@
 import django.urls
-
-import about.views
+import django.views.generic
 
 
 app_name = 'about'
 
 urlpatterns = [
-    django.urls.path('', about.views.AboutView.as_view(), name='about')
+    django.urls.path(
+        '',
+        django.views.generic.TemplateView.as_view(
+            template_name='about/about.html'
+        ),
+        name='about',
+    )
 ]
