@@ -36,6 +36,19 @@ class UserManager(django.contrib.auth.models.UserManager):
             'profile__rating',
         )
 
+    def get_user_by_username_or_email(
+        self, username: str
+    ) -> typing.Optional[django.contrib.auth.models.AbstractUser]:
+        """получаем объект пользователя по имени username или почте email"""
+        return (
+            self.get_queryset()
+            .filter(
+                django.db.models.Q(username=username)
+                | django.db.models.Q(email=self.normalize_email(username))
+            )
+            .first()
+        )
+
     @classmethod
     def normalize_email(cls, email: str) -> str:
         """костомная нормализация email"""
@@ -61,7 +74,7 @@ class UserManager(django.contrib.auth.models.UserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         email = self.normalize_email(email)
-        if users.models.User.objects.filter(email=email).exists():
+        if self.get_queryset().filter(email=email).exists():
             raise django.core.exceptions.ValidationError(
                 'Пользователь уже существует'
             )

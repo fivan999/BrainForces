@@ -71,16 +71,22 @@ class OrganizationToUserManager(django.db.models.Manager):
         """только с активными огранизациями"""
         return self.get_queryset().filter(organization__is_active=True)
 
+    def get_organization_member_or_invited(
+        self, org_pk: int, user_pk: int
+    ) -> django.db.models.QuerySet:
+        """пользователь - участник организации или приглашен"""
+        return self.get_active_organization_to_user().filter(
+            organization__pk=org_pk,
+            user__pk=user_pk,
+        )
+
     def get_organization_member(
         self, org_pk: int, user_pk: int
     ) -> django.db.models.QuerySet:
         """пользователь - участник организации"""
-        return self.get_queryset().filter(
-            organization__pk=org_pk,
-            user__pk=user_pk,
-            role__in=(1, 2, 3),
-            organization__is_active=True,
-        )
+        return self.get_organization_member_or_invited(
+            org_pk=org_pk, user_pk=user_pk
+        ).filter(role__in=(1, 2, 3))
 
     def get_organization_admin(
         self, org_pk: int, user_pk: int
