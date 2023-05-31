@@ -7,9 +7,11 @@ import django.shortcuts
 import django.urls
 import django.views.generic
 
+import core.forms
 import organization.forms
 import organization.mixins
 import organization.models
+import organization.services
 import quiz.forms
 import quiz.models
 
@@ -34,17 +36,17 @@ class OrganizationMainView(django.views.generic.DetailView):
         """
         context = super().get_context_data(*args, **kwargs)
         org_user_manager = organization.models.OrganizationToUser.objects
-        user = (
+        org_user_obj = (
             org_user_manager.get_organization_member(
                 org_pk=self.kwargs['pk'], user_pk=self.request.user.pk
             )
             .only('role')
             .first()
         )
-        context['is_group_member'] = user is not None
+        context['is_group_member'] = org_user_obj is not None
         context['user_is_admin'] = context[
             'is_group_member'
-        ] and user.role in (2, 3)
+        ] and org_user_obj.role in (2, 3)
         return context
 
 
@@ -62,26 +64,39 @@ class OrganizationListView(django.views.generic.ListView):
         либо по названию и описанию по отдельности
         """
         queryset = (
-            organization.models.Organization.objects.get_only_useful_fields()
-            .filter(is_private=False)
+            organization.models.Organization.objects.filter_user_access(
+                self.request.user.pk
+            )
             .annotate(count_users=django.db.models.Count('users__id'))
             .order_by('-count_users')
         )
-        searched = self.request.GET.get('searched')
-        search_criteria = self.request.GET.get('search_critery', 'all')
-        if searched:
-            if search_criteria == 'all':
+        query = self.request.GET.get('query')
+        search_by = int(self.request.GET.get('search_by', '1'))
+        if query:
+            if search_by == 1:
                 queryset = (
                     queryset.filter(
-                        django.db.models.Q(name__icontains=searched)
-                        | django.db.models.Q(description__icontains=searched)
+                        django.db.models.Q(name__search=query)
+                        | django.db.models.Q(description__search=query)
                     )
                 ).distinct()
-            elif search_criteria == 'name':
-                queryset = queryset.filter(name__icontains=searched)
-            elif search_criteria == 'description':
-                queryset = queryset.filter(description__icontains=searched)
+            elif search_by == 2:
+                queryset = queryset.filter(name__search=query)
+            elif search_by == 3:
+                queryset = queryset.filter(description__search=query)
         return queryset
+
+    def get_context_data(self, *args, **kwargs) -> dict:
+        """дополняем контекст формой поиска"""
+        context = super().get_context_data(*args, **kwargs)
+        form = core.forms.SearchForm()
+        form.fields['search_by'].choices = (
+            (1, 'Все'),
+            (2, 'Имя'),
+            (3, 'Описание'),
+        )
+        context['form'] = form
+        return context
 
 
 class OrganizationUsersView(
@@ -217,20 +232,17 @@ class ActionWithUserView(django.views.generic.View):
     def get(
         self, request: django.http.HttpRequest, pk: int, user_pk: int
     ) -> None:
+        org_user_manager = organization.models.OrganizationToUser.objects
         self.self_user = (
-            organization.models.OrganizationToUser.objects.filter(
-                organization__pk=pk,
-                organization__is_active=True,
-                user__pk=request.user.pk,
+            org_user_manager.get_organization_member_or_invited(
+                org_pk=pk, user_pk=self.request.user.pk
             )
             .only('role')
             .first()
         )
         self.target_user = (
-            organization.models.OrganizationToUser.objects.filter(
-                user__pk=user_pk,
-                organization__pk=pk,
-                organization__is_active=True,
+            org_user_manager.get_organization_member_or_invited(
+                org_pk=pk, user_pk=user_pk
             )
             .only('role')
             .first()
@@ -337,11 +349,12 @@ class PostCommentsView(
         доступ пользователя к нему
         """
         context = super().get_context_data(*args, **kwargs)
-        context['post'] = django.shortcuts.get_object_or_404(
-            organization.models.OrganizationPost.objects.filter_user_access(
-                self.request.user.pk, org_pk=self.kwargs['pk']
-            ),
-            pk=self.kwargs['post_pk'],
+        context[
+            'post'
+        ] = organization.services.get_post_by_user_organization_post_or_404(
+            user_pk=self.request.user.pk,
+            org_pk=self.kwargs['pk'],
+            post_pk=self.kwargs['post_pk'],
         )
         return context
 
@@ -369,11 +382,8 @@ class PostCommentsView(
         if not request.user.is_authenticated:
             raise django.http.Http404()
         comment_text = request.POST.get('comment_text')
-        post = django.shortcuts.get_object_or_404(
-            organization.models.OrganizationPost.objects.filter_user_access(
-                self.request.user.pk, org_pk=self.kwargs['pk']
-            ),
-            pk=self.kwargs['post_pk'],
+        post = organization.services.get_post_by_user_organization_post_or_404(
+            user_pk=self.request.user.pk, org_pk=pk, post_pk=post_pk
         )
         if comment_text:
             organization.models.CommentToOrganizationPost.objects.create(
@@ -432,6 +442,7 @@ class QuizCreateView(
             quiz.models.Question,
             form=quiz.forms.QuestionForm,
             extra=50,
+            max_num=50,
         )(self.request.POST or None)
         if quiz_form.is_valid() and question_formset.is_valid():
             quiz_obj = quiz_form.save(commit=False)
@@ -447,22 +458,20 @@ class QuizCreateView(
                 question_objects.append(question_obj)
                 variants = question.cleaned_data['variants']
                 for variant in variants:
-                    if variant.endswith('right'):
-                        variant_obj = quiz.models.Variant(
-                            text=variant[: variant.rfind('right')],
-                            question=question_obj,
-                            is_correct=True,
-                        )
-                    else:
-                        variant_obj = quiz.models.Variant(
-                            text=variant,
-                            question=question_obj,
-                            is_correct=False,
-                        )
+                    is_correct = variant.endswith('right')
+                    text = variant
+                    if is_correct:
+                        text = variant[: variant.rfind('right')]
+                    variant_obj = quiz.models.Variant(
+                        text=text,
+                        question=question_obj,
+                        is_correct=is_correct,
+                    )
                     variants_objects.append(variant_obj)
             quiz_obj.save()
-            for item in question_objects:
-                item.save()
+            # for item in question_objects:
+            #     item.save()
+            quiz.models.Question.objects.bulk_create(question_objects)
             quiz.models.Variant.objects.bulk_create(variants_objects)
             message_text = 'Викторина отправлена на модерацию'
             if quiz_obj.is_published:
@@ -476,7 +485,7 @@ class QuizCreateView(
             """
             Форма заполнена неверно.
             Если у вас было больше одного вопроса,
-            нажимайте Добавить вопрос, чтобы увидеть всее ошибки
+            нажимайте `Добавить вопрос`, чтобы увидеть всее ошибки
             """,
         )
         context['question_formset'] = question_formset

@@ -31,10 +31,9 @@ class UserIsOrganizationMemberMixin(OrganizationMixin):
         и является ли он ее администратором
         """
         context = super().get_context_data(*args, **kwargs)
-        org_user_obj = organization.models.OrganizationToUser.objects.filter(
-            user__pk=self.request.user.pk,
-            organization__pk=self.kwargs['pk'],
-            organization__is_active=True,
+        org_user_manager = organization.models.OrganizationToUser.objects
+        org_user_obj = org_user_manager.get_organization_member(
+            org_pk=self.kwargs['pk'], user_pk=self.request.user.pk
         ).first()
         context['organization_to_user'] = org_user_obj
         context['is_group_member'] = org_user_obj is not None

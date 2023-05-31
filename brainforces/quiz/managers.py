@@ -1,4 +1,6 @@
 import django.db.models
+import django.db.models.expressions
+import django.utils.timezone
 
 
 class QuizManager(django.db.models.Manager):
@@ -49,11 +51,17 @@ class QuizManager(django.db.models.Manager):
 class UserAnswerManager(django.db.models.Manager):
     """менеджер модели UserAnswer"""
 
+    def get_active_and_published_answers(self) -> django.db.models.QuerySet:
+        """ответы к опубликованным викторинам с активными организациями"""
+        return self.get_queryset().filter(
+            question__quiz__is_published=True,
+            question__quiz__organized_by__is_active=True,
+        )
+
     def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
         """поля для отображения посылок пользователя"""
         return (
-            self.get_queryset()
-            .filter(question__quiz__is_published=True)
+            self.get_active_and_published_answers()
             .select_related('user', 'question')
             .only(
                 'user__username',
@@ -68,14 +76,21 @@ class UserAnswerManager(django.db.models.Manager):
 class QuizResultsManager(django.db.models.Manager):
     """менеджер модели QuizResults"""
 
+    def get_published_and_active_quiz_results(
+        self,
+    ) -> django.db.models.QuerySet:
+        """результаты с опубликованной викториной и активной оргой"""
+        return self.get_queryset().filter(
+            quiz__is_published=True, quiz__organized_by__is_active=True
+        )
+
     def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
         """
         поля для вывода списка соревнований,
         в которых участвовал пользователь
         """
         return (
-            self.get_queryset()
-            .filter(quiz__is_published=True)
+            self.get_published_and_active_quiz_results()
             .select_related('user', 'quiz')
             .only(
                 'rating_before',
@@ -92,16 +107,21 @@ class QuizResultsManager(django.db.models.Manager):
 class QuestionManager(django.db.models.Manager):
     """менеджер модели Question"""
 
+    def get_visible_questions(self) -> django.db.models.QuerySet:
+        """викторина закончена, квиз не приватный и опубликованный"""
+        return self.get_queryset().filter(
+            quiz__start_time__lte=django.utils.timezone.now()
+            - django.utils.timezone.timedelta(minutes=1)
+            * django.db.models.F('quiz__duration'),
+            quiz__is_private=False,
+            quiz__is_published=True,
+        )
+
     def get_only_useful_list_fields(self) -> django.db.models.QuerySet:
         """только нужные поля для списка архивных вопросов"""
         return (
-            self.get_queryset()
+            self.get_visible_questions()
             .select_related('quiz')
-            .filter(
-                quiz__is_ended=True,
-                quiz__is_private=False,
-                quiz__is_published=True,
-            )
             .only(
                 'id',
                 'name',

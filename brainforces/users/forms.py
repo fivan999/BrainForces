@@ -107,16 +107,14 @@ class CustomUserChangeForm(django.contrib.auth.forms.UserChangeForm):
 
     class Meta:
         model = users.models.User
-        fields = ('username', 'email', 'first_name', 'last_name')
+        fields = ('username', 'first_name', 'last_name')
         labels = {
             'username': 'Имя пользователя',
-            'email': 'Почта',
             'first_name': 'Имя',
             'last_name': 'Фамилия',
         }
         help_texts = {
             'username': 'Введите имя пользователя',
-            'email': 'Введите электронную почту',
             'first_name': 'Введите имя',
             'last_name': 'Введите фамилию',
         }

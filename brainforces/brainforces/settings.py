@@ -1,6 +1,5 @@
 import os
 import pathlib
-import sys
 
 import dotenv
 
@@ -41,6 +40,9 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'widget_tweaks',
+    'taggit',
+    'django.contrib.postgres',
+    'django_filters',
 ]
 
 if DEBUG:
@@ -81,24 +83,15 @@ WSGI_APPLICATION = 'brainforces.wsgi.application'
 
 DATABASES = dict()
 
-if (
-    'test' in sys.argv
-    or not os.getenv('USE_POSTGRES', default='False').lower() in YES_OPTIONS
-):
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
-    }
-else:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASS'),
-        'HOST': os.getenv('DB_HOST'),
-    }
-    if os.getenv('DB_PORT', default=''):
-        DATABASES['default']['PORT'] = os.getenv('DB_PORT')
+DATABASES['default'] = {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': os.getenv('DB_NAME'),
+    'USER': os.getenv('DB_USER'),
+    'PASSWORD': os.getenv('DB_PASS'),
+    'HOST': os.getenv('DB_HOST'),
+}
+if os.getenv('DB_PORT', default=''):
+    DATABASES['default']['PORT'] = os.getenv('DB_PORT')
 
 
 AUTH_PASSWORD_VALIDATORS = [

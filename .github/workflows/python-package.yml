@@ -33,8 +33,3 @@ jobs:
               flake8 . --count --show-source --statistics
               black . --check
               isort . --check
-
-      - name: flake8 Lint
-        uses: py-actions/flake8@v2
-        with:
-          plugins: "pep8-naming==0.13.3 flake8-quotes==3.3.2"

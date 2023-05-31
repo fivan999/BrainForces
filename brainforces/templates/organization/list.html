@@ -2,26 +2,8 @@
 
 {% block content %}
   <div class="container col-xxl-9">
-    <form class="mb-2" action="{% url 'organization:list' %}" method="get">
-      {% csrf_token %}
-      <div class="col-12 d-flex justify-content-between">
-        <div class="col-5">
-          <input type="text" name="searched" class="form-control col-5" aria-label="Search" placeholder="Поиск" value="" />
-        </div>
-        <div class="col-4">
-          <select class="form-select col-5" aria-label="Default select example" name="search_critery">
-            <option value="all">Все</option>
-            <option value="name">Название</option>
-            <option value="description">Описание</option>
-          </select>
-        </div>
-        <button class="btn btn-primary col-3" type="submit">Найти</button>
-      </div>
-    </form>
+    {% include "includes/search_form.html" %}
     {% if organizations %}
-      <h1 class="display-6 fw-bold lh-1">
-        Организации
-      </h1>
       {% for organization in organizations %}
         <div class="col">
           <div class="card shadow-sm mb-2">

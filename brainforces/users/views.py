@@ -278,8 +278,10 @@ class UserOrganizationsView(
         поэтому делаем проверку на приватность организации
         или принадлежность юзера к ней
         """
+        org_to_user_manager = organization.models.OrganizationToUser.objects
         return (
-            organization.models.OrganizationToUser.objects.filter(
+            org_to_user_manager.get_active_organization_to_user()
+            .filter(
                 django.db.models.Q(organization__is_private=False)
                 | django.db.models.Q(
                     organization__is_private=True,

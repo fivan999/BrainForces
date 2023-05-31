@@ -14,8 +14,10 @@ import quiz.models
 import users.models
 
 
-class OrganizationTest(django.test.TestCase):
+class OrganizationTest(django.test.TransactionTestCase):
     """тестируем организации"""
+
+    reset_sequences = True
 
     fixtures = ['fixtures/organization/test.json']
     QUIZ_RIGHT_DATA = {

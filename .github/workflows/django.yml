@@ -6,15 +6,36 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  ALLOWED_HOSTS: 127.0.0.1
+  INTERNAL_IPS: 127.0.0.1
+  USER_IS_ACTIVE: False
+  DB_NAME: database
+  DB_USER: user
+  DB_PASS: password
+  DB_HOST: localhost
+  DB_PORT: 5432
+  LOGIN_ATTEMPS: 5
+  USE_SMTP: False
+  DATABASE_URL: postgres://user:password@localhost:5432/database
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
         python-version: ["3.9", "3.10"]
-
+    services:
+      postgres:
+        image: postgres:15.0
+        env:
+          POSTGRES_DB: database
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -25,7 +46,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements/base.txt
-        pip install -r requirements/dev.txt
         pip install -r requirements/test.txt
     - name: Run Tests
       run: |

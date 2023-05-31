@@ -17,12 +17,9 @@ class InviteToOrganizationForm(django.forms.Form):
         должны существовать
         """
         username = self.cleaned_data['username']
-        user = users.models.User.objects.filter(
-            django.db.models.Q(username=username)
-            | django.db.models.Q(
-                email=users.models.User.objects.normalize_email(username)
-            )
-        ).first()
+        user = users.models.User.objects.get_user_by_username_or_email(
+            username=username
+        )
         if user is None:
             raise django.core.exceptions.ValidationError('Ошибка')
         self.cleaned_data['user_obj'] = user
