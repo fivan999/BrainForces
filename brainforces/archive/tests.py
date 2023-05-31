@@ -61,5 +61,4 @@ class ArchiveTests(django.test.TestCase):
             django.urls.reverse('archive:archive'),
             data={'search_by': criteria, 'query': text},
         )
-        print(quiz.models.Question.objects.all())
         self.assertEqual(len(response.context['questions']), expected_num)
