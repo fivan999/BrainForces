@@ -11,9 +11,9 @@ import core.forms
 import organization.forms
 import organization.mixins
 import organization.models
+import organization.services
 import quiz.forms
 import quiz.models
-import organization.services
 
 
 class OrganizationMainView(django.views.generic.DetailView):
@@ -354,7 +354,7 @@ class PostCommentsView(
         ] = organization.services.get_post_by_user_organization_post_or_404(
             user_pk=self.request.user.pk,
             org_pk=self.kwargs['pk'],
-            post_pk=self.kwargs['post_pk']
+            post_pk=self.kwargs['post_pk'],
         )
         return context
 
