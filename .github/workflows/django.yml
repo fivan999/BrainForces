@@ -6,6 +6,18 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  ALLOWED_HOSTS: 127.0.0.1
+  INTERNAL_IPS: 127.0.0.1
+  USER_IS_ACTIVE: False
+  DB_NAME: database
+  DB_USER: user
+  DB_PASS: password
+  DB_HOST: localhost
+  DB_PORT: 5432
+  LOGIN_ATTEMPS: 5
+  USE_SMTP: False
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,11 +29,9 @@ jobs:
       postgres:
         image: postgres
         env:
-          DB_NAME: database
-          DB_USER: user
-          DB_PASS: password
-          DB_HOST: localhost
-          DB_PORT: 5432
+          POSTGRES_DB: database
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -39,7 +49,7 @@ jobs:
     - name: Run Tests
       run: |
         env:
-          DATABASE_URL: postgres://user:password@localhost:5432/test_database
+          DATABASE_URL: postgres://user:password@localhost:5432/database
         run: |
           cd brainforces
           python manage.py test
