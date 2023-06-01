@@ -34,6 +34,7 @@ class EmailBackend(django.contrib.auth.backends.ModelBackend):
             return None
         if user.check_password(password):
             user.login_attempts = 0
+            user.backend = 'users.backends.EmailBackend'
             user.save()
             return user
         else:

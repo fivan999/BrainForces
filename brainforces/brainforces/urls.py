@@ -22,7 +22,7 @@ urlpatterns = [
     django.urls.path('about/', django.urls.include('about.urls')),
     django.urls.path(
         'social-auth/',
-        django.urls.include('social_django.urls', namespace='social_auth')
+        django.urls.include('social_django.urls', namespace='social_auth'),
     ),
 ]
 

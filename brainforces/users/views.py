@@ -1,8 +1,10 @@
 import django.conf
 import django.contrib
 import django.contrib.auth
+import django.contrib.auth.forms
 import django.contrib.auth.mixins
 import django.contrib.auth.tokens
+import django.contrib.auth.views
 import django.contrib.messages
 import django.db.models
 import django.http
@@ -16,6 +18,7 @@ import django.views.generic.edit
 
 import organization.models
 import quiz.models
+import users.backends
 import users.forms
 import users.mixins
 import users.models
@@ -60,7 +63,9 @@ class SignupView(django.views.generic.edit.FormView):
             django.contrib.messages.success(
                 self.request, 'Спасибо за регистрацию!'
             )
-            django.contrib.auth.login(self.request, user)
+            django.contrib.auth.login(
+                self.request, user, backend='users.backends.EmailBackend'
+            )
         return super().form_valid(form)
 
 
@@ -90,7 +95,9 @@ class ActivateUserView(django.views.generic.View):
         ):
             user.is_active = True
             user.save()
-            django.contrib.auth.login(request, user)
+            django.contrib.auth.login(
+                request, user, backend='users.backends.EmailBackend'
+            )
             django.contrib.messages.success(
                 request, 'Спасибо за активацию аккаунта'
             )
