@@ -9,6 +9,22 @@
   </div>
   <form method="post" enctype="multipart/form-data">
     {% include "includes/make_form.html" %}
-    <button type="submit" class="btn btn-primary">Войти</button>
+    <div class="row flex-lg-row align-items-center">
+      <div class="row gap-2">
+        <div class="col">
+          <button type="submit" class="btn btn-primary">Войти</button>
+        </div>
+        <div class="col">
+          <a href="{% url 'social_auth:begin' 'google-oauth2' %}">
+            <img width="38px" src="{% static 'img/google.svg' %}" />
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'social_auth:begin' 'yandex-oauth2' %}">
+            <img width="38px" src="{% static 'img/yandex.svg' %}" />
+          </a>
+        </div>
+      </div>
+    </div>
   </form>
 {% endblock user_action %}
