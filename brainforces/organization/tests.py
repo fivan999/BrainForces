@@ -23,7 +23,7 @@ class OrganizationTest(django.test.TransactionTestCase):
     QUIZ_RIGHT_DATA = {
         'name': 'name',
         'description': 'description',
-        'start_time': django.utils.timezone.datetime(2000, 1, 1, 0, 11),
+        'start_time': django.utils.timezone.datetime(2023, 1, 1, 0, 11),
         'duration': 11,
         'is_private': False,
         'is_rated': False,
@@ -38,7 +38,7 @@ class OrganizationTest(django.test.TransactionTestCase):
     NAME_ERROR = {'name': ''}
     DESCRIPTION_ERROR = {'description': ''}
     START_TIME_ERROR = {
-        'start_time': django.utils.timezone.datetime(2000, 1, 1, 0, 4)
+        'start_time': django.utils.timezone.datetime(2023, 1, 1, 0, 4)
     }
     DURATION_ERROR = {'duration': 9}
     QUESTION_NAME_ERROR = {'quiz_question-0-name': ''}
@@ -602,7 +602,7 @@ class OrganizationTest(django.test.TransactionTestCase):
     @mock.patch(
         'django.utils.timezone.now',
         lambda: django.utils.timezone.datetime(
-            2000,
+            2023,
             1,
             1,
             tzinfo=zoneinfo.ZoneInfo(django.conf.settings.TIME_ZONE),

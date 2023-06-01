@@ -2,6 +2,7 @@ import django.conf
 import django.contrib
 import django.contrib.auth.backends
 import django.db.models
+import django.http
 
 import users.models
 import users.services
@@ -11,7 +12,11 @@ class EmailBackend(django.contrib.auth.backends.ModelBackend):
     """бекенд для аутентификации по почте"""
 
     def authenticate(
-        self, request, username=None, password=None, **kwargs
+        self,
+        request: django.http.HttpRequest,
+        username: str = None,
+        password: str = None,
+        **kwargs
     ) -> None:
         """
         ищем пользователя с такой почтой,
@@ -29,6 +34,7 @@ class EmailBackend(django.contrib.auth.backends.ModelBackend):
             return None
         if user.check_password(password):
             user.login_attempts = 0
+            user.backend = 'users.backends.EmailBackend'
             user.save()
             return user
         else:
@@ -50,3 +56,13 @@ class EmailBackend(django.contrib.auth.backends.ModelBackend):
                 django.contrib.messages.error(request, 'Проверьте свою почту')
             user.save()
         return None
+
+
+def create_profile_for_social_authenticated_user(
+    backend, user: users.models.User, *args, **kwargs
+) -> None:
+    """
+    создание профиля для пользователя,
+    который вошел через социальную сеть
+    """
+    users.models.Profile.objects.get_or_create(user=user)

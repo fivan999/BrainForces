@@ -20,8 +20,11 @@ urlpatterns = [
         'organizations/', django.urls.include('organization.urls')
     ),
     django.urls.path('about/', django.urls.include('about.urls')),
+    django.urls.path(
+        'social-auth/',
+        django.urls.include('social_django.urls', namespace='social_auth'),
+    ),
 ]
-
 
 if django.conf.settings.DEBUG:
     urlpatterns += (

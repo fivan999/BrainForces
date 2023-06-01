@@ -1,6 +1,5 @@
 import freezegun
 import parameterized
-import pytz
 
 import django.conf
 import django.core
@@ -9,17 +8,6 @@ import django.urls
 import django.utils
 
 import users.models
-
-
-START_DATETIME = pytz.UTC.localize(
-    django.utils.timezone.datetime(2023, 1, 1, 0, 0, 0)
-)
-END_DATETIME = pytz.UTC.localize(
-    django.utils.timezone.datetime(2023, 1, 1, 12, 1, 0)
-)
-END_DATETIME_WEEK = pytz.UTC.localize(
-    django.utils.timezone.datetime(2023, 1, 9, 0, 0, 0)
-)
 
 
 class UserTests(django.test.TransactionTestCase):
