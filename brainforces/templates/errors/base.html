@@ -3,12 +3,14 @@
 {% load static %}
 
 {% block content %}
-  <div class="row flex-lg-row-reverse align-items-center pl-2 mb-4">
-    <div class="col-10 col-sm-8 col-lg-6 mb-3">
-      <img src="{% static 'img/login_img.jpeg' %}" class="img-fluid border rounded-3 shadow-lg" width="100%" height="auto" alt="главная картинка" />
-    </div>
-    <div class="col-lg-6">
-      <h3 class="display-5 lh-2">{% block error_code %}{% endblock error_code %}</h3>
+  <div class="container col-xxl-9">
+    <div class="row flex-lg-row-reverse align-items-center pl-2 mb-4">
+      <div class="col-10 col-sm-8 col-lg-6 mb-3">
+        <img src="{% static 'img/login_img.jpeg' %}" class="img-fluid border rounded-3 shadow-lg" width="100%" height="auto" alt="главная картинка" />
+      </div>
+      <div class="col-lg-6">
+        <h3 class="display-5 lh-2">{% block error_code %}{% endblock error_code %}</h3>
+      </div>
     </div>
   </div>
 {% endblock content %}
