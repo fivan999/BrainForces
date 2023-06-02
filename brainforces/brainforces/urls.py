@@ -4,6 +4,9 @@ import django.contrib.admin
 import django.contrib.staticfiles.urls
 import django.urls
 import django.utils.timezone
+import django.views.generic
+
+import core.views
 
 
 urlpatterns = [
@@ -25,6 +28,10 @@ urlpatterns = [
         django.urls.include('social_django.urls', namespace='social_auth'),
     ),
 ]
+
+handler404 = core.views.custom_404
+handler500 = core.views.custom_500
+
 
 if django.conf.settings.DEBUG:
     urlpatterns += (
