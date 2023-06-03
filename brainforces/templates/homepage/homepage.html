@@ -2,15 +2,16 @@
 
 {% block content %}
   <div class="container col-xxl-9">
+    {% include "includes/search_form.html" %}
     {% if posts %}
       {% for post in posts %}
         <div class="col">
           <div class="card shadow-sm mb-2">
             <div class="card-body">
+              Опубликовано: <a href="{{ post.posted_by.get_absolute_url }}" class="text-decoration-none">{{ post.posted_by.name }}</a>
               <h2 class="display-6 fw-bold">{{ post.name }}</h2>
               {{ post.text|safe }}
-              Опубликовано: <span class="badge badge-pill text-bg-primary">{{ post.posted_by.name }}</span><br />
-              <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary mt-2">Смотреть</a>
+              <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary mt-1">Смотреть</a>
             </div>
           </div>
         </div>

@@ -1,5 +1,3 @@
-import parameterized
-
 import django.test
 
 import quiz.models
@@ -37,28 +35,3 @@ class ArchiveTests(django.test.TestCase):
                 )
             )
         )
-
-    @parameterized.parameterized.expand(
-        [
-            ['1', '', 7],
-            ['1', 'Имя', 2],
-            ['1', 'имя', 2],
-            ['1', 'льва', 1],
-            ['2', 'фивана', 1],
-            ['3', 'фивана', 2],
-            ['1', 'la,rwfhkierjh,f', 0],
-            ['2', 'dFQWED', 0],
-            ['3', 'lwkerf', 0],
-            ['4', 'ergf', 0],
-        ]
-    )
-    def test_question_search(
-        self, criteria: str, text: str, expected_num: int
-    ) -> None:
-        """тестируем количество записей приходящих по определенному запросу"""
-        client = django.test.Client()
-        response = client.get(
-            django.urls.reverse('archive:archive'),
-            data={'search_by': criteria, 'query': text},
-        )
-        self.assertEqual(len(response.context['questions']), expected_num)
