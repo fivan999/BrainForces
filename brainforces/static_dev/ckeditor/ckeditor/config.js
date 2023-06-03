@@ -14,14 +14,7 @@ CKEDITOR.on('instanceReady', function (ev) {
         elements: {
             $: function (element) {
                 if (element.name == 'img') {
-                    var style = element.attributes.style || '';
-                    if (!style.match(/max-width/)) {
-                        style += ';max-width: 100%';
-                    }
-                    if (!style.match(/max-height/)) {
-                        style += ';max-height: 100%';
-                    }
-                    element.attributes.style = style;
+                    element.attributes.style += 'max-width:100%; height:auto;';
                 }
             }
         }

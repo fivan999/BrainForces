@@ -56,13 +56,3 @@ class EmailBackend(django.contrib.auth.backends.ModelBackend):
                 django.contrib.messages.error(request, 'Проверьте свою почту')
             user.save()
         return None
-
-
-def create_profile_for_social_authenticated_user(
-    backend, user: users.models.User, *args, **kwargs
-) -> None:
-    """
-    создание профиля для пользователя,
-    который вошел через социальную сеть
-    """
-    users.models.Profile.objects.get_or_create(user=user)

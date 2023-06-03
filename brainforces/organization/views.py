@@ -1,5 +1,6 @@
 import django.contrib.auth.mixins
 import django.contrib.messages
+import django.contrib.postgres.search
 import django.db.models
 import django.forms
 import django.http
@@ -7,7 +8,6 @@ import django.shortcuts
 import django.urls
 import django.views.generic
 
-import core.forms
 import organization.forms
 import organization.mixins
 import organization.models
@@ -60,8 +60,7 @@ class OrganizationListView(django.views.generic.ListView):
     def get_queryset(self) -> django.db.models.QuerySet:
         """
         получение объектов и поиск
-        поиск либо по всем критериям,
-        либо по названию и описанию по отдельности
+        по названию и описанию
         """
         queryset = (
             organization.models.Organization.objects.filter_user_access(
@@ -71,32 +70,22 @@ class OrganizationListView(django.views.generic.ListView):
             .order_by('-count_users')
         )
         query = self.request.GET.get('query')
-        search_by = int(self.request.GET.get('search_by', '1'))
         if query:
-            if search_by == 1:
-                queryset = (
-                    queryset.filter(
-                        django.db.models.Q(name__search=query)
-                        | django.db.models.Q(description__search=query)
-                    )
-                ).distinct()
-            elif search_by == 2:
-                queryset = queryset.filter(name__search=query)
-            elif search_by == 3:
-                queryset = queryset.filter(description__search=query)
+            search_vector = django.contrib.postgres.search.SearchVector(
+                'name', 'description'
+            )
+            search_query = django.contrib.postgres.search.SearchQuery(query)
+            queryset = (
+                queryset.annotate(
+                    search=search_vector,
+                    rank=django.contrib.postgres.search.SearchRank(
+                        search_vector, search_query
+                    ),
+                )
+                .filter(search=search_query)
+                .order_by('-rank', '-count_users')
+            )
         return queryset
-
-    def get_context_data(self, *args, **kwargs) -> dict:
-        """дополняем контекст формой поиска"""
-        context = super().get_context_data(*args, **kwargs)
-        form = core.forms.SearchForm()
-        form.fields['search_by'].choices = (
-            (1, 'Все'),
-            (2, 'Имя'),
-            (3, 'Описание'),
-        )
-        context['form'] = form
-        return context
 
 
 class OrganizationUsersView(
@@ -523,9 +512,9 @@ class CreatePostView(
             post_obj.posted_by = user_obj.organization
             post_obj.save()
             return django.shortcuts.redirect(self.get_success_url())
-        return django.shortcuts.render(
-            request, self.template_name, {'form': form}
-        )
+        context = self.get_context_data()
+        context['form'] = form
+        return django.shortcuts.render(request, self.template_name, context)
 
     def get_success_url(self) -> str:
         """редиректим при успешной отправке формы"""
