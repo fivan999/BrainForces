@@ -38,12 +38,27 @@ class OrganizationPostManager(django.db.models.Manager):
         """посты только активных организаций"""
         return self.get_queryset().filter(posted_by__is_active=True)
 
-    def get_only_useful_fields(self) -> django.db.models.QuerySet:
-        """только нужные поля для поста"""
+    def get_only_useful_fields(
+        self, user_pk: int
+    ) -> django.db.models.QuerySet:
+        """
+        только нужные поля для поста
+        """
         return (
             self.get_posts_with_active_organizations()
             .select_related('posted_by')
-            .only('name', 'text', 'posted_by__name')
+            .annotate(
+                likes_num=django.db.models.Count('likes'),
+                is_liked_by_user=django.db.models.Count(
+                    'likes',
+                    filter=django.db.models.Q(likes__user__pk=user_pk),
+                ),
+            )
+            .only(
+                'name',
+                'text',
+                'posted_by__name',
+            )
         )
 
     def filter_user_access(
@@ -54,7 +69,7 @@ class OrganizationPostManager(django.db.models.Manager):
         либо оргация не приватная,
         либо пользователь ее участник
         """
-        posts_queryset = self.get_only_useful_fields().filter(
+        posts_queryset = self.get_only_useful_fields(user_pk=user_pk).filter(
             django.db.models.Q(posted_by__is_private=False)
             & django.db.models.Q(is_private=False)
             | django.db.models.Q(posted_by__users__user__pk=user_pk)

@@ -1,11 +1,14 @@
 {% extends "organization/detail.html" %}
 
+{% load static %}
+
 {% block organization_page %}
   <div class="col-12">
     <div class="card shadow-sm mb-2">
       <div class="card-body">
         <h2 class="display-6 fw-bold">{{ post.name }}</h2>
         {{ post.text|safe }}
+        {% include "includes/post_like_block.html" %}
       </div>
     </div>
   </div>
@@ -32,4 +35,10 @@
   <div class="col-12">
     {% include "includes/pagination.html" %}
   </div>
+  <script src="{% static 'js/cookie.min.js' %}"></script>
+  <script>
+    const unliked_src = '/static/img/unliked.svg';
+    const liked_src = '/static/img/liked.svg';
+  </script>
+  <script src="{% static 'js/like_process.js' %}"></script>
 {% endblock organization_page %}

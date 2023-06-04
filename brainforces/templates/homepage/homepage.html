@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
   <div class="container col-xxl-9">
     {% include "includes/search_form.html" %}
@@ -11,6 +13,7 @@
               Опубликовано: <a href="{{ post.posted_by.get_absolute_url }}" class="text-decoration-none">{{ post.posted_by.name }}</a>
               <h2 class="display-6 fw-bold">{{ post.name }}</h2>
               {{ post.text|safe }}
+              {% include "includes/post_like_block.html" %}
               <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary mt-1">Смотреть</a>
             </div>
           </div>
@@ -21,4 +24,10 @@
       {% include "includes/empty.html" %}
     {% endif %}
   </div>
+  <script src="{% static 'js/cookie.min.js' %}"></script>
+  <script>
+    const unliked_src = '/static/img/unliked.svg';
+    const liked_src = '/static/img/liked.svg';
+  </script>
+  <script src="{% static 'js/like_process.js' %}"></script>
 {% endblock content %}

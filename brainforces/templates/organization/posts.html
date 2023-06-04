@@ -1,5 +1,7 @@
 {% extends "organization/detail.html" %}
 
+{% load static %}
+
 {% block organization_page %}
   {% if posts %}
     {% for post in posts %}
@@ -8,6 +10,7 @@
           <div class="card-body">
             <h2 class="display-6 fw-bold">{{ post.name }}</h2>
             {{ post.text|safe }}
+            {% include "includes/post_like_block.html" %}
             <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary mt-2">Смотреть</a>
           </div>
         </div>
@@ -17,4 +20,10 @@
   {% else %}
     {% include "includes/empty.html" %}
   {% endif %}
+  <script src="{% static 'js/cookie.min.js' %}"></script>
+  <script>
+    const unliked_src = '/static/img/unliked.svg';
+    const liked_src = '/static/img/liked.svg';
+  </script>
+  <script src="{% static 'js/like_process.js' %}"></script>
 {% endblock organization_page %}

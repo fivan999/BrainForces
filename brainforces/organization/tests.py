@@ -634,6 +634,47 @@ class OrganizationTest(django.test.TransactionTestCase):
         self.assertEqual(questions_before + 1 == questions_after, expected)
         self.assertEqual(variants_before + 2 == variants_after, expected)
 
+    @parameterized.parameterized.expand(
+        [
+            # не залогинился
+            ['', 1, 1, 'like', False],
+            # орга приватная, не участник
+            ['user6', 2, 2, 'like', False],
+            ['user6', 2, 2, 'unlike', False],
+            # пост приватный, не участник
+            ['user3', 1, 3, 'like', False],
+            ['user3', 1, 3, 'unlike', False],
+            # условия соблюдены
+            ['user1', 1, 6, 'like', True],
+            ['user1', 1, 1, 'unlike', True],
+        ]
+    )
+    def test_user_can_like_or_unlike_post(
+        self,
+        username: str,
+        org_pk: int,
+        post_pk: int,
+        action: str,
+        expected: bool,
+    ) -> None:
+        """тестируем возможность пользователя лайкнуть и un лайкнуть пост"""
+        client = django.test.Client()
+        client.post(
+            django.urls.reverse('users:login'),
+            data={'username': username, 'password': 'password'},
+        )
+        delta = 1 if action == 'like' else -1
+        likes_before = organization.models.OrganizationPostLike.objects.count()
+        client.post(
+            django.urls.reverse(
+                'organization:like_post',
+                kwargs={'pk': org_pk, 'post_pk': post_pk},
+            ),
+            data={'action': action},
+        )
+        likes_after = organization.models.OrganizationPostLike.objects.count()
+        self.assertEqual(likes_before + delta == likes_after, expected)
+
     def tearDown(self) -> None:
         """удаление тестовых данных"""
         users.models.User.objects.all().delete()

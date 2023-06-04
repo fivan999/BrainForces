@@ -163,3 +163,23 @@ class CommentToOrganizationPost(django.db.models.Model):
     def __str__(self) -> str:
         """строковое представление"""
         return f'Комментарий {self.pk}'
+
+
+class OrganizationPostLike(django.db.models.Model):
+    """модель лайка на пост"""
+
+    user = django.db.models.ForeignKey(
+        to=users.models.User,
+        verbose_name='пользователь',
+        help_text='пользователь, поставивший лайк',
+        on_delete=django.db.models.CASCADE,
+        related_name='likes',
+    )
+
+    post = django.db.models.ForeignKey(
+        to=OrganizationPost,
+        verbose_name='пост',
+        help_text='пост, под который поставлен лайк',
+        on_delete=django.db.models.CASCADE,
+        related_name='likes',
+    )

@@ -326,7 +326,7 @@ class PostCommentsView(
     organization.mixins.UserIsOrganizationMemberMixin,
     django.views.generic.ListView,
 ):
-    """комментарии к посту"""
+    """пости и комментарии к нему"""
 
     template_name = 'organization/post_comments.html'
     paginate_by = 50
@@ -345,6 +345,8 @@ class PostCommentsView(
             org_pk=self.kwargs['pk'],
             post_pk=self.kwargs['post_pk'],
         )
+        if context['post'] is None:
+            raise django.http.Http404()
         return context
 
     def get_queryset(self) -> django.db.models.QuerySet:
@@ -374,6 +376,8 @@ class PostCommentsView(
         post = organization.services.get_post_by_user_organization_post_or_404(
             user_pk=self.request.user.pk, org_pk=pk, post_pk=post_pk
         )
+        if post is None:
+            raise django.http.Http404()
         if comment_text:
             organization.models.CommentToOrganizationPost.objects.create(
                 user=request.user, text=comment_text, post=post
@@ -521,3 +525,46 @@ class CreatePostView(
         return django.urls.reverse_lazy(
             'organization:posts', kwargs={'pk': self.kwargs['pk']}
         )
+
+
+class CreateLikeView(
+    django.contrib.auth.mixins.LoginRequiredMixin, django.views.generic.View
+):
+    """лайкаем пост организации"""
+
+    def post(
+        self, request: django.http.HttpRequest, pk: int, post_pk: int
+    ) -> django.http.JsonResponse:
+        """
+        проверяем, можно ли поставить лайк на данный
+        пост данному пользователю,
+        если лайк поставлен и действие unlike - удаляем
+        если лайка нет и действие like - ставим лайк
+        иначе ошибка
+        """
+        allowed = (
+            organization.services.get_post_by_user_organization_post_or_404(
+                user_pk=self.request.user.pk,
+                org_pk=self.kwargs['pk'],
+                post_pk=self.kwargs['post_pk'],
+            )
+            is not None
+        )
+        action = request.POST.get('action')
+        if allowed and action:
+            like_obj = organization.models.OrganizationPostLike.objects.filter(
+                user_id=request.user.pk,
+                post_id=post_pk,
+            ).first()
+            if like_obj and action == 'unlike':
+                like_obj.delete()
+                return django.http.JsonResponse({'status': 200})
+            elif like_obj is None and action == 'like':
+                organization.models.OrganizationPostLike.objects.create(
+                    user_id=request.user.pk,
+                    post_id=post_pk,
+                )
+                return django.http.JsonResponse({'status': 200})
+            else:
+                return django.http.JsonResponse({'status': 403})
+        return django.http.JsonResponse({'status': 404})
