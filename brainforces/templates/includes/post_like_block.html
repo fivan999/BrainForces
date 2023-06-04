@@ -1,0 +1,8 @@
+{% load static %}
+
+{% if request.user.is_authenticated %}
+  <div class="d-flex gap-2">
+    <img id="like" width="25px" {% if post.is_liked_by_user %}src="{% static 'img/liked.svg' %}"{% else %}src="{% static 'img/unliked.svg' %}"{% endif %} data-link="{% url 'organization:like_post' pk=post.posted_by.pk post_pk=post.pk %}" data-orgid="{{ post.posted_by.pk }}" data-postid="{{ post.pk }}" data-action="{% if post.is_liked_by_user %}un{% endif %}like">
+    <span id="total-likes-{{ post.pk }}">{{ post.likes_num }}</span>
+  </div>
+{% endif %}

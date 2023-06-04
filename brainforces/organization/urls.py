@@ -52,6 +52,11 @@ urlpatterns = [
         name='post_detail',
     ),
     django.urls.path(
+        '<int:pk>/posts/<int:post_pk>/like/',
+        organization.views.CreateLikeView.as_view(),
+        name='like_post',
+    ),
+    django.urls.path(
         '<int:pk>/create_quiz/',
         organization.views.QuizCreateView.as_view(),
         name='create_quiz',

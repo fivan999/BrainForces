@@ -290,5 +290,23 @@
             "is_private": false,
             "posted_by": 3
         }
+    },
+    {
+        "model": "organization.organizationpost",
+        "pk": 6,
+        "fields": {
+            "name": "post6",
+            "text": "posttext6",
+            "is_private": false,
+            "posted_by": 1
+        }
+    },
+    {
+        "model": "organization.organizationpostlike",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "post": 1
+        }
     }
 ]

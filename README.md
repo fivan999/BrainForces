@@ -34,7 +34,7 @@ git clone https://github.com/fivan999/BrainForces
 - EMAIL_HOST_USER - почта
 - EMAIL_HOST_PASSWORD - пароль от почты
 Пример .env файла - .env.example
-## Запуск с помощью Docker
+## Запуск с помощью Docker (в разработке)
 Скачайте Docker: https://www.docker.com/<br>
 Запустите Docker<br>
 Если вы используете опцию USE_POSTGRES=True, то DB_HOST и DB_PORT можно не указывать<br>
