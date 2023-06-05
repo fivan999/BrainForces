@@ -553,8 +553,8 @@ class CreateLikeView(
         action = request.POST.get('action')
         if allowed and action:
             like_obj = organization.models.OrganizationPostLike.objects.filter(
-                user_id=request.user.pk,
-                post_id=post_pk,
+                user__pk=request.user.pk,
+                post__pk=post_pk,
             ).first()
             if like_obj and action == 'unlike':
                 like_obj.delete()

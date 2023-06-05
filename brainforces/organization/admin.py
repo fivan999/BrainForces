@@ -37,3 +37,11 @@ class CommentToOrganizationPostAdmin(django.contrib.admin.ModelAdmin):
 
     list_display = ('id', 'user', 'post')
     list_display_links = ('id',)
+
+
+@django.contrib.admin.register(organization.models.OrganizationPostLike)
+class OrganizationPostLikeAdmin(django.contrib.admin.ModelAdmin):
+    """лайки к постам в админке"""
+
+    list_display = ('id', 'user', 'post')
+    list_filter = ('user', 'post')
