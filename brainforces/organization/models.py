@@ -183,3 +183,7 @@ class OrganizationPostLike(django.db.models.Model):
         on_delete=django.db.models.CASCADE,
         related_name='likes',
     )
+
+    class Meta:
+        verbose_name = 'лайк к посту'
+        verbose_name_plural = 'лайки к постам'
