@@ -4,6 +4,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
       'click',
       function like_post(){
         var like_button = this;
+        like_button.disabled = true;
         var options = {
           method: 'POST',
           headers: {'X-CSRFToken': csrftoken},
@@ -18,7 +19,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
         .then(response => response.json())
         .then(
           data => {
-            console.log(data['status']);
             if (data['status'] === 200){
               var previous_action = like_button.dataset.action;
               var action = previous_action === 'like' ? 'unlike' : 'like';
@@ -31,6 +31,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
             }
           }
         )
+        like_button.disabled = false;
       }
     )
     )
