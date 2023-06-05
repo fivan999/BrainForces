@@ -545,7 +545,7 @@ class CreateLikeView(
         allowed = (
             organization.services.get_post_by_user_organization_post_or_404(
                 user_pk=self.request.user.pk,
-                org_pk=self.kwargs['pk'],
+                org_pk=pk,
                 post_pk=self.kwargs['post_pk'],
             )
             is not None
