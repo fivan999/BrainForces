@@ -187,3 +187,4 @@ class OrganizationPostLike(django.db.models.Model):
     class Meta:
         verbose_name = 'лайк к посту'
         verbose_name_plural = 'лайки к постам'
+        unique_together = ('post', 'user')
