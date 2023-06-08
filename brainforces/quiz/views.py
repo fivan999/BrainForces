@@ -2,6 +2,7 @@ import typing
 
 import django.contrib.auth.mixins
 import django.contrib.messages
+import django.contrib.postgres.search
 import django.db.models
 import django.http
 import django.shortcuts
@@ -31,24 +32,23 @@ class QuizListView(django.views.generic.ListView):
         """
         queryset = quiz.models.Quiz.objects.filter_user_access(
             user_pk=self.request.user.pk
-        )
+        ).order_by('-id')
         query = self.request.GET.get('query')
-        search_by = int(self.request.GET.get('search_by', '1'))
         if query:
-            if search_by == 1:
-                queryset = (
-                    queryset.filter(
-                        django.db.models.Q(name__search=query)
-                        | django.db.models.Q(description__search=query)
-                        | django.db.models.Q(organized_by__name__search=query)
-                    )
-                ).distinct()
-            elif search_by == 2:
-                queryset = queryset.filter(name__search=query)
-            elif search_by == 3:
-                queryset = queryset.filter(description__search=query)
-            elif search_by == 4:
-                queryset = queryset.filter(organized_by__name__search=query)
+            search_vector = django.contrib.postgres.search.SearchVector(
+                'name', 'description'
+            )
+            search_query = django.contrib.postgres.search.SearchQuery(query)
+            queryset = (
+                queryset.annotate(
+                    search=search_vector,
+                    rank=django.contrib.postgres.search.SearchRank(
+                        search_vector, search_query
+                    ),
+                )
+                .filter(search=search_query)
+                .order_by('-rank', '-id')
+            )
         return queryset
 
     def get_context_data(self, *args, **kwargs) -> dict:

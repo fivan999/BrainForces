@@ -10,7 +10,9 @@
           <div class="card-body">
             <h2 class="display-6 fw-bold">{{ post.name }}</h2>
             {{ post.text|safe }}
-            {% include "includes/post_like_block.html" %}
+            <div class="d-flex justify-content-between">
+              {% include "includes/like_block.html" %}
+            </div>
             <a href="{% url 'organization:post_detail' pk=post.posted_by.pk post_pk=post.pk %}" class="btn btn-primary mt-2">Смотреть</a>
           </div>
         </div>

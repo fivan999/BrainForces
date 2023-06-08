@@ -8,6 +8,7 @@ import django.shortcuts
 import django.urls
 import django.views.generic
 
+import core.services
 import organization.forms
 import organization.mixins
 import organization.models
@@ -319,7 +320,7 @@ class OrganizationPostsView(
         """объявления могут быть приватными, поэтому нужна проверка"""
         return organization.models.OrganizationPost.objects.filter_user_access(
             self.request.user.pk, org_pk=self.kwargs['pk']
-        )
+        ).order_by('-id')
 
 
 class PostCommentsView(
@@ -347,6 +348,10 @@ class PostCommentsView(
         )
         if context['post'] is None:
             raise django.http.Http404()
+        total_views = core.services.redis_connection.incr(
+            f'organization_post:{self.kwargs["post_pk"]}:total_views'
+        )
+        context['total_views'] = total_views
         return context
 
     def get_queryset(self) -> django.db.models.QuerySet:

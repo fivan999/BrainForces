@@ -8,7 +8,10 @@
       <div class="card-body">
         <h2 class="display-6 fw-bold">{{ post.name }}</h2>
         {{ post.text|safe }}
-        {% include "includes/post_like_block.html" %}
+        <div class="d-flex justify-content-between">
+          {% include "includes/like_block.html" %}
+          {% include "includes/total_views_block.html" %}
+        </div>
       </div>
     </div>
   </div>
