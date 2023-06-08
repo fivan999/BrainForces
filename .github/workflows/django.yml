@@ -18,6 +18,9 @@ env:
   LOGIN_ATTEMPS: 5
   USE_SMTP: False
   DATABASE_URL: postgres://user:password@localhost:5432/database
+  REDIS_HOST: localhost
+  REDIS_POST: 6379
+  REDIS_DB: 0
 
 jobs:
   build:
@@ -36,6 +39,15 @@ jobs:
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
