@@ -23,3 +23,4 @@ social-auth-core==4.4.2
 django-extensions==3.2.1
 pyOpenSSL==23.2.0
 werkzeug==2.3.4
+redis==4.5.5
