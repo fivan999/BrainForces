@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_filters',
     'social_django',
     'django_extensions',
+    'django_elasticsearch_dsl',
 ]
 
 if DEBUG:
@@ -302,3 +303,12 @@ MESSAGE_TAGS = {
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
 REDIS_DB = int(os.getenv('REDIS_DB', 0))
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': f"{os.getenv('ELASTICSEARCH_HOST', default='localhost')}"
+                 f":{os.getenv('ELASTICSEARCH_PORT', default='9200')}"
+    },
+}
+
+print(ELASTICSEARCH_DSL)
