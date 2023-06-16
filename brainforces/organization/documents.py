@@ -1,6 +1,7 @@
-import organization.models
 import django_elasticsearch_dsl
 import django_elasticsearch_dsl.registries
+
+import organization.models
 
 
 @django_elasticsearch_dsl.registries.registry.register_document
@@ -25,7 +26,10 @@ class OrganizationPostDocument(django_elasticsearch_dsl.Document):
     """документ elasticsearch для модели OrganizationPost"""
 
     posted_by = django_elasticsearch_dsl.fields.ObjectField(
-        attr='posted_by_to_string_for_elastic'
+        properties={
+            'id': django_elasticsearch_dsl.fields.IntegerField(),
+            'name': django_elasticsearch_dsl.fields.TextField(),
+        }
     )
     text = django_elasticsearch_dsl.fields.TextField(
         attr='text_to_string_for_elastic'
@@ -38,9 +42,3 @@ class OrganizationPostDocument(django_elasticsearch_dsl.Document):
     class Django:
         model = organization.models.OrganizationPost
         fields = ('name',)
-
-    def get_queryset(self):
-        """улучшить производительность запроса"""
-        return super().get_queryset().select_related(
-            'posted_by'
-        ).only('name', 'text', 'posted_by__name')

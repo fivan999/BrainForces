@@ -307,8 +307,6 @@ REDIS_DB = int(os.getenv('REDIS_DB', 0))
 ELASTICSEARCH_DSL = {
     'default': {
         'hosts': f"{os.getenv('ELASTICSEARCH_HOST', default='localhost')}"
-                 f":{os.getenv('ELASTICSEARCH_PORT', default='9200')}"
+        f":{os.getenv('ELASTICSEARCH_PORT', default='9200')}"
     },
 }
-
-print(ELASTICSEARCH_DSL)

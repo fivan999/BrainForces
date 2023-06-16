@@ -2,7 +2,6 @@ import typing
 
 import django.contrib.auth.mixins
 import django.contrib.messages
-import django.contrib.postgres.search
 import django.db.models
 import django.http
 import django.shortcuts
@@ -10,46 +9,29 @@ import django.urls
 import django.utils.timezone
 import django.views.generic
 
+import core.elastic_services
 import core.forms
+import core.views
+import quiz.documents
 import quiz.forms
 import quiz.mixins
 import quiz.models
 import quiz.services
 
 
-class QuizListView(django.views.generic.ListView):
+class QuizListView(core.views.ElasticSearchListView):
     """список викторин"""
 
     template_name = 'quiz/list.html'
     context_object_name = 'quizzes'
     paginate_by = 5
+    search_fields = ['name', 'description']
+    document_class = quiz.documents.QuizDocument
 
-    def get_queryset(self) -> django.db.models.QuerySet:
-        """
-        получение объектов и поиск
-        либо по всем критериям,
-        либо по имени, описанию и организации квиза
-        """
-        queryset = quiz.models.Quiz.objects.filter_user_access(
+    def get_default_queryset(self) -> django.db.models.QuerySet:
+        return quiz.models.Quiz.objects.filter_user_access(
             user_pk=self.request.user.pk
         ).order_by('-id')
-        query = self.request.GET.get('query')
-        if query:
-            search_vector = django.contrib.postgres.search.SearchVector(
-                'name', 'description'
-            )
-            search_query = django.contrib.postgres.search.SearchQuery(query)
-            queryset = (
-                queryset.annotate(
-                    search=search_vector,
-                    rank=django.contrib.postgres.search.SearchRank(
-                        search_vector, search_query
-                    ),
-                )
-                .filter(search=search_query)
-                .order_by('-rank', '-id')
-            )
-        return queryset
 
     def get_context_data(self, *args, **kwargs) -> dict:
         """дополняем контекст формой поиска"""

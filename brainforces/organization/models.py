@@ -146,13 +146,6 @@ class OrganizationPost(django.db.models.Model):
         """
         return self.text
 
-    def posted_by_to_string_for_elastic(self) -> str:
-        """
-        elastic не может делать поиск по FK сам,
-        поэтому прописываем его сами
-        """
-        return self.posted_by.name
-
 
 class CommentToOrganizationPost(django.db.models.Model):
     """моедль комментария к посту"""

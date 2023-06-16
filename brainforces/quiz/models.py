@@ -129,13 +129,6 @@ class Quiz(django.db.models.Model):
         """
         return self.description
 
-    def organized_by_to_string_for_elastic(self) -> str:
-        """
-        elastic не может делать поиск по FK сам,
-        поэтому прописываем его сами
-        """
-        return self.organized_by.name
-
 
 class QuizResults(django.db.models.Model):
     """модель результатов викторины"""
