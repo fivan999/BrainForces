@@ -128,12 +128,8 @@ USER_IS_ACTIVE = (
 AUTHENTICATION_BACKENDS = [
     'users.backends.EmailBackend',
     'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.vk.VKOAuth2',
     'social_core.backends.yandex.YandexOAuth2',
 ]
-
-SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_VK_OAUTH2_KEY')
-SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_VK_OAUTH2_SECRET')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv(
@@ -310,3 +306,8 @@ ELASTICSEARCH_DSL = {
         f":{os.getenv('ELASTICSEARCH_PORT', default='9200')}"
     },
 }
+
+CELERY_TASK_ALWAYS_EAGER = (
+    os.getenv('CELERY_TASK_ALWAYS_EAGER', 'true').lower().strip()
+    in YES_OPTIONS
+)

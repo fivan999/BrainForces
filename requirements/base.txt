@@ -27,3 +27,4 @@ redis==4.5.5
 django-elasticsearch-dsl==7.3
 elasticsearch==7.17.9
 elasticsearch-dsl==7.4.1
+celery==5.3.0

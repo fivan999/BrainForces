@@ -21,6 +21,8 @@ env:
   REDIS_HOST: localhost
   REDIS_POST: 6379
   REDIS_DB: 0
+  ELASTICSEARCH_HOST: 127.0.0.1
+  ELASTICSEARCH_PORT: 9200
 
 jobs:
   build:

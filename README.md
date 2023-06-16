@@ -23,21 +23,33 @@ git clone https://github.com/fivan999/BrainForces
 - DB_PORT (порт базы данных)
 - DB_USER (имя пользователя на сервере)
 - DB_PASS (пароль базы данных)
+- REDIS_HOST (хост базы данных redis)
+- REDIS_PORT (порт базы данных redis)
+- REDIS_DB=0
+- ELASTICSEARCH_HOST (хост elasticsearch)
+- ELASTICSEARCH_PORT (порт elasticsearch)
+- CELERY_TASK_ALWAYS_EAGER (выполнять ли задания от celery синхронно, запуск rabbitmq и celery не требуется))
 #### Настройка отправки почты
 Если вы хотите, чтобы письма только сохранялись в папке sent_emails, в .env файле укажите USE_SMTP=false<br>
 Иначе нужно указать несколько значений:
 - USE_SMTP=True
-- EMAIL_HOST - смтп, которое вы используете
-- EMAIL_PORT - порт нужного смтп
+- EMAIL_HOST (смтп, которое вы используете)
+- EMAIL_PORT (порт нужного смтп)
 - EMAIL_USE_TLS
 - EMAIL_USE_SSL
-- EMAIL_HOST_USER - почта
-- EMAIL_HOST_PASSWORD - пароль от почты
+- EMAIL_HOST_USER (почта)
+- EMAIL_HOST_PASSWORD (пароль от почты)
+#### Настройка аутентификации через Google и Yandex
+Если вы хотите, чтобы в проекте была доступна такая функция, нужно получить ключи доступа от Google и Yandex соответственно и добавить их в .env файл
+- SOCIAL_AUTH_GOOGLE_OAUTH2_KEY (ключ от Google)
+- SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET (секретный ключ от Google)
+- SOCIAL_AUTH_YANDEX_OAUTH2_KEY (ключ от Yandex)
+- SOCIAL_AUTH_YANDEX_OAUTH2_SECRET (секретный ключ от Yandex)
 Пример .env файла - .env.example
+
 ## Запуск с помощью Docker (в разработке)
 Скачайте Docker: https://www.docker.com/<br>
 Запустите Docker<br>
-Если вы используете опцию USE_POSTGRES=True, то DB_HOST и DB_PORT можно не указывать<br>
 В терминале:
 ```
 docker-compose --env-file brainforces/.env build
@@ -83,7 +95,12 @@ python brainforces/manage.py migrate
 ```
 python brainforces/manage.py runserver
 ```
-
+## Использованные технологии
+- База данных - PostgreSQL
+- Полнотекстовый поиск с помощью elasticsearch
+- Асинхронная отправка почты с помощью Celery и брокера RabbitMQ
+- Redis для подсчета количества просмотров у постов
+- Аутентификация с помощью Yandex и Google
 ## Техническое задание
 В общем: cоздаем сайт для проведения онлайн соревновательных викторин
 ### Первый этап:
