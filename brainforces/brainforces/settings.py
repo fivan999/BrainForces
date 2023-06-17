@@ -89,13 +89,13 @@ DATABASES = dict()
 
 DATABASES['default'] = {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': os.getenv('DB_NAME'),
-    'USER': os.getenv('DB_USER'),
-    'PASSWORD': os.getenv('DB_PASS'),
-    'HOST': os.getenv('DB_HOST'),
+    'NAME': os.getenv('DB_NAME', default='postgres'),
+    'USER': os.getenv('DB_USER', default='postgres'),
+    'PASSWORD': os.getenv('DB_PASS', default='password'),
+    'HOST': os.getenv('DB_HOST', default='127.0.0.1'),
 }
 if os.getenv('DB_PORT', default=''):
-    DATABASES['default']['PORT'] = os.getenv('DB_PORT')
+    DATABASES['default']['PORT'] = int(os.getenv('DB_PORT', default='5432'))
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -296,9 +296,9 @@ MESSAGE_TAGS = {
     django.contrib.messages.constants.ERROR: 'alert-danger',
 }
 
-REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
-REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
-REDIS_DB = int(os.getenv('REDIS_DB', 0))
+REDIS_HOST = os.getenv('REDIS_HOST', default='localhost')
+REDIS_PORT = int(os.getenv('REDIS_PORT', default=6379))
+REDIS_DB = int(os.getenv('REDIS_DB', default=0))
 
 ELASTICSEARCH_DSL = {
     'default': {
@@ -308,6 +308,6 @@ ELASTICSEARCH_DSL = {
 }
 
 CELERY_TASK_ALWAYS_EAGER = (
-    os.getenv('CELERY_TASK_ALWAYS_EAGER', 'true').lower().strip()
+    os.getenv('CELERY_TASK_ALWAYS_EAGER', default='true').lower().strip()
     in YES_OPTIONS
 )
