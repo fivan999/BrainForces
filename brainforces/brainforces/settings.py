@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_filters',
     'social_django',
     'django_extensions',
+    'django_elasticsearch_dsl',
 ]
 
 if DEBUG:
@@ -127,12 +128,8 @@ USER_IS_ACTIVE = (
 AUTHENTICATION_BACKENDS = [
     'users.backends.EmailBackend',
     'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.vk.VKOAuth2',
     'social_core.backends.yandex.YandexOAuth2',
 ]
-
-SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_VK_OAUTH2_KEY')
-SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_VK_OAUTH2_SECRET')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv(
@@ -302,3 +299,15 @@ MESSAGE_TAGS = {
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
 REDIS_DB = int(os.getenv('REDIS_DB', 0))
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': f"{os.getenv('ELASTICSEARCH_HOST', default='localhost')}"
+        f":{os.getenv('ELASTICSEARCH_PORT', default='9200')}"
+    },
+}
+
+CELERY_TASK_ALWAYS_EAGER = (
+    os.getenv('CELERY_TASK_ALWAYS_EAGER', 'true').lower().strip()
+    in YES_OPTIONS
+)

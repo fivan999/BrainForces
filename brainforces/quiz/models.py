@@ -122,6 +122,13 @@ class Quiz(django.db.models.Model):
         text_statuses = {1: 'Не начата', 2: 'Идет', 3: 'Закончена'}
         return text_statuses[self.get_quiz_status()]
 
+    def description_to_string_for_elastic(self) -> str:
+        """
+        elastic не может делать поиск по RichTextUploadingField сам,
+        поэтому прописываем его сами
+        """
+        return self.description
+
 
 class QuizResults(django.db.models.Model):
     """модель результатов викторины"""

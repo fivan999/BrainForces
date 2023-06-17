@@ -48,6 +48,13 @@ class Organization(django.db.models.Model):
             'organization:profile', kwargs={'pk': self.pk}
         )
 
+    def description_to_string_for_elastic(self) -> str:
+        """
+        elastic не может проиндексировать RichTextUploadingField
+        поэтому прописываем его сами
+        """
+        return self.description
+
 
 class OrganizationToUser(django.db.models.Model):
     """связь организации с пользователем"""
@@ -131,6 +138,13 @@ class OrganizationPost(django.db.models.Model):
     def __str__(self) -> str:
         """строковое представление"""
         return self.name[:20]
+
+    def text_to_string_for_elastic(self) -> str:
+        """
+        elastic не может проиндексировать RichTextField,
+        поэтому прописываем его сами
+        """
+        return self.text
 
 
 class CommentToOrganizationPost(django.db.models.Model):

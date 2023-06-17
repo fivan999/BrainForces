@@ -4,12 +4,13 @@ import parameterized
 import django.conf
 import django.core
 import django.test
+import django.test.utils
 import django.urls
-import django.utils
 
 import users.models
 
 
+@django.test.utils.override_settings(CELERY_TASK_ALWAYS_EAGER=True)
 class UserTests(django.test.TransactionTestCase):
     """тестируем пользователя"""
 
@@ -87,7 +88,7 @@ class UserTests(django.test.TransactionTestCase):
             follow=True,
         )
         text = django.core.mail.outbox[0].body
-        text = text[text.find('http') :].strip('\n')
+        text = text[text.find('http') : text.rfind('С уважением')].strip('\n')
         client.get(text)
         self.assertTrue(users.models.User.objects.get(pk=1).is_active)
 
@@ -103,7 +104,9 @@ class UserTests(django.test.TransactionTestCase):
             )
         with freezegun.freeze_time('2023-01-01 13:00:00'):
             text = django.core.mail.outbox[0].body
-            text = text[text.find('http') :].strip('\n')
+            text = text[text.find('http') : text.rfind('С уважением')].strip(
+                '\n'
+            )
             client.get(text)
             self.assertFalse(users.models.User.objects.get(pk=1).is_active)
 
@@ -193,7 +196,7 @@ class UserTests(django.test.TransactionTestCase):
                 follow=True,
             )
         text = django.core.mail.outbox[0].body
-        text = text[text.find('http') :].strip('\n')
+        text = text[text.find('http') : text.rfind('С уважением')].strip('\n')
         client.get(text)
         self.assertTrue(users.models.User.objects.get(pk=1).is_active)
 
@@ -216,6 +219,8 @@ class UserTests(django.test.TransactionTestCase):
                 )
         with freezegun.freeze_time('2023-01-10'):
             text = django.core.mail.outbox[0].body
-            text = text[text.find('http') :].strip('\n')
+            text = text[text.find('http') : text.rfind('С уважением')].strip(
+                '\n'
+            )
             client.get(text)
             self.assertFalse(users.models.User.objects.get(pk=1).is_active)

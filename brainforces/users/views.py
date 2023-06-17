@@ -1,11 +1,11 @@
 import django.conf
 import django.contrib
 import django.contrib.auth
-import django.contrib.auth.forms
 import django.contrib.auth.mixins
 import django.contrib.auth.tokens
 import django.contrib.auth.views
 import django.contrib.messages
+import django.contrib.sites.shortcuts
 import django.db.models
 import django.http
 import django.shortcuts
@@ -22,7 +22,7 @@ import users.backends
 import users.forms
 import users.mixins
 import users.models
-import users.services
+import users.tasks
 import users.tokens
 
 
@@ -51,8 +51,19 @@ class SignupView(django.views.generic.edit.FormView):
         profile = users.models.Profile(user=user)
         profile.save()
         if not django.conf.settings.USER_IS_ACTIVE:
-            users.services.activation_email(
-                self.request, 'users:activate_user', user
+            token_generator = (
+                django.contrib.auth.tokens.default_token_generator
+            )
+            users.tasks.send_email_with_token(
+                user_id=user.pk,
+                template_name='users/emails/activate_user.html',
+                subject='Активация аккаунта',
+                where_to='users:activate_user',
+                protocol='https' if self.request.is_secure() else 'http',
+                domain=django.contrib.sites.shortcuts.get_current_site(
+                    self.request
+                ).domain,
+                token=token_generator.make_token(user),
             )
             django.contrib.messages.success(
                 self.request,

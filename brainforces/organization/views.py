@@ -1,6 +1,5 @@
 import django.contrib.auth.mixins
 import django.contrib.messages
-import django.contrib.postgres.search
 import django.db.models
 import django.forms
 import django.http
@@ -8,7 +7,10 @@ import django.shortcuts
 import django.urls
 import django.views.generic
 
-import core.services
+import core.elastic_services
+import core.redis_rervices
+import core.views
+import organization.documents
 import organization.forms
 import organization.mixins
 import organization.models
@@ -51,42 +53,23 @@ class OrganizationMainView(django.views.generic.DetailView):
         return context
 
 
-class OrganizationListView(django.views.generic.ListView):
+class OrganizationListView(core.views.ElasticSearchListView):
     """список организаций"""
 
     template_name = 'organization/list.html'
     paginate_by = 5
     context_object_name = 'organizations'
+    document_class = organization.documents.OrganizationDocument
+    search_fields = ['name', 'description']
 
-    def get_queryset(self) -> django.db.models.QuerySet:
-        """
-        получение объектов и поиск
-        по названию и описанию
-        """
-        queryset = (
+    def get_default_queryset(self) -> django.db.models.QuerySet:
+        return (
             organization.models.Organization.objects.filter_user_access(
                 self.request.user.pk
             )
             .annotate(count_users=django.db.models.Count('users__id'))
             .order_by('-count_users')
         )
-        query = self.request.GET.get('query')
-        if query:
-            search_vector = django.contrib.postgres.search.SearchVector(
-                'name', 'description'
-            )
-            search_query = django.contrib.postgres.search.SearchQuery(query)
-            queryset = (
-                queryset.annotate(
-                    search=search_vector,
-                    rank=django.contrib.postgres.search.SearchRank(
-                        search_vector, search_query
-                    ),
-                )
-                .filter(search=search_query)
-                .order_by('-rank', '-count_users')
-            )
-        return queryset
 
 
 class OrganizationUsersView(
@@ -348,7 +331,7 @@ class PostCommentsView(
         )
         if context['post'] is None:
             raise django.http.Http404()
-        total_views = core.services.redis_connection.incr(
+        total_views = core.redis_rervices.redis_connection.incr(
             f'organization_post:{self.kwargs["post_pk"]}:total_views'
         )
         context['total_views'] = total_views

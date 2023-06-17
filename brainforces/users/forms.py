@@ -1,9 +1,11 @@
 import django.contrib.auth.forms
+import django.contrib.auth.tokens
 import django.core.exceptions
 import django.forms
 
 import organization.models
 import users.models
+import users.tasks
 
 
 class SignUpForm(django.contrib.auth.forms.UserCreationForm):
@@ -84,6 +86,20 @@ class CustomPasswordResetForm(django.contrib.auth.forms.PasswordResetForm):
             return email
         raise django.core.exceptions.ValidationError(
             'Нет пользователя с такой почтой'
+        )
+
+    def send_mail(self, *args, **kwargs) -> None:
+        """отправка почты для смены пароля"""
+        context = args[2]
+        token_generator = django.contrib.auth.tokens.default_token_generator
+        users.tasks.send_email_with_token.delay(
+            user_id=context['user'].pk,
+            template_name='users/emails/reset_password.html',
+            subject='Восстановление пароля',
+            where_to='users:password_reset_confirm',
+            domain=context['domain'],
+            protocol=context['protocol'],
+            token=token_generator.make_token(context['user']),
         )
 
 
