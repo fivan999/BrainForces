@@ -43,7 +43,7 @@ git clone https://github.com/fivan999/BrainForces
 - SOCIAL_AUTH_GOOGLE_OAUTH2_KEY (ключ от Google)
 - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET (секретный ключ от Google)
 - SOCIAL_AUTH_YANDEX_OAUTH2_KEY (ключ от Yandex)
-- SOCIAL_AUTH_YANDEX_OAUTH2_SECRET (секретный ключ от Yandex)
+- SOCIAL_AUTH_YANDEX_OAUTH2_SECRET (секретный ключ от Yandex)<br>
 Пример .env файла - .env.example
 
 ## Запуск с помощью Docker (в разработке)
