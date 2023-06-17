@@ -27,7 +27,7 @@ git clone https://github.com/fivan999/BrainForces
 - REDIS_PORT (порт базы данных redis, по умолчанию - 6379)
 - REDIS_DB=0
 - ELASTICSEARCH_HOST (хост elasticsearch, по умолчанию - localhost)
-- ELASTICSEARCH_PORT (порт elasticsearch, по умолчанию 9- 200)
+- ELASTICSEARCH_PORT (порт elasticsearch, по умолчанию - 9200)
 - CELERY_TASK_ALWAYS_EAGER (выполнять ли задания от celery синхронно, запуск rabbitmq и celery не требуется при true, по умолчанию - true)
 #### Настройка отправки почты
 Если вы хотите, чтобы письма только сохранялись в папке sent_emails, в .env файле укажите USE_SMTP=false<br>
