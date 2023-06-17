@@ -16,26 +16,26 @@ git clone https://github.com/fivan999/BrainForces
 - DEBUG (включать ли режим дебага, по умолчанию - True)<br>
 - ALLOWED_HOSTS (если включен DEBUG, он ['*'], иначе по умолчанию - 127.0.0.1)<br>
 - INTERNAL_IPS (для debug_toolbar, по умолчанию - 127.0.0.1) <br>
-- LOGIN_ATTEMPTS (количество попыток входа, после которого аккаунт становится неактивным, по умолчанию 3) <br>
-- USER_IS_ACTIVE (активный ли пользователь сразу после регистрации, по умолчанию false) <br>
-- DB_NAME (имя базы данных, по умолчанию postgres)
-- DB_HOST (хост базы данных, по умолчанию 127.0.0.1)
-- DB_PORT (порт базы данных, по умолчанию 5432)
-- DB_USER (имя пользователя на сервере, по умолчанию postgres)
-- DB_PASS (пароль базы данных, по умолчанию passowrd)
-- REDIS_HOST (хост базы данных redis, по умолчанию localhost)
-- REDIS_PORT (порт базы данных redis, по умолчанию 6379)
+- LOGIN_ATTEMPTS (количество попыток входа, после которого аккаунт становится неактивным, по умолчанию - 3) <br>
+- USER_IS_ACTIVE (активный ли пользователь сразу после регистрации, по умолчанию - false) <br>
+- DB_NAME (имя базы данных, по умолчанию - postgres)
+- DB_HOST (хост базы данных, по умолчанию - 127.0.0.1)
+- DB_PORT (порт базы данных, по умолчанию - 5432)
+- DB_USER (имя пользователя на сервере, по умолчанию - postgres)
+- DB_PASS (пароль базы данных, по умолчанию - password)
+- REDIS_HOST (хост базы данных redis, по умолчанию - localhost)
+- REDIS_PORT (порт базы данных redis, по умолчанию - 6379)
 - REDIS_DB=0
-- ELASTICSEARCH_HOST (хост elasticsearch, по умолчанию localhost)
-- ELASTICSEARCH_PORT (порт elasticsearch, по умолчанию 9200)
-- CELERY_TASK_ALWAYS_EAGER (выполнять ли задания от celery синхронно, запуск rabbitmq и celery не требуется при true, по умолчанию true)
+- ELASTICSEARCH_HOST (хост elasticsearch, по умолчанию - localhost)
+- ELASTICSEARCH_PORT (порт elasticsearch, по умолчанию 9- 200)
+- CELERY_TASK_ALWAYS_EAGER (выполнять ли задания от celery синхронно, запуск rabbitmq и celery не требуется при true, по умолчанию - true)
 #### Настройка отправки почты
 Если вы хотите, чтобы письма только сохранялись в папке sent_emails, в .env файле укажите USE_SMTP=false<br>
 Иначе нужно указать несколько значений:
 - USE_SMTP=True
 - EMAIL_HOST (смтп, которое вы используете)
 - EMAIL_PORT (порт нужного смтп)
-- EMAIL_USE_TLS (true или false, по умолчанию true), EMAIL_USE_SSL (true или false, по умолчанию false). True должно быть только одно из двух значений
+- EMAIL_USE_TLS (true или false, по умолчанию - true), EMAIL_USE_SSL (true или false, по умолчанию - false). True должно быть только одно из двух значений
 - EMAIL_HOST_USER (почта)
 - EMAIL_HOST_PASSWORD (пароль от почты)
 #### Настройка аутентификации через Google и Yandex
