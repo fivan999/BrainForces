@@ -5,23 +5,24 @@ services:
       - static_volume:/brainforces/static
       - media_volume:/brainforces/media
     command: >
-      sh -c "python3 manage.py collectstatic --noinput && python3 manage.py migrate && gunicorn --bind 0.0.0.0:8000 brainforces.wsgi"
-    expose:
-      - 8000
+      sh -c "cd brainforces && python3 manage.py migrate && gunicorn --bind 0.0.0.0:8000 brainforces.wsgi"
+    ports:
+      - 8000:8000
     environment:
-      - DB_HOST=database
+      - DB_HOST=${DB_HOST}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
-      - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
     depends_on:
       - database
-
+      - redis
+      # - rabbitmq
+      - elasticsearch
+  
   nginx:
     image: nginx:1.23.4-alpine
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./configs/nginx.conf:/etc/nginx/nginx.conf
       - static_volume:/brainforces/static
       - media_volume:/brainforces/media
     depends_on:
@@ -31,12 +32,36 @@ services:
 
   database:
     image: postgres:15.2-alpine
+    restart: always
+    container_name: db
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASS}
-    expose:
-      - 5432
+  
+  redis:
+    image: redis:7.0-alpine
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+    environment:
+      - discovery.type=single-node
+    ports:
+      - ${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}
+  
+  # rabbitmq:
+  #   image: rabbitmq:3.12-alpine
+  #   hostname: rabbitmq
+  #   restart: always
+  #   environment:
+  #     - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+  #   ports:
+  #     - 5672:5672
 
 volumes:
   static_volume:

@@ -44,55 +44,13 @@ git clone https://github.com/fivan999/BrainForces
 - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET (секретный ключ от Google)
 - SOCIAL_AUTH_YANDEX_OAUTH2_KEY (ключ от Yandex)
 - SOCIAL_AUTH_YANDEX_OAUTH2_SECRET (секретный ключ от Yandex)<br>
-Пример .env файла - .env.example
-
-## Запуск с помощью Docker (в разработке)
+Пример .env файла с рабочими конфигурациями - .env.example
+## Запуск с помощью Docker
 Скачайте Docker: https://www.docker.com/<br>
 Запустите Docker<br>
 В терминале:
 ```
-docker-compose --env-file brainforces/.env build
-```
-```
 docker-compose --env-file brainforces/.env up 
-```
-## Запуск без Docker
-### Установка зависимостей
-Создайте виртуальное окружение и активируйте его<br>
-Для Windows:
-```
-python -m venv venv
-venv\Scripts\activate
-```
-Для Linux:
-```
-python3 -m venv venv
-source venv/bin/activate
-```
-
-Установите нужные зависимости
-
-Для запуска
-```
-pip install -r requirements/base.txt
-```
-Для разработки
-```
-pip install -r requirements/dev.txt
-```
-Для тестов
-```
-pip install -r requirements/test.txt
-```
-### Запуск
-Сделайте миграции:
-```
-python brainforces/manage.py migrate
-```
-
-Запустите проект:
-```
-python brainforces/manage.py runserver
 ```
 ## Использованные технологии
 - База данных - PostgreSQL
