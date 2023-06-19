@@ -17,7 +17,7 @@ services:
       - database
       - redis
       # - rabbitmq
-      - elasticsearch
+      - elastic
   
   nginx:
     image: nginx:1.23.4-alpine
@@ -47,10 +47,11 @@ services:
     ports:
       - "${REDIS_PORT}:${REDIS_PORT}"
   
-  elasticsearch:
+  elastic:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
-    ports:
-      - "${ELASTICSEARCH_PORT}:${ELASTICSEARCH_PORT}"
+    restart: always
+    environment:
+      - "discovery.type=single-node"
   
   # rabbitmq:
   #   image: rabbitmq:3.12-alpine
