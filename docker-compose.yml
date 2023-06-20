@@ -5,7 +5,7 @@ services:
       - static_volume:/brainforces/static
       - media_volume:/brainforces/media
     command: >
-      sh -c "cd brainforces && python3 manage.py migrate && gunicorn --bind 0.0.0.0:8000 brainforces.wsgi"
+      sh -c "cd brainforces && python3 manage.py migrate &&python3 manage.py search_index --rebuild && gunicorn --bind 0.0.0.0:8000 brainforces.wsgi"
     ports:
       - 8000:8000
     environment:
