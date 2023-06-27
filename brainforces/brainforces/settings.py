@@ -93,10 +93,8 @@ DATABASES['default'] = {
     'USER': os.getenv('DB_USER', default='postgres'),
     'PASSWORD': os.getenv('DB_PASS', default='password'),
     'HOST': os.getenv('DB_HOST', default='127.0.0.1'),
+    'PORT': os.getenv('DB_PORT', default=''),
 }
-if os.getenv('DB_PORT', default=''):
-    DATABASES['default']['PORT'] = int(os.getenv('DB_PORT', default='5432'))
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {

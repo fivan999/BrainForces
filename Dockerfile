@@ -1,12 +1,14 @@
-FROM python:3.10-alpine3.16
+FROM python:3.10-alpine3.17
 ENV TZ="Europe/Moscow"
 
-COPY requirements/base.txt /temp/requirements.txt
-COPY brainforces /brainforces
-WORKDIR /brainforces
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-RUN apk add postgresql-client build-base postgresql-dev
+WORKDIR /BrainForces
 
-RUN pip install -r /temp/requirements.txt
+COPY . .
 
-USER root
+RUN apk add --update --no-cache --virtual .tmp-build-deps \
+        gcc libc-dev linux-headers postgresql-dev && \
+    pip install --upgrade pip && \
+    pip install -r requirements/base.txt

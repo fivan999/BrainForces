@@ -25,7 +25,7 @@ git clone https://github.com/fivan999/BrainForces
 - DB_PASS (пароль базы данных, по умолчанию - password)
 - REDIS_HOST (хост базы данных redis, по умолчанию - localhost)
 - REDIS_PORT (порт базы данных redis, по умолчанию - 6379)
-- REDIS_DB=0
+- REDIS_DB=0 (номер базы данных redis, по умолчанию - 0)
 - ELASTICSEARCH_HOST (хост elasticsearch, по умолчанию - localhost)
 - ELASTICSEARCH_PORT (порт elasticsearch, по умолчанию - 9200)
 - CELERY_TASK_ALWAYS_EAGER (выполнять ли задания от celery синхронно, запуск rabbitmq и celery не требуется при true, по умолчанию - true)
@@ -44,55 +44,13 @@ git clone https://github.com/fivan999/BrainForces
 - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET (секретный ключ от Google)
 - SOCIAL_AUTH_YANDEX_OAUTH2_KEY (ключ от Yandex)
 - SOCIAL_AUTH_YANDEX_OAUTH2_SECRET (секретный ключ от Yandex)<br>
-Пример .env файла - .env.example
-
-## Запуск с помощью Docker (в разработке)
+Пример .env файла с рабочими конфигурациями - .env.example
+## Запуск с помощью Docker
 Скачайте Docker: https://www.docker.com/<br>
 Запустите Docker<br>
 В терминале:
 ```
-docker-compose --env-file brainforces/.env build
-```
-```
 docker-compose --env-file brainforces/.env up 
-```
-## Запуск без Docker
-### Установка зависимостей
-Создайте виртуальное окружение и активируйте его<br>
-Для Windows:
-```
-python -m venv venv
-venv\Scripts\activate
-```
-Для Linux:
-```
-python3 -m venv venv
-source venv/bin/activate
-```
-
-Установите нужные зависимости
-
-Для запуска
-```
-pip install -r requirements/base.txt
-```
-Для разработки
-```
-pip install -r requirements/dev.txt
-```
-Для тестов
-```
-pip install -r requirements/test.txt
-```
-### Запуск
-Сделайте миграции:
-```
-python brainforces/manage.py migrate
-```
-
-Запустите проект:
-```
-python brainforces/manage.py runserver
 ```
 ## Использованные технологии
 - База данных - PostgreSQL
