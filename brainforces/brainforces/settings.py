@@ -93,7 +93,7 @@ DATABASES['default'] = {
     'USER': os.getenv('DB_USER', default='postgres'),
     'PASSWORD': os.getenv('DB_PASS', default='password'),
     'HOST': os.getenv('DB_HOST', default='127.0.0.1'),
-    'PORT': os.getenv('DB_PORT', default=''),
+    'PORT': 5432,
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -230,7 +230,7 @@ CKEDITOR_CONFIGS = {
             },
             {
                 'name': 'styles',
-                'items': ['Styles', 'Format', 'Font', 'FontSize'],
+                'items': ['Styles', 'Font'],
             },
             {'name': 'colors', 'items': ['TextColor']},
             {
@@ -295,17 +295,25 @@ MESSAGE_TAGS = {
 }
 
 REDIS_HOST = os.getenv('REDIS_HOST', default='localhost')
-REDIS_PORT = int(os.getenv('REDIS_PORT', default=6379))
+REDIS_PORT = 6379
 REDIS_DB = int(os.getenv('REDIS_DB', default=0))
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': f"{os.getenv('ELASTICSEARCH_HOST', default='localhost')}"
-        f":{os.getenv('ELASTICSEARCH_PORT', default='9200')}"
+        'hosts': (
+            f"{os.getenv('ELASTICSEARCH_HOST', default='localhost')}:9200"
+        ),
     },
 }
 
 CELERY_TASK_ALWAYS_EAGER = (
     os.getenv('CELERY_TASK_ALWAYS_EAGER', default='true').lower().strip()
     in YES_OPTIONS
+)
+
+RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', default='localhost')
+RABBITMQ_USER = os.getenv('RABBITMQ_USER', default='guest')
+RABBITMQ_PASS = os.getenv('RABBITMQ_PASS', default='guest')
+CELERY_BROKER_URL = (
+    f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASS}@{RABBITMQ_HOST}:5672//'
 )
