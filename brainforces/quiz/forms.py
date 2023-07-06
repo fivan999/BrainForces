@@ -87,4 +87,8 @@ class QuestionForm(django.forms.ModelForm):
             raise django.core.exceptions.ValidationError(
                 'Нет правильного варианта'
             )
+        if any(map(lambda x: len(x) > 75, variants)):
+            raise django.core.exceptions.ValidationError(
+                'Слишком длинный вариант ответа'
+            )
         return variants

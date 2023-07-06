@@ -38,6 +38,7 @@ class Quiz(django.db.models.Model):
     description = ckeditor_uploader.fields.RichTextUploadingField(
         help_text='Создайте описание для Вашей викторины',
         verbose_name='описание',
+        max_length=1000,
     )
 
     start_time = django.db.models.DateTimeField(
@@ -188,13 +189,13 @@ class Question(django.db.models.Model):
     objects = quiz.managers.QuestionManager()
 
     name = django.db.models.CharField(
-        max_length=100,
+        max_length=50,
         help_text='Напишите название вопроса',
         verbose_name='название вопроса',
     )
 
     text = ckeditor_uploader.fields.RichTextUploadingField(
-        help_text='Напишите вопрос', verbose_name='текст'
+        help_text='Напишите вопрос', verbose_name='текст', max_length=1000
     )
 
     quiz = django.db.models.ForeignKey(
@@ -239,7 +240,7 @@ class Variant(django.db.models.Model):
     """модель варианта ответа"""
 
     text = django.db.models.CharField(
-        max_length=150,
+        max_length=75,
         help_text='Напишите вариант ответа',
         verbose_name='ответ',
     )

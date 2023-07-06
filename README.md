@@ -20,15 +20,15 @@ git clone https://github.com/fivan999/BrainForces
 - USER_IS_ACTIVE (активный ли пользователь сразу после регистрации, по умолчанию - false) <br>
 - DB_NAME (имя базы данных, по умолчанию - postgres)
 - DB_HOST (хост базы данных, по умолчанию - 127.0.0.1)
-- DB_PORT (порт базы данных, по умолчанию - 5432)
 - DB_USER (имя пользователя на сервере, по умолчанию - postgres)
 - DB_PASS (пароль базы данных, по умолчанию - password)
 - REDIS_HOST (хост базы данных redis, по умолчанию - localhost)
-- REDIS_PORT (порт базы данных redis, по умолчанию - 6379)
 - REDIS_DB=0 (номер базы данных redis, по умолчанию - 0)
 - ELASTICSEARCH_HOST (хост elasticsearch, по умолчанию - localhost)
-- ELASTICSEARCH_PORT (порт elasticsearch, по умолчанию - 9200)
 - CELERY_TASK_ALWAYS_EAGER (выполнять ли задания от celery синхронно, запуск rabbitmq и celery не требуется при true, по умолчанию - true)
+- RABBITMQ_HOST (хост брокера rabbitmq)
+- RABBITMQ_USER (имя пользователя rabbitmq)
+- RABBITMQ_PASS (пароль rabbitmq)
 #### Настройка отправки почты
 Если вы хотите, чтобы письма только сохранялись в папке sent_emails, в .env файле укажите USE_SMTP=false<br>
 Иначе нужно указать несколько значений:

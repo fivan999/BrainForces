@@ -15,11 +15,13 @@ class Organization(django.db.models.Model):
     name = django.db.models.CharField(
         verbose_name='название',
         help_text='Название организации',
-        max_length=100,
+        max_length=50,
     )
 
     description = ckeditor_uploader.fields.RichTextUploadingField(
-        verbose_name='описание', help_text='Описание организации'
+        verbose_name='описание',
+        help_text='Описание организации',
+        max_length=500,
     )
 
     is_private = django.db.models.BooleanField(
@@ -108,13 +110,13 @@ class OrganizationPost(django.db.models.Model):
     objects = organization.managers.OrganizationPostManager()
 
     name = django.db.models.CharField(
-        max_length=150,
+        max_length=75,
         verbose_name='название',
         help_text='Название объявления',
     )
 
     text = ckeditor_uploader.fields.RichTextUploadingField(
-        verbose_name='текст', help_text='Текст поста'
+        verbose_name='текст', help_text='Текст поста', max_length=1000
     )
 
     is_private = django.db.models.BooleanField(
@@ -151,7 +153,7 @@ class CommentToOrganizationPost(django.db.models.Model):
     """моедль комментария к посту"""
 
     text = django.db.models.TextField(
-        verbose_name='текст', help_text='Текст комментария'
+        verbose_name='текст', help_text='Текст комментария', max_length=200
     )
 
     user = django.db.models.ForeignKey(
