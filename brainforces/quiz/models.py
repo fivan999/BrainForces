@@ -38,7 +38,7 @@ class Quiz(django.db.models.Model):
     description = ckeditor_uploader.fields.RichTextUploadingField(
         help_text='Создайте описание для Вашей викторины',
         verbose_name='описание',
-        max_length=1000
+        max_length=1000,
     )
 
     start_time = django.db.models.DateTimeField(
