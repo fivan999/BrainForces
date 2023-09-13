@@ -432,7 +432,6 @@ class QuizCreateView(
 
             question_objects = list()
             variants_objects = list()
-
             for question in question_formset:
                 question_obj = question.save(commit=False)
                 question_obj.quiz = quiz_obj
@@ -450,8 +449,6 @@ class QuizCreateView(
                     )
                     variants_objects.append(variant_obj)
             quiz_obj.save()
-            # for item in question_objects:
-            #     item.save()
             quiz.models.Question.objects.bulk_create(question_objects)
             quiz.models.Variant.objects.bulk_create(variants_objects)
             message_text = 'Викторина отправлена на модерацию'

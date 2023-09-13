@@ -1,0 +1,23 @@
+services:
+  redis:
+    image: redis:7.0-alpine
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
+    ports:
+      - "6379:6379"
+  
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+    restart: always
+    environment:
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+  
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
