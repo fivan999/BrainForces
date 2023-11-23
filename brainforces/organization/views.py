@@ -425,6 +425,7 @@ class QuizCreateView(
             extra=50,
             max_num=50,
         )(self.request.POST or None)
+
         if quiz_form.is_valid() and question_formset.is_valid():
             quiz_obj = quiz_form.save(commit=False)
             quiz_obj.organized_by = context['organization']
@@ -432,11 +433,14 @@ class QuizCreateView(
 
             question_objects = list()
             variants_objects = list()
+
             for question in question_formset:
                 question_obj = question.save(commit=False)
                 question_obj.quiz = quiz_obj
                 question_objects.append(question_obj)
-                variants = question.cleaned_data['variants']
+                variants = question.cleaned_data.get('variants')
+                if not variants:
+                    continue
                 for variant in variants:
                     is_correct = variant.endswith('right')
                     text = variant
@@ -448,9 +452,20 @@ class QuizCreateView(
                         is_correct=is_correct,
                     )
                     variants_objects.append(variant_obj)
+
+            if not question_objects or not variants_objects:
+                return django.shortcuts.render(
+                    request,
+                    self.template_name,
+                    organization.services.process_quiz_creation_error(
+                        request, question_formset, quiz_form, context
+                    ),
+                )
+
             quiz_obj.save()
             quiz.models.Question.objects.bulk_create(question_objects)
             quiz.models.Variant.objects.bulk_create(variants_objects)
+
             message_text = 'Викторина отправлена на модерацию'
             if quiz_obj.is_published:
                 message_text = 'Викторина создана'
@@ -458,17 +473,14 @@ class QuizCreateView(
             return django.shortcuts.redirect(
                 django.urls.reverse('organization:quizzes', kwargs={'pk': pk})
             )
-        django.contrib.messages.error(
+
+        return django.shortcuts.render(
             request,
-            """
-            Форма заполнена неверно.
-            Если у вас было больше одного вопроса,
-            нажимайте `Добавить вопрос`, чтобы увидеть всее ошибки
-            """,
+            self.template_name,
+            organization.services.process_quiz_creation_error(
+                request, question_formset, quiz_form, context
+            ),
         )
-        context['question_formset'] = question_formset
-        context['form'] = quiz_form
-        return django.shortcuts.render(request, self.template_name, context)
 
 
 class CreatePostView(

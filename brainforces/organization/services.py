@@ -1,6 +1,11 @@
 import typing
 
+import django.contrib.messages
+import django.http
+import django.shortcuts
+
 import organization.models
+import quiz.forms
 
 
 def get_post_by_user_organization_post_or_404(
@@ -14,3 +19,22 @@ def get_post_by_user_organization_post_or_404(
         .filter(pk=post_pk)
         .first()
     )
+
+
+def process_quiz_creation_error(
+    request: django.http.HttpRequest,
+    question_formset: django.forms.BaseInlineFormSet,
+    quiz_form: quiz.forms.QuizForm,
+    context: dict,
+) -> dict:
+    django.contrib.messages.error(
+        request,
+        """
+        Форма заполнена неверно.
+        Если у вас было больше одного вопроса,
+        нажимайте `Добавить вопрос`, чтобы увидеть всее ошибки
+        """,
+    )
+    context['question_formset'] = question_formset
+    context['form'] = quiz_form
+    return context
